@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <template id="s_attachments" name="Attachments">
+            <section class="website_attachment mt16 mb16"/>
+        </template>
+
+        <template id="snippets" inherit_id="website.snippets">
+            <xpath expr="//div[@id='snippet_structure']/div[@class='o_panel_body']" >
+                <t t-snippet="website_attachment.s_attachments" t-thumbnail="/website_attachment/static/src/img/thumbnail.png"/>
+            </xpath>
+        </template>
+
+<!--        <template id="website_attachment_options" inherit_id="website.snippet_options">-->
+<!--            <xpath expr="//div[@data-js='background']" position="after">-->
+<!--                <nav data-js="website_attachment"-->
+<!--                     data-selector=".website_attachment"-->
+<!--                     data-drop-in=".oe_structure">-->
+<!--                    <li data-switch_group="true"><a href="#">Switch Group</a></li>-->
+<!--                </nav>-->
+<!--            </xpath>-->
+<!--        </template>-->
+
+    </data>
+</odoo>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <odoo>
+<!--        <record model="ir.ui.view" id="view_event_form_inherit_question1">
+            <field name="name">event.form.inherit.question</field>
+            <field name="model">event.event</field>
+            <field name="inherit_id" ref="website_event_questions.view_event_form_inherit_question"/>
+            <field name="arch" type="xml">
+                <data>
+                    
+                    <xpath expr="//field[@name='answer_ids']" position="replace">
+                        <field name="answer_ids" invisible="1"/>
+                    </xpath>
+               </data>
+            </field>
+        </record>-->
+
+
+
+        <record model="ir.ui.view" id="view_event_question_form">
+            <field name="name">event.question.form</field>
+            <field name="model">event.question</field>
+            <field name="inherit_id" ref="website_event_questions.event_question_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='answer_ids']" position="replace">
+                    <field name="answer_ids" invisible="0"/>
+                </xpath>
+<!--                 <xpath expr="//label[@for='is_individual']" position="after">-->
+<!--                     <group>-->
+<!--                        <group>-->
+<!--                           <field name="reg_express"/>-->
+<!--                        </group>-->
+<!--                        <group>-->
+<!--                           <field name="error_msg"/>-->
+<!--                        </group>-->
+<!--                     </group>-->
+<!--                    </xpath>   -->
+            </field>
+        </record>
+        
+        
+        <record model="ir.ui.view" id="view_event_registration_form_ques">
+            <field name="name">event.registration.form.inherit.question.ques</field>
+            <field name="model">event.registration</field>
+            <field name="inherit_id" ref="event.view_event_registration_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="replace">
+                    <field name="question_ids" >
+                        <tree>
+                            <field name="title"/>
+                            <field name="ans"/>
+                        </tree>
+                    </field>
+                </xpath>
+            </field>
+        </record>
+</odoo>
