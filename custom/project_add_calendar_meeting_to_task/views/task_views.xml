@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record id="view_task_meeting_search" model="ir.ui.view">
+            <field name="name">calendar.event.search.inherit</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar.view_calendar_event_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="task_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_task_form_with_calendar" model="ir.ui.view">
+            <field name="name">view_task_form_with_calendar</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <div class="oe_button_box" position="inside">
+                    <button class="oe_stat_button" type="object"
+                        name="action_schedule_meeting"
+                        icon="fa-calendar">
+                        <field string="Meetings" name="meeting_count" widget="statinfo"/>
+                    </button>
+                </div>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_calendar_event_form_popup_with_task">
+            <field name="name">Meetings Dialog with Task</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+            <field name="arch" type="xml">
+                <field name="alarm_ids" position="after">
+                    <field name="task_id" />
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_calendar_event_form_with_task">
+            <field name="name">Calendar - Event Form with Task</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+            <field name="arch" type="xml">
+                <field name="location" position="after">
+                    <field name="task_id" />
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

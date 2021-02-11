@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_attendee_with_template_form" model="ir.ui.view">
+            <field name="name">view.attendee.with.template.form</field>
+            <field name="model">event.registration</field>
+            <field name="inherit_id" ref="event.view_event_registration_form" />
+            <field name="arch" type="xml">
+                <button name="action_cancel" position="before">
+                    <button string="Sync Linked Attendees" name="action_sync_linked_attendees" type="object" help="Sync linked attendees"/>
+                </button>
+                <xpath expr="//field[@name='name']" position="before">
+                    <field name="is_a_template"/>
+                    <field name="template_id" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

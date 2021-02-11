@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <template id="not_found">
+            {"status": "fail"}
+        </template>
+
+        <template id="result">
+            {"status": "success", "data": "<t t-esc='data'/>", "filename": "<t t-esc='filename'/>"}
+        </template>
+
+        <template id="qweb_template_wrap">
+            &lt;templates id="template" xml:space="preserve"&gt;
+                &lt;t t-name="website_attachment.s_attachment_group_<t t-esc="id"/>"&gt;
+                    <div><t t-raw="0"/></div>
+                &lt;/t&gt;
+            &lt;/templates&gt;
+        </template>
+
+        <template id="attachment_group">
+            <t t-call="website_attachment.qweb_template_wrap">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="wa-group-name mt16" t-esc="name"/>
+                            <table class="table">
+                                <tr t-foreach="attachments" t-as="att">
+                                    <td>
+                                        <strong>
+                                            <i t-if="att['type'] == 'url'" class="fa fa-external-link" aria-hidden="true"></i>
+                                            <i t-if="att['type'] == 'binary'" class="fa fa-cloud-download" aria-hidden="true"></i>
+                                            <a style="margin-left:7px" t-attf-href="/web/content/ir.attachment/#{att['id']}/datas?download=1" target="_blank"><span class="wa-name"><t t-esc="att['name']"/></span></a></strong>
+                                        <span style="margin-left:20px" class="wa-desc text-muted"><t t-esc="att['description']"/></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

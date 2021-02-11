@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="learning_description_in_product_page" inherit_id="website_sale.product" name="Product Variant Desc">
+    <xpath expr="//div[@id='product_full_description']" position="before">
+    <t t-if="product.check_if_product_is_learning_product() or product.is_learning_product">
+ <section class="cf-tabs-img cst s_carfito_custom_tabbing_snippet mt0">
+            <div class="container" id="website_description2">
+                            <div class="cfti-tab" role="tabpanel">
+                                <div class="desc">
+                                    <h3>More information about course</h3>
+                                    <t t-if="product.learning_description">
+                                        <p t-field="product.learning_description"/>
+                                    </t>
+                                </div>
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="active" role="presentation">
+                                        <a aria-controls="tab1" data-toggle="tab" href="#tab1" role="tab">Course content and blocks</a>
+                                    </li>
+                                    <li role="presentation">
+                                        <a aria-controls="tab2" data-toggle="tab" href="#tab2" role="tab">What attendee learns</a>
+                                    </li>
+                                    <li role="presentation">
+                                        <a aria-controls="tab3" data-toggle="tab" href="#tab3" role="tab">Results of course</a>
+                                    </li>
+                                </ul>
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div class="oe_structure oe_empty tab-pane active" id="tab1" role="tabpanel">
+                                    <t t-if="product.learning_blocks">
+<p></p>
+                                        <p t-field="product.learning_blocks"/>
+                                    </t>
+                                    </div>
+                                    <div class="oe_structure oe_empty tab-pane" id="tab2" role="tabpanel">
+                                    <t t-if="product.learning_benefit">
+<p></p>
+                                        <p t-field="product.learning_benefit"/>
+                                    </t>
+                                    </div>
+                                    <div class="oe_structure oe_empty tab-pane" id="tab3" role="tabpanel">
+                                    <t t-if="product.learning_results">
+<p></p>
+                                        <p t-field="product.learning_results"/>
+                                    </t>
+                                    </div>
+                                </div>
+                            </div>
+            </div>
+</section>
+<!-- <script>
+                                            window.onload = function() {
+                                            document.getElementById('website_description').style.display = 'none';
+                                    document.getElementById('website_description').style.visibility = 'none';
+                                    }
+
+</script> -->
+    </t>
+        </xpath>
+
+</template>
+
+    <template id="registration_attendee_details_add_event_details" inherit_id="website_event.registration_template">
+        <xpath expr="//div[@role='status']" position="after">
+            <section class="cf-tabs-img cst s_carfito_custom_tabbing_snippet mt0">
+            <div class="row" style="margin: 0;text-align: center;">
+
+                <div class="cfti-tab" role="tabpanel">
+                                <div class="desc">
+                                    <h3>More information about course</h3>
+                                    <t t-if="event.event_ticket_ids[0].product_id.learning_description">
+                                        <p t-field="event.event_ticket_ids[0].product_id.learning_description"/>
+                                    </t>
+                                </div>
+                                <ul class="nav nav-tabs" role="tablist" > 
+                                    <li class="active nav-item" role="presentation">
+                                        <a aria-controls="tab1" data-toggle="tab" href="#tab1" role="tab" class="nav-link">Course content and blocks</a>
+                                    </li>
+                                    <li role="presentation" class="nav-item">
+                                        <a aria-controls="tab2" data-toggle="tab" href="#tab2" role="tab" class="nav-link">What attendee learns</a>
+                                    </li>
+                                    <li role="presentation" class="nav-item">
+                                        <a aria-controls="tab3" data-toggle="tab" href="#tab3" role="tab" class="nav-link">Results of course</a>
+                                    </li>
+                                </ul>
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div class="oe_structure oe_empty tab-pane active" id="tab1" role="tabpanel">
+                                    <t t-if="event.event_ticket_ids[0].product_id.learning_blocks">
+<p></p>
+                                        <p t-field="event.event_ticket_ids[0].product_id.learning_blocks"/>
+                                    </t>
+                                    </div>
+                                    <div class="oe_structure oe_empty tab-pane" id="tab2" role="tabpanel">
+                                    <t t-if="event.event_ticket_ids[0].product_id.learning_benefit">
+<p></p>
+                                        <p t-field="event.event_ticket_ids[0].product_id.learning_benefit"/>
+                                    </t>
+                                    </div>
+                                    <div class="oe_structure oe_empty tab-pane" id="tab3" role="tabpanel">
+                                    <t t-if="event.event_ticket_ids[0].product_id.learning_results">
+<p></p>
+                                        <p t-field="event.event_ticket_ids[0].product_id.learning_results"/>
+                                    </t>
+                                    </div>
+                                </div>
+                            </div>
+            </div>
+        </section>
+        </xpath>
+    </template>
+
+    <!-- lektor -->
+<!--    <template id="add_lektor_index" inherit_id="website_event.event_description_full">-->
+<!--        <xpath expr="//div[hasclass('card')][3]" position="before">-->
+<!--          <div class="card mt-3" t-if="event.organizer_id">-->
+<!--                <h4 class="card-header">Lektor</h4>-->
+<!--                <div class="card-body">-->
+<!--                     <div class="oe_structure"/>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </xpath>-->
+<!--    </template>-->
+
+    </data>
+</odoo>

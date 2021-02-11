@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_att_form_with_title" model="ir.ui.view">
+            <field name="name">view.att.form.with.title</field>
+            <field name="model">event.registration</field>
+            <field name="inherit_id" ref="event.view_event_registration_form" />
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="attendee_title"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_att_form_send_reminder" model="ir.ui.view">
+            <field name="name">view.att.form.send.reminder</field>
+            <field name="model">event.registration</field>
+            <field name="inherit_id" ref="website_event_late_reg.custom_view_event_registration_form"/>
+            <field name="arch" type="xml">
+                <field name="event_token_url" position="before">
+                    <field name="can_send_reminder" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

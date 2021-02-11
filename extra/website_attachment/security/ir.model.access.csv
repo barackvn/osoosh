@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_x_attachment_group,access_x_attachment_group,model_x_attachment_group,,1,0,0,0
+access_x_attachment_group_designer,access_x_attachment_group_designer,model_x_attachment_group,website.group_website_designer,1,1,1,1
