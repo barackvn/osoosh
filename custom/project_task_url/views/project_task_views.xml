@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="task_url_edit" model="ir.ui.view">
+            <field name="name">project.task.url.form.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                    <xpath expr="//group[1]" position="before">
+                        <div class="oe_title">
+                            <label for="url" class="oe_edit_only"/>
+                            <field name="url" widget="url"/>
+                        </div>
+                    </xpath>
+                    <xpath expr="//field[@name='tag_ids']" position="after">
+                        <field  name="x_capacity_join_detail"/>
+                        <field name="x_date"/>
+                        <field  name="date_assign"/>
+                    </xpath>
+            </field>
+        </record>
+
+        <record id="view_task_tree2_inherited" model="ir.ui.view">
+            <field name="name">project.task.tree.inherited</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_tree2"/>
+            <field name="arch" type="xml">
+                <xpath expr="." position="replace">
+                    <tree decoration-bf="message_needaction==True" decoration-danger="date_deadline and (date_deadline&lt;current_date)" string="Úkoly">
+                        <field name="message_needaction" invisible="1"/>
+                        <field name="date_deadline"></field>
+                        <field name="x_date"></field>
+                        <field name="sequence" invisible="not context.get('seq_visible', False)"/>
+                        <field name="name"/>
+                        <field name="project_id" invisible="context.get('user_invisible', False)"/>
+                        <field name="user_id" invisible="context.get('user_invisible', False)"/>
+                        <field name="partner_id" groups="project.group_project_user"> </field>
+                        <field name="company_registry" groups="project.group_project_user"> </field>
+                        <field name="date_deadline" invisible="context.get('deadline_visible',True)"/>
+                        <field name="qty_to_invoice"> </field>
+                        <field name="stage_id" invisible="context.get('set_visible',False)"/>
+                        <field  name="x_capacity_join_detail"/>
+                    </tree>
+
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</odoo>

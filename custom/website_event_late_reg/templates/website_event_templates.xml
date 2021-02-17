@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+	<template id="event_script" inherit_id="website.assets_frontend" name="Country Events Snippet Script">
+		<xpath expr="//script[last()]" position="after">
+			<script type="text/javascript" src="/website_event/static/src/js/website_geolocation.js"></script>
+			<script type="text/javascript" src="/website_event/static/src/js/website_event.js"></script>
+		</xpath>
+	</template>
+
+	<template id="asset_frontend" inherit_id="website.assets_frontend" name="Events Late Reg Frontend">
+		<xpath expr="//script[last()]" position="after">
+			<script src="/website_event_late_reg/static/js/custom.js" type="text/javascript"/>
+		</xpath>
+	</template>
+
+	<template id="registration_skip_button" inherit_id="website_event.registration_attendee_details" name="Skip Registration">
+		<xpath expr="//div[hasclass('modal-footer')]" position="replace">
+			<div class="modal-footer">
+				<div class="pull-left">
+					<button type="submit" class="btn btn-primary">Continue</button>
+					<a class="btn btn-primary" id="js_skip_registration">Skip</a> or
+					<a class="js_goto_event" style="cursor: pointer;">Cancel Registration</a>
+				</div>
+			</div>
+		</xpath>
+	</template>
+
+	<template id="complete_registration" name="Complete Registration">
+		<t t-call="website.layout">
+			<t t-set="additional_title">Complete Registration</t>
+			<div id="wrap">
+				<div class="oe_structure"/>
+				<div class="container">
+					<div class="row mt64">
+						<t t-if="not valid">
+							<h3>The link seems to be invalid. Please check if this is the latest e-mail we have sent you.</h3>
+						</t>
+						<t t-if="valid">
+							<t t-if="res">
+								<h3>Please fill out the information below.</h3>
+								<form id="complete_registration" t-attf-action="/events/complete-registration/submit" method="post">
+								<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+								<input type="hidden" name="sale_order_id" t-att-value="sale_order.id"/>
+									<t t-foreach="res" t-as="event">
+										<t t-set="counter" t-value="0"/>
+										<h4><t t-esc="res[event]['event_obj'].name"/></h4>
+										<i class="fa fa-clock-o"/> <span itemprop="startDate" t-esc="res[event]['event_obj'].date_begin_located[:-3]"> </span> <i>to</i> <span t-esc="res[event]['event_obj'].date_end_located[:-3]"> </span>
+										<div itemprop="location" class="mt16 mb32" t-field="res[event]['event_obj'].address_id" t-field-options='{
+											"widget": "contact",
+											"fields": ["address", "phone", "mobile", "fax", "email"]
+											}'/>
+										<t t-foreach="res[event]['tickets']" t-as="ticket">
+											<p><strong>TICKET TYPE: <t t-esc="res[event]['tickets'][ticket]['ticket_obj'].name"/></strong></p>
+											<t t-foreach="res[event]['tickets'][ticket]['attendees']" t-as="att">
+												<t t-set="counter" t-value="counter + 1"/>
+												<div class="row ">
+													<div class="col-md-4"><strong>Name</strong></div>
+													<div class="col-md-4"><strong>Email</strong></div>
+													<div class="col-md-4"><strong>Phone</strong> <span class="text-muted">(Optional)</span></div>
+												</div>
+												<div class="row mb4">
+													<div class="col-md-4"><input class='form-control' type='text' t-attf-name="#{att.id}-name" required="True" t-att-placeholder="'Attendee #%s' %counter" t-att-value="att.name"/></div>
+													<div class="col-md-4"><input class='form-control' type='email' t-attf-name="#{att.id}-email" required="True" t-att-value="att.email"/></div>
+													<div class="col-md-4"><input class='form-control' type='tel' t-attf-name="#{att.id}-phone" t-att-value="att.phone"/></div>
+												</div>
+												<t t-if="res[event]['event_obj'].specific_question_ids">
+													<div class="row mb32">
+														<div class="col-md-4" t-foreach="res[event]['event_obj'].specific_question_ids" t-as='question'>
+															<div class="input-group input-group-sm">
+																<span class="input-group-addon"><t t-esc="question.title"/></span>
+																<select t-attf-name="#{att.id}-answer_ids-#{question.id}" class="form-control" required="true">
+																	<t t-foreach='question.answer_ids' t-as="answer">
+																		<option t-esc='answer.name' t-att-value='answer.id'/>
+																	</t>
+																</select>
+															</div>
+														</div>
+													</div>
+												</t>
+											</t>
+										</t>
+										<t t-if="res[event]['event_obj'].general_question_ids">
+											<h4 class="page-header mt32"><strong>Last questions</strong></h4>
+											<div class="row">
+												<div class="col-md-4" t-foreach="res[event]['event_obj'].general_question_ids" t-as='question'>
+													<div class="input-group">
+														<span class="input-group-addon"><t t-esc='question.title'/></span>
+														<select t-attf-name="0-answer_ids-#{question.id}" class="form-control" required="true">
+															<t t-foreach='question.answer_ids' t-as="answer">
+																<option t-esc='answer.name' t-att-value='answer.id'/>
+															</t>
+														</select>
+													</div>
+												</div>
+											</div>
+										</t>
+									</t><!--Event loop-->
+
+									<button type="submit" class="mt32 mb32 btn btn-primary">Submit</button>
+
+								</form>
+							</t>
+							<t t-if="not res">
+								<h3>Events not found. Please check if this is the latest e-mail we have sent you.</h3>
+							</t>
+						</t>
+					</div>
+				</div>
+			</div>
+		</t>
+	</template>
+
+	<template id="complete_registration_submit" name="Complete Registration">
+		<t t-call="website.layout">
+			<t t-set="additional_title">Complete Registration</t>
+			<div id="wrap">
+				<div class="oe_structure"/>
+				<div class="container">
+					<div class="row mt64">
+						<h3>Thank you! Your registration is now complete!</h3>
+					</div>
+				</div>
+			</div>
+		</t>
+	</template>
+
+	</data>
+</odoo>

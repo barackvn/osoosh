@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_event_form_with_survey" model="ir.ui.view">
+            <field name="name">view.event.form.with.survey</field>
+            <field name="model">event.event</field>
+            <field name="inherit_id" ref="event.view_event_form" />
+            <field name="arch" type="xml">
+                <button name="%(event.act_event_registration_from_event)d" position="before">
+                    <button string="Go to Survey" name="action_start_survey" type="object" help="Go to Survey" class="oe_highlight" attrs="{'invisible': [('survey_id','=', False),('sale_order_origin','=', False)]}"/>
+                    <field name="survey_id" invisible="1"/>
+                </button>
+                <field name="date_tz" position="after">
+                    <field name="survey_id"/>
+                </field>
+               <field name="date_tz" position="after">
+                    <field name="x_tag"/>
+                </field> 
+            </field>
+        </record>
+
+        <record id="attendee_form_with_survey" model="ir.ui.view">
+            <field name="name">attendee.form.with.survey</field>
+            <field name="model">event.registration</field>
+            <field name="inherit_id" ref="event.view_event_registration_form"/>
+            <field name="arch" type="xml">
+                <button name="action_cancel" position="before">
+                    <button string="Go to Survey" name="action_start_survey" type="object" help="Go to Survey" class="oe_highlight" attrs="{'invisible': [('survey_id','=', False)]}"/>
+                    <field name="survey_id" invisible="1"/>
+                </button>
+            </field>
+        </record>
+    </data>
+</odoo>

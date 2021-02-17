@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_general_configuration_with_endpoint_token" model="ir.ui.view">
+            <field name="name">General Settings with Endpoint Token</field>
+            <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+            <field name="model">res.config.settings</field>
+            <field name="arch" type="xml">
+                <div id="web_unsplash_settings" position="inside">
+                    <div class="content-group mt16">
+                        <label for="partner_endpoint_auth_token" class="o_light_label"/>
+                        <field name="partner_endpoint_auth_token"/>
+                    </div>
+                    <div>
+                        <i class="fa fa-arrow-right"/> <button type="object" name="generate_new_endpoint_token" string="Generate New Token" icon="fa-cogs" class="oe_inline oe_link"/>
+                    </div>
+            </div>
+            </field>
+        </record>
+    </data>
+</odoo>

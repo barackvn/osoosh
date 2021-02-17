@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="compose_message_from_invoice_with_events" model="ir.ui.view">
+            <field name="name">compose.message.from.invoice.with.events</field>
+            <field name="model">account.invoice.send</field>
+            <field name="inherit_id" ref="account.account_invoice_send_wizard_form" />
+            <field name="arch" type="xml">
+                <field name="body" position="after">
+                    <group>
+                        <group>
+                            <!-- <label for="event_ids"/> -->
+                            <field name="event_ids" widget="many2many_tags"/>
+                        </group>
+                            <div class="o_row">
+                                <button name="button_generate_certificates" string="Generate Certificates" type="object" class="oe_inline fa fa-arrow right oe_link"/>
+                            </div>
+                        <group />
+                    </group>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

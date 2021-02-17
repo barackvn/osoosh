@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="ir_cron_use_company_as_partner" model="ir.cron">
+            <field name="name">Use company as partner in tasks, events, and sales</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">6</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">1</field>
+            <field name="doall" eval="False"/>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="priority">1003</field>
+            <field name="code">model.cron_use_company_as_partner()</field>
+            <field name="active" eval="False"/>
+             <field name="state">code</field>
+        </record>
+    </data>
+</odoo>

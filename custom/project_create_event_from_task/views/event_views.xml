@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_task_form_project_create_event_from_task" model="ir.ui.view">
+            <field name="name">view.task.form.create.event</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2" />
+            <field name="arch" type="xml">
+                <field name="stage_id" position="before">
+                    <button name="button_create_event" type="object" string="Create Event" attrs="{'invisible': [('can_create_event', '=', False)]}"/>
+<!--                    <button name="button_send_invitation_email" type="object" string="Send Invitational Email" attrs="{'invisible': [('can_create_event', '=', False)]}"/>-->
+                    <field name="can_create_event" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="event_create_from_so.view_event_form_inherit_origin">
+            <field name="name">event.form.inherit.origin</field>
+            <field name="model">event.event</field>
+            <field name="inherit_id" ref="event.view_event_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//notebook" position="inside">
+                        <page string="Origin">
+                            <group>
+                                <group>
+                                    <field name="sale_order_origin"/>
+                                    <field name="sale_order_line_origin"/>
+                                    <field name="task_id"/>
+                                </group>
+                            </group>
+                        </page>
+                    </xpath>
+               </data>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="custom_view_event_search_for_task">
+            <field name="name">custom.event.event.search.task</field>
+            <field name="model">event.event</field>
+            <field name="inherit_id" ref="event.view_event_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="task_id"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>
