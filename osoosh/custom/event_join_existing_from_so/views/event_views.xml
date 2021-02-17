@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="custom_view_event_search">
+            <field name="name">custom.event.event.search</field>
+            <field name="model">event.event</field>
+            <field name="inherit_id" ref="event.view_event_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="joined_sale_order_ids"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="event_create_from_so.view_event_form_inherit_origin">
+            <field name="name">event.form.inherit.origin</field>
+            <field name="model">event.event</field>
+            <field name="inherit_id" ref="event.view_event_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//notebook" position="inside">
+                        <page string="Origin">
+                            <group>
+                                <group>
+                                    <field name="event_template_id"/>
+                                    <field name="sale_order_origin"/>
+                                    <field name="sale_order_line_origin"/>
+                                </group>
+                            </group>
+                        </page>
+                    </xpath>
+               </data>
+            </field>
+        </record>
+
+    </data>
+</odoo>

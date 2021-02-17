@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.actions.act_window" id="show_created_events">
+           <field name="name">Events</field>
+           <field name="type">ir.actions.act_window</field>
+           <field name="res_model">event.event</field>
+
+           <field name="view_mode">tree,form,calendar</field>
+           <field name="context">{"search_default_task_id": active_id}</field>
+        </record>
+
+        <record id="view_task_form_create_event" model="ir.ui.view">
+            <field name="name">view.task.form.create.event</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2" />
+            <field name="arch" type="xml">
+                <div class="oe_button_box" position="inside">
+                    <button name="%(show_created_events)d"
+                        type="action"
+                        class="oe_stat_button"
+                        icon="fa-calendar">
+                        <field name="events_count" widget="statinfo" string="Events"/>
+                    </button>
+                </div>
+                <field name="stage_id" position="before">
+                    <button name="button_create_event" type="object" string="Create Event" attrs="{'invisible': [('can_create_event', '=', False)]}"/>
+                    <field name="can_create_event" invisible="1"/>
+                </field>
+            </field>
+        </record> 
+    </data>
+</odoo>

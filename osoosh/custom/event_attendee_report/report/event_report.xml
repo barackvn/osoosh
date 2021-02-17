@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_event_attendees_document">
+            <!-- <t t-call="web.external_layout"> -->
+                <t t-set="o" t-value="o"/>
+                <div class="page">
+                    <div class="container h-100 justify-content-center align-items-center">
+                    <t t-set="company_id" t-value="user.company_id"/>
+                    <t t-set="address" t-value="''"/>
+                    <t t-if="company_id.street">
+                        <t t-set="address" t-value="company_id.street"/>
+                    </t>
+                    <t t-if="company_id.street2">
+                        <t t-set="address" t-value="address + ' ' + company_id.street2"/>
+                    </t>
+                    <t t-if="company_id.city">
+                        <t t-set="address" t-value="address + ', ' + company_id.city"/>
+                    </t>
+                    <t t-if="company_id.zip">
+                        <t t-set="address" t-value="address + ' ' + company_id.zip"/>
+                    </t>
+
+                    <p align="center">
+                        <img t-if="company_id.logo" src="/logo.png?company=${company_id.id}" style="height: 20px;"/>
+                        <t t-esc="company_id.name + ' - ' + address"/>
+                        IČO: <t t-esc="company_id.company_registry"/>
+                    </p>
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-xs-12 text-center">
+                            <p>Prezenční listina č.<span t-field="o.id"/> pro kurz <strong><span t-field="o.accreditation_id"/></strong></p>
+                            <p>
+                               Místo konání: <span t-field="o.address_id.name"/>
+                            </p>
+                            <p>
+                               Termín: od <span t-esc="date_dicts[o.id]['date_begin']"/> do <span t-esc="date_dicts[o.id]['date_end']"/>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-xs-12 text-center">
+                            <table class="table table-condensed table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th align="center" width="35%">Titul, jméno a příjmení</th>
+                                        <th align="center" width="20%">Datum narození</th>
+                                        <th align="center" width="25%">Škola</th>
+                                        <th width="15%">Podpis</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="counter" t-value="1"/>
+                                    <t t-foreach="o.registration_ids" t-as="att">
+                                        <tr>
+                                            <td style="border-right: 1px solid #ddd;"><t t-esc="counter"/></td>
+                                            <td style="border-right: 1px solid #ddd;"><t t-esc="att.attendee_title"/> <t t-esc="att.name"/></td>
+                                            <td style="border-right: 1px solid #ddd;"><t t-esc="att.attendee_dob"/></td>
+                                            <td style="border-right: 1px solid #ddd; font-size:60%;"><t t-esc="att.partner_id.name"/></td>
+                                            <td/>
+                                        </tr>
+                                        <t t-set="counter" t-value="counter + 1"/>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+
+        </template>
+
+        <template id="report_event_attendees">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-call="event_attendee_report.report_event_attendees_document"/>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <record id="paperformat_euro_landscape" model="report.paperformat">
+            <field name="name">European A4 (Landscape)</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">20</field>
+            <field name="margin_bottom">20</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+            id="event_attendees"
+            model="event.event"
+            string="Attendees Report"
+            report_type="qweb-pdf"
+            name="event_attendee_report.report_event_attendees"
+            file="event_attendee_report.report_event_attendees"
+        />
+
+        <record id="event_attendees" model="ir.actions.report">
+            <field name="paperformat_id" ref="event_attendee_report.paperformat_euro_landscape"/>
+        </record>
+
+    </data>
+</odoo>

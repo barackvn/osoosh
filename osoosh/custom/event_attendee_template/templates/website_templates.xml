@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+<template id="website_event_late_reg.complete_registration" name="Complete Registration">
+    <t t-call="website.layout">
+        <t t-set="additional_title">Complete Registration</t>
+        <div id="wrap">
+            <div class="oe_structure"/>
+            <div class="container">
+                <div class="row mt64">
+                    <t t-if="not valid">
+                        <h3>The link seems to be invalid. Please check if this is the latest e-mail we have sent you.</h3>
+                    </t>
+                    <t t-if="valid">
+                        <t t-if="res">
+                            <h3>Please fill out the information below.</h3>
+                            <form id="complete_registration" t-attf-action="/events/complete-registration/submit" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="sale_order_id" t-att-value="sale_order.id"/>
+                                <t t-foreach="res" t-as="event">
+                                    <t t-set="counter" t-value="0"/>
+                                    <h4><t t-esc="res[event]['event_obj'].name"/></h4>
+                                    <t t-if="isinstance(event, int)">
+                                      <i class="fa fa-clock-o"/> <span itemprop="startDate" t-esc="res[event]['event_obj'].date_begin_located[:-3]"> </span> <i>to</i> <span t-esc="res[event]['event_obj'].date_end_located[:-3]"> </span>
+                                      <div itemprop="location" class="mt16 mb32" t-field="res[event]['event_obj'].address_id" t-field-options='{
+                                          "widget": "contact",
+                                          "fields": ["address", "phone", "mobile", "fax", "email"]
+                                          }'/>
+                                    </t>
+                                    
+                                    <t t-foreach="res[event]['event_obj']['event_ticket_ids']" t-as="ticket">
+                                        <t t-if="isinstance(event, int)">
+                                            <p><strong>TICKET TYPE: <t t-esc="res[event]['event_obj']['event_ticket_ids'].name"/></strong></p>
+                                        </t>
+                                        <t t-foreach="res[event]['event_obj']['registration_ids'].filtered(lambda x:x.sale_order_id == sale_order)" t-as="att">
+                                            <t t-set="counter" t-value="counter + 1"/>
+                                            <t t-if="res[event]['event_obj'].is_event_certificate">
+                                                <div class="row">
+                                                    <div class="col-md-2"><strong>Title</strong></div>
+                                                    <div class="col-md-3"><strong>Name</strong></div>
+                                                    <div class="col-md-2"><strong>Email</strong> <span class="text-muted">(Optional)</span></div>
+                                                    <div class="col-md-3"><strong>Birth Date</strong></div>
+                                                    <div class="col-md-2"><strong>Phone</strong> <span class="text-muted">(Optional)</span></div>
+                                                </div>
+                                            </t>
+                                            <t t-if="not res[event]['event_obj'].is_event_certificate">
+                                                <div class="row">
+                                                    <div class="col-md-2"><strong>Title</strong></div>
+                                                    <div class="col-md-3"><strong>Name</strong></div>
+                                                    <div class="col-md-2"><strong>Email</strong> <span class="text-muted">(Optional)</span></div>
+                                                    <div class="col-md-3"><strong>Birth Date</strong></div>
+                                                    <div class="col-md-2"><strong>Phone</strong> <span class="text-muted">(Optional)</span></div>
+                                                </div>
+                                            </t>
+                                            <t t-if="res[event]['event_obj'].is_event_certificate">
+                                                <div class="row mb4">
+                                                    <div class="col-md-2"><input class='form-control' type='text' t-attf-name="#{att.id}-attendee_title" t-att-value="att.attendee_title" placeholder="Mr/Ms"/></div>
+                                                    <div class="col-md-3"><input class='form-control' type='text' t-attf-name="#{att.id}-name" t-att-placeholder="'Attendee #%s' %counter" t-att-value="att.name"/></div>
+                                                    <div class="col-md-2"><input class='form-control' type='email' t-attf-name="#{att.id}-email" t-att-value="att.email"/></div>
+                                                    <div class="col-md-3"><input class='form-control' type='date' t-attf-name="#{att.id}-attendee_dob" t-att-value="att.attendee_dob"/></div>
+                                                    <div class="col-md-2"><input class='form-control' type='tel' t-attf-name="#{att.id}-phone" t-att-value="att.phone"/></div>
+                                                </div>
+                                            </t>
+                                            <t t-if="not res[event]['event_obj'].is_event_certificate">
+                                                <div class="row mb4">
+                                                    <div class="col-md-2"><input class='form-control' type='text' t-attf-name="#{att.id}-attendee_title" t-att-value="att.attendee_title" placeholder="Mr/Ms"/></div>
+                                                    <div class="col-md-3"><input class='form-control' type='text' t-attf-name="#{att.id}-name" t-att-placeholder="'Attendee #%s' %counter" t-att-value="att.name"/></div>
+                                                    <div class="col-md-2"><input class='form-control' type='email' t-attf-name="#{att.id}-email" t-att-value="att.email"/></div>
+                                                    <div class="col-md-3"><input class='form-control' type='date' t-attf-name="#{att.id}-attendee_dob" t-att-value="att.attendee_dob"/></div>
+                                                    <div class="col-md-2"><input class='form-control' type='tel' t-attf-name="#{att.id}-phone" t-att-value="att.phone"/></div>
+                                                </div>
+                                            </t>
+                                            <t t-if="res[event]['event_obj'].specific_question_ids">
+                                                <div class="row mb32">
+                                                    <div class="col-md-4" t-foreach="res[event]['event_obj'].specific_question_ids" t-as='question'>
+                                                        <div class="input-group input-group-sm">
+                                                            <span class="input-group-addon"><t t-esc="question.title"/></span>
+                                                            <select t-attf-name="#{att.id}-answer_ids-#{question.id}" class="form-control">
+                                                                <t t-foreach='question.answer_ids' t-as="answer">
+                                                                    <option t-esc='answer.name' t-att-value='answer.id'/>
+                                                                </t>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </t>
+                                    </t> 
+                                    <t t-if="res[event]['event_obj'].general_question_ids">
+                                        <h4 class="page-header mt32"><strong>Last questions</strong></h4>
+                                        <div class="row">
+                                            <div class="col-md-4" t-foreach="res[event]['event_obj'].general_question_ids" t-as='question'>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><t t-esc='question.title'/></span>
+                                                    <select t-attf-name="0-answer_ids-#{question.id}" class="form-control">
+                                                        <t t-foreach='question.answer_ids' t-as="answer">
+                                                            <option t-esc='answer.name' t-att-value='answer.id'/>
+                                                        </t>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t><!--Event loop-->
+
+                                <button type="submit" class="mt32 mb32 btn btn-primary">Submit</button>
+
+                            </form>
+                        </t>
+                        <t t-if="not res">
+                            <h3>Events not found. Please check if this is the latest e-mail we have sent you.</h3>
+                        </t>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+</template>
+
+    </data>
+</odoo>

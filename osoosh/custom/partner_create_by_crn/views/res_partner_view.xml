@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_partner_create_by_crn" model="ir.ui.view">
+            <field name="name">res.partner.create.by.crn</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="registry_parser_integration.view_partner_form_with_registry_fields"/>
+            <field name="arch" type="xml">
+			    <xpath expr="//header[1]" position="inside">
+                        <button name="get_ares_data_from_crn" attrs="{'invisible': [('is_company', '=', False)]}" 
+                            string="Get ARES Data"
+                            type="object" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+

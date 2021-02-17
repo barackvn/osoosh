@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="show_joined_events">
+           <field name="name">Events</field>
+           <field name="type">ir.actions.act_window</field>
+           <field name="res_model">event.event</field>
+
+           <field name="view_mode">tree,form,calendar</field>
+           <field name="context">{"search_default_joined_sale_order_ids": active_id}</field>
+        </record>
+
+        <record model="ir.ui.view" id="sale_order_join_event_form">
+            <field name="name">sale.order.join.event.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <button name="action_confirm" position="after">
+                    <button string="Manage Events" name="%(action_manage_events_in_so)d" type="action" groups="base.group_user" attrs="{'invisible': ['|', ('has_event_product', '=', False), ('state', 'not in', ['sale', 'done'])]}"/>
+                </button>
+                <div class="oe_button_box" position="inside">
+                    <button name="%(show_joined_events)d"
+                        type="action"
+                        class="oe_stat_button"
+                        icon="fa-calendar"
+                        attrs="{'invisible': [('joined_events_count', '=', 0)]}">
+                        <field name="joined_events_count" widget="statinfo" string="Joined Events"/>
+                    </button>
+                </div>
+            </field>
+        </record>
+
+        <!-- Remove create events button -->
+        <!-- Change events button to Created Events -->
+
+        <record model="ir.ui.view" id="sale_order_form_remove_create_event">
+            <field name="name">custom.sale.order.form.remove.create.event</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="event_create_from_so.custom_sale_order_form"/>
+            <field name="arch" type="xml">
+                <button name="button_create_event" position="replace">
+                </button>
+                <button name="%(event_create_from_so.show_created_events)d" position="replace">
+                    <!-- <button name="%(event_create_from_so.show_created_events)d"
+                        type="action"
+                        class="oe_stat_button"
+                        icon="fa-calendar"
+                        attrs="{'invisible': [('events_count', '=', 0)]}">
+                        <field name="events_count" widget="statinfo" string="Created Events"/>
+                    </button> -->
+                    <button name="event_create_from_so_show_created_events"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-calendar"
+                        attrs="{'invisible': [('events_count', '=', 0)]}">
+                        <field name="events_count" widget="statinfo" string="Created Events"/>
+                    </button>
+                </button>
+            </field>
+        </record>
+
+    </data>
+</odoo>

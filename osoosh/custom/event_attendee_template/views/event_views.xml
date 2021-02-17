@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="show_joined_sales_orders">
+           <field name="name">Joined Sales Orders</field>
+           <field name="type">ir.actions.act_window</field>
+           <field name="res_model">sale.order</field>
+
+           <field name="view_mode">tree,form,graph</field>
+           <field name="context">{"search_default_joined_event_ids": active_id}</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="show_joined_tasks">
+           <field name="name">Joined Taks</field>
+           <field name="type">ir.actions.act_window</field>
+           <field name="res_model">project.task</field>
+
+           <field name="view_mode">kanban,tree,form,graph</field>
+           <field name="context">{"search_default_joined_event_ids": active_id}</field>
+        </record>
+
+        <record model="ir.ui.view" id="view_event_form_inherit_origin">
+            <field name="name">event.form.inherit.origin</field>
+            <field name="model">event.event</field>
+            <field name="inherit_id" ref="event.view_event_form"/>
+            <field name="arch" type="xml">
+                <div class="oe_button_box" position="inside">
+                    <button name="%(show_joined_sales_orders)d"
+                        type="action"
+                        class="oe_stat_button"
+                        icon="fa-dollar"
+                        attrs="{'invisible': [('joined_sale_orders_count', '=', 0)]}">
+                        <field name="joined_sale_orders_count" widget="statinfo" string="Joined SO"/>
+                    </button>
+                    <button name="%(show_joined_tasks)d"
+                        type="action"
+                        class="oe_stat_button"
+                        icon="fa-edit"
+                        attrs="{'invisible': [('joined_tasks_count', '=', 0)]}">
+                        <field name="joined_tasks_count" widget="statinfo" string="Joined Tasks"/>
+                    </button>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

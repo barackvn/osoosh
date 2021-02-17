@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data>
+
+        <record id="view_attachment_search" model="ir.ui.view">
+            <field name="model">ir.attachment</field>
+            <field name="inherit_id" ref="base.view_attachment_search"/>
+            <field name="arch" type="xml">
+                <search position="inside">
+                    <filter name="public"
+                        string="Public"
+                        domain="[('x_is_public', '=', True)]"
+                        help="Filter on public attachments"/>
+                    </search>
+            </field>
+        </record>
+
+        <record id="view_attachment_form" model="ir.ui.view">
+            <field name="model">ir.attachment</field>
+            <field name="priority">30</field>
+            <field name="arch" type="xml">
+                <form string="Attachments">
+                   <sheet>
+                    <label for="name" class="oe_edit_only"/>
+                    <h1>
+                        <field name="name"/>
+                        <field name="x_is_website_attachment" invisible="1"/>
+                        <field name="public" invisible="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="x_attachment_sequence"/>
+                            <field name="type"/>
+                            <field name="datas" filename="datas_fname" attrs="{'invisible':[('type','=','url')]}"/>
+<!--                            <field name="datas_fname" invisible="1" attrs="{'invisible':[('type','=','url')]}" class="oe_inline oe_right"/>-->
+                            <field name="url" widget="url" attrs="{'invisible':[('type','=','binary')]}"/>
+                            <field name="x_is_public"/>
+                        </group>
+
+                        <group name="description_group" string="Description" colspan="4">
+                            <field name="description" nolabel="1"/>
+                        </group>
+                    </group>
+                  </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_attachment_tree" model="ir.ui.view">
+            <field name="model">ir.attachment</field>
+            <field name="priority">30</field>
+            <field name="arch" type="xml">
+                <tree string="Attachments" >
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="x_is_public"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

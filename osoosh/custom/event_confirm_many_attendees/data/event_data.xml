@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="server_action_confirm_attendees" model="ir.actions.server">
+            <field name="name">Confirm Attendees</field>
+            <field name="model_id" ref="event.model_event_registration"/>
+            <field name="state">code</field>
+            <field name="code">
+                object.browse(object.env.context['active_ids']).bulk_confirm_attendees()
+            </field>
+        </record>
+
+<!--         <record id="menu_action_confirm_attendee" model="ir.defaults">
+            <field name="model_id" ref="event.model_event_registration" />
+            <field name="name">Confirm Attendees</field>
+            <field name="key2">client_action_multi</field>
+            <field name="key">action</field>
+            <field name="model">event.registration</field>
+            <field name="value" eval="'ir.actions.server,' + str(ref('server_action_confirm_attendees'))" />
+        </record> -->
+
+<!--         <record id="server_action_close_attendees" model="ir.actions.server">
+            <field name="name">Mark as Attended</field>
+            <field name="model_id" ref="event.model_event_registration"/>
+            <field name="state">code</field>
+            <field name="code">
+                object.browse(object.env.context['active_ids']).bulk_close_attendees()
+            </field>
+        </record>
+
+        <record id="menu_action_close_attendees" model="ir.defaults">
+            <field name="model_id" ref="event.model_event_registration" />
+            <field name="name">Close Attendees</field>
+            <field name="key2">client_action_multi</field>
+            <field name="key">action</field>
+            <field name="model">event.registration</field>
+            <field name="value" eval="'ir.actions.server,' + str(ref('server_action_close_attendees'))" />
+        </record> -->
+        <record id="server_action_confirm_attendees" model="ir.actions.server">
+            <field name="name">Confirm Attendees</field>
+            <field name="model_id" ref="event.model_event_registration"/>
+            <field name="binding_model_id" ref="event.model_event_registration"/>
+            <field name="state">code</field>
+<!--            <field name="key2">client_action_multi</field>-->
+            <field name="code">action = records.bulk_confirm_attendees()</field>
+        </record>
+
+        <record id="server_action_close_attendees_attended" model="ir.actions.server">
+            <field name="name">Mark as Attended</field>
+            <field name="model_id" ref="event.model_event_registration"/>
+            <field name="binding_model_id" ref="event.model_event_registration"/>
+<!--            <field name="key2">client_action_multi</field>-->
+            <field name="state">code</field>
+            <field name="code">action = records.bulk_close_attendees()</field>
+        </record>
+    </data>
+</odoo>
