@@ -1,8 +1,8 @@
-<openerp>
+<odoo>
     <data noupdate="1">
     	<record id="style1" model="product.style">
             <field name="name">Bundle Product</field>
             <field name="html_class">wk_bundle_product</field>
         </record>
     </data>
-</openerp>
+</odoo>

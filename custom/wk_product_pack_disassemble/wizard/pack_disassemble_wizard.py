@@ -15,8 +15,8 @@
 # If not, see <https://store.webkul.com/license.html/>
 #################################################################################
 
-from openerp import api, fields, models
-from openerp.tools.translate import _
+from odoo import api, fields, models
+from odoo.tools.translate import _
 
 
 class PackDisassembleWizard(models.TransientModel):

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from openerp import http
+from odoo import http
 
 # class TimesheetOnTask(http.Controller):
 #     @http.route('/timesheet_on_task/timesheet_on_task/', auth='public')

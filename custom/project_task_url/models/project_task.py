@@ -1,7 +1,7 @@
 #! -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
+#    odoo, Open Source Management Solution
 #    Copyright (C) 2016 Odooveloper (BOXED, s.r.o.) All Rights Reserved
 #    http://www.boxed.cz
 #    $Id$
