@@ -6,6 +6,8 @@ class CertificateTemplateSetting(models.TransientModel):
     _inherit = "res.config.settings"
 
     def _get_about_us(self, context=None):
+        cr = self.env.cr
+        uid = self.env.user.id
         cr.execute("select max(id) from certificate_template_setting")
         abts = cr.fetchone()
         if abts:
@@ -14,4 +16,4 @@ class CertificateTemplateSetting(models.TransientModel):
         else:
             return ""
 
-    template = fields.Html(string="Certificate Template", defualt=_get_about_us)
+    template = fields.Html(string="Certificate Template", default=_get_about_us)
