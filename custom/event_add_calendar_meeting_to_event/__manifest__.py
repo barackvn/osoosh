@@ -6,7 +6,7 @@
     "category": "Custom",
     "website": "https://www.boxed.cz",
     "license": "LGPL-3",
-    "version": "1.0",
+    "version": "1.1",
     "depends": ["event", "calendar"],
     "data": ["views/event_views.xml"],
     "installable": True,
