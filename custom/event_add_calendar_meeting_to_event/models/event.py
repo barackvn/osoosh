@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 
 
 class Event(models.Model):
@@ -6,14 +6,16 @@ class Event(models.Model):
 
     meeting_count = fields.Integer("# Meetings", compute="_compute_meeting_count")
 
-
     def _compute_meeting_count(self):
-        meeting_data = self.env["calendar.event"].read_group(
-            [("event_id", "in", self.ids)], ["event_id"], ["event_id"]
-        )
-        mapped_data = {m["event_id"][0]: m["event_id_count"] for m in meeting_data}
         for event in self:
-            event.meeting_count = mapped_data.get(event.id, 0)
+            event.meeting_count = self.env['calendar.event'].search_count([('event_id','=',event.id)])
+        # meeting_data = self.env["calendar.event"].read_group(
+        #     [("event_id", "in", self.ids)], ["event_id"], ["event_id"]
+        # )
+        # mapped_data = {m["event_id"][0]: m["event_id_count"] for m in meeting_data}
+        # for event in self:
+        #     event.meeting_count = mapped_data.get(event.id, 0)
+        return True
 
 
     def log_meeting(self, meeting_subject, meeting_date, duration):
