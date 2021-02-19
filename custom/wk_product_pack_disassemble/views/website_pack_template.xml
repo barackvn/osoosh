@@ -2,7 +2,7 @@
 <!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
 <!-- See LICENSE file for full copyright and licensing details. -->
 <!-- License URL : https://store.webkul.com/license.html/ -->
-<openerp>
+<odoo>
 	<data>
 		<template id="inherit_website_product_pack_for_wk_price" inherit_id="website_product_pack.website_product_pack_save_price">
 			<xpath expr="//div[@id='open_products_modal']//t[@t-if='product_id.product_name.website_published == True ']//span[@class='wk_pack_product_unit_price']" position="attributes">
@@ -13,4 +13,4 @@
 			</xpath>
 		</template>
 	</data>
-</openerp>
+</odoo>

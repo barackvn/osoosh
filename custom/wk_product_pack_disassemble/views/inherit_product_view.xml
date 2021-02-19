@@ -2,7 +2,7 @@
 <!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
 <!-- See LICENSE file for full copyright and licensing details. -->
 <!-- License URL : https://store.webkul.com/license.html/ -->
-<openerp>
+<odoo>
     <data>
 
         <record id="inherit_product_pack_form_view_for_wk_price" model="ir.ui.view">
@@ -21,4 +21,4 @@
         </record>
 
     </data>
-</openerp>
+</odoo>

@@ -1,5 +1,5 @@
 <!--<?xml version="1.0"?>-->
-<!--<openerp>-->
+<!--<odoo>-->
 <!--    <data>-->
 
 <!--        &lt;!&ndash; CRM Lead Form View  &ndash;&gt;-->
@@ -34,7 +34,7 @@
 <!--        </record>-->
 
 <!--    </data>-->
-<!--</openerp>-->
+<!--</odoo>-->
 <odoo>
 
 </odoo>

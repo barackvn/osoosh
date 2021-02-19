@@ -4,12 +4,12 @@
 #    Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>)
 #
 #################################################################################
-from openerp.osv import fields, osv
-from openerp.tools.translate import _
-import openerp.addons.decimal_precision as dp
+from odoo.osv import fields, osv
+from odoo.tools.translate import _
+import odoo.addons.decimal_precision as dp
 import logging
-from openerp.tools.float_utils import float_round
-from openerp.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tools.float_utils import float_round
+from odoo.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FORMAT
 
 _logger = logging.getLogger(__name__)
 

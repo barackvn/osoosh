@@ -40,6 +40,8 @@ class ProductTemplate(models.Model):
     def compute_discounted_pack_price(self):
         for product in self:
             product.p_has_discounted_amount = False
+            product.pack_products_total_price = 0
+            product.pack_products_current_price = 0
             if product.is_pack:
                 price = 0
                 price1 = 0

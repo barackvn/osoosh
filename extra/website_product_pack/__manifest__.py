@@ -7,7 +7,7 @@
 {
     "name": "Website Product Pack",
     "category": "Website",
-    # "license": 'OpenERP AGPL + Private Use',
+    # "license": 'odoo AGPL + Private Use',
     "summary": """
          Add Bundle Products in your website for increasing your ecommerce""",
     "description": """

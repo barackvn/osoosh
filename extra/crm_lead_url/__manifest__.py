@@ -1,7 +1,7 @@
 #! -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
+#    odoo, Open Source Management Solution
 #    Copyright (C) 2016 Odooveloper (Rui Pedrosa Franco) All Rights Reserved
 #    http://pt.linkedin.com/in/ruipedrosafranco
 #    $Id$

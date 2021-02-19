@@ -14,8 +14,8 @@ class SaleOrderCancel(models.TransientModel):
 
     """ Ask a reason for the sale order cancellation."""
 
-    _name = "sale.order.cancel"
-    _description = __doc__
+    _inherit = "sale.order.cancel"
+    # _description = __doc__
 
     reason_id = fields.Many2one(
         "sale.order.cancel.reason", string="Reason", required=True
