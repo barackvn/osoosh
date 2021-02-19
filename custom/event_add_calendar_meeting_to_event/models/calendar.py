@@ -4,7 +4,7 @@ from odoo import api, fields, models
 class CalendarEvent(models.Model):
     _inherit = "calendar.event"
 
-    # event_id = fields.Many2one("event.event", "Related Event")
+    event_id = fields.Many2one("event.event", "Related Event")
 
     @api.model
     def create(self, vals):
