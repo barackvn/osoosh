@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ 
+    Copyright (C) 2020 Cetmix OÜ
+
+   Odoo Proprietary License v1.0
+ 
+   This software and associated files (the "Software") may only be used (executed,
+   modified, executed after modifications) if you have purchased a valid license
+   from the authors, typically via Odoo Apps, or if you have received a written
+   agreement from the authors of the Software (see the COPYRIGHT file).
+ 
+   You may develop Odoo modules that use the Software as a library (typically
+   by depending on it, importing it and using its resources), but without copying
+   any source code or material from the Software. You may distribute those
+   modules under the license of your choice, provided that this license is
+   compatible with the terms of the Odoo Proprietary License (For example:
+   LGPL, MIT, or proprietary licenses similar to this one).
+ 
+   It is forbidden to publish, distribute, sublicense, or sell copies of the Software
+   or modified copies of the Software.
+ 
+   The above copyright notice and this permission notice must be included in all
+   copies or substantial portions of the Software.
+ 
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE.
+-->
+<odoo>
+    <!--###########
+    # Res.Partner #
+    ##############-->
+    <!--## Form ##-->
+    <record id="prt_res_partner_view_form" model="ir.ui.view">
+        <field name="name">prt.res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='internal_notes']" position="before">
+                <page name="phones" string="Phones/Emails/Usernames">
+                    <field name="phone_number_ids">
+                        <tree string="Phones/Emails/Usernames" editable="bottom">
+                            <field name="sequence" widget="handle" />
+                            <field
+                                name="type"
+                                placeholder="Select 'Username' to store user name (e.g. Skype name)"
+                            />
+                            <field
+                                name="number"
+                                placeholder="Numbers should start with country code (e.g. +1 202 ...)"
+                            />
+                            <field
+                                name="tags"
+                                widget="many2many_tags"
+                                attrs="{'readonly':[('type', '=', '7')]}"
+                                options="{'color_field': 'color', 'no_quick_create':True}"
+                                placeholder="Tags"
+                            />
+                            <field name="note" placeholder="Put your comment here" />
+                        </tree>
+                    </field>
+                    <field name="phone_number_duplicates_count" invisible="1" />
+                    <div
+                        attrs="{'invisible':[('phone_number_duplicates_count','&lt;',1)]}"
+                    >
+                        <p style="color:#ff0000;">
+                            <strong>Duplicates found!</strong>
+                            <br />
+                        </p>
+                    </div>
+                    <field
+                        name="phone_number_duplicates"
+                        attrs="{'invisible':[('phone_number_duplicates_count','&lt;',1)]}"
+                    >
+                        <tree string="Duplicates">
+                            <field name="partner_id" />
+                            <field name="type" />
+                            <field name="number" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']/form/sheet/group" position="after">
+                <notebook>
+                    <page name="phones" string="Phones/Emails/Usernames">
+                        <field name="phone_number_ids">
+                            <tree
+                                string="Phones/Emails/Usernames"
+                                editable="bottom"
+                                default_order='type, sequence'
+                            >
+                                <field name="sequence" widget="handle" />
+                                <field
+                                    name="type"
+                                    placeholder="Select 'Username' to store user name (e.g. Skype name)"
+                                />
+                                <field
+                                    name="number"
+                                    placeholder="Numbers should start with country code (e.g. +1 202 ...)"
+                                />
+                                <field
+                                    name="tags"
+                                    widget="many2many_tags"
+                                    attrs="{'readonly':[('type', '=', '7')]}"
+                                    options="{'color_field': 'color', 'no_quick_create':True}"
+                                    placeholder="Tags"
+                                />
+                                <field
+                                    name="note"
+                                    placeholder="Put your comment here"
+                                />
+                            </tree>
+                        </field>
+                        <field name="phone_number_duplicates_count" invisible="1" />
+                        <div
+                            attrs="{'invisible':[('phone_number_duplicates_count','&lt;',1)]}"
+                        >
+                            <p style="color:#ff0000;">
+                                <strong>Duplicates found!</strong>
+                                <br />
+                            </p>
+                        </div>
+                        <field
+                            name="phone_number_duplicates"
+                            attrs="{'invisible':[('phone_number_duplicates_count','&lt;',1)]}"
+                        >
+                            <tree string="Duplicates">
+                                <field name="partner_id" />
+                                <field name="type" />
+                                <field name="number" />
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+    <!--## Simple Form ##-->
+    <record id="prt_res_partner_view_simple_form" model="ir.ui.view">
+        <field name="name">prt.res.partner.simple.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_simple_form" />
+        <field name="arch" type="xml">
+            <xpath expr="/form/group" position="after">
+                <field name="phone_number_ids">
+                    <tree
+                        string="Phones/Emails/Usernames"
+                        editable="bottom"
+                        default_order='type, sequence'
+                    >
+                        <field name="sequence" widget="handle" />
+                        <field
+                            name="type"
+                            placeholder="Select 'Username' to store user name (e.g. Skype name)"
+                        />
+                        <field
+                            name="number"
+                            placeholder="Numbers should start with country code (e.g. +1 202 ...)"
+                        />
+                        <field
+                            name="tags"
+                            widget="many2many_tags"
+                            attrs="{'readonly':[('type', '=', '7')]}"
+                            options="{'color_field': 'color', 'no_quick_create':True}"
+                            placeholder="Tags"
+                        />
+                        <field name="note" placeholder="Put your comment here" />
+                    </tree>
+                </field>
+                <field name="phone_number_duplicates_count" invisible="1" />
+                <div attrs="{'invisible':[('phone_number_duplicates_count','&lt;',1)]}">
+                    <p style="color:#ff0000;">
+                        <strong>Duplicates found!</strong>
+                        <br />
+                    </p>
+                </div>
+                <field
+                    name="phone_number_duplicates"
+                    attrs="{'invisible':[('phone_number_duplicates_count','&lt;',1)]}"
+                >
+                    <tree string="Duplicates">
+                        <field name="partner_id" />
+                        <field name="type" />
+                        <field name="number" />
+                    </tree>
+                </field>
+            </xpath>
+        </field>
+    </record>
+    <!--## Search ##-->
+    <record id="prt_partner_search" model="ir.ui.view">
+        <field name="name">prt.partner.search</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="phone_searchable" string="Phone/Email/Username" />
+            </field>
+        </field>
+    </record>
+</odoo>

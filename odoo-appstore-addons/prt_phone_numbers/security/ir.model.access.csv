@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+prt_phone_partner_manager,Partner Manager Phones,prt_phone_numbers.model_prt_phone,base.group_partner_manager,1,1,1,1
+prt_phone_phone_supervisor,Phones Supervisor Phones,prt_phone_numbers.model_prt_phone,prt_phone_supervisor,1,1,1,1
+prt_phone_tag_partner_manager,Partner Manager Phone Tags,prt_phone_numbers.model_prt_phone_tag,base.group_partner_manager,1,1,1,0
+prt_phone_tag_phone_supervisor,Phones Supervisor Phone Tags,prt_phone_numbers.model_prt_phone_tag,prt_phone_supervisor,1,1,1,1
+prt_phone_export_wizard,Export Contacts Wizard,prt_phone_numbers.model_prt_contact_export_wiz,base.group_user,1,1,1,1

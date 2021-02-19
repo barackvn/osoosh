@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate='1'>
+    <!-- Copyright (c) 2017-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+    <!-- See LICENSE URL <https://store.webkul.com/license.html/> for full copyright and licensing details. -->
+
+
+    <record forcecreate='True'  model="product.watermarker" id="watermarker_2" >
+        <field name="name">example.com</field>
+        <field name="watermarker_type">text</field>
+        <field name="positioning">vertical</field>
+        <field name="scale">0.8</field>
+    </record>
+    <record id="watermarker_image" model="product.product">
+      <field name="name">Test Watermarker Text</field>
+      <field name="list_price">12.50</field>
+      <field name="website_published">1</field>
+      <field name="image_1920" type="base64" file="image_watermarker/static/src/image/productimg.jpg"/>
+      <field name="image_512" type="base64" file="image_watermarker/static/src/image/productimg.jpg"/>
+      <field name="image_256" type="base64" file="image_watermarker/static/src/image/productimg.jpg"/>
+      <field name="image_128" type="base64" file="image_watermarker/static/src/image/productimg.jpg"/>
+      <field name= "watermarker_id" ref='image_watermarker.watermarker_2'/>
+      <field name= "website_sequence">1000</field>
+    </record>
+
+    <record forcecreate='True'  model="product.watermarker" id="watermarker_1" >
+      <field name="name">Watermarker Logo</field>
+      <field name="watermarker_type">image</field>
+      <field name="scale">0.3</field>
+      <field name="image" type="base64" file="image_watermarker/static/src/image/webkul_watermark.png"></field>
+    </record>
+    <record id="watermarker_text" model="product.product">
+      <field name="name">Test Watermarker Image</field>
+      <field name="list_price">12.50</field>
+      <field name="website_published">1</field>
+      <field name="image_1920" type="base64" file="image_watermarker/static/src/image/productimg.jpg"/>
+      <field name="image_512" type="base64" file="image_watermarker/static/src/image/productimg.jpg"/>
+      <field name="image_256" type="base64" file="image_watermarker/static/src/image/productimg.jpg"/>
+      <field name="image_128" type="base64" file="image_watermarker/static/src/image/productimg.jpg"/>
+      <field name= "watermarker_id" ref='image_watermarker.watermarker_1'/>
+      <field name= "website_sequence">1000</field>
+    </record>
+    </data>
+</odoo>

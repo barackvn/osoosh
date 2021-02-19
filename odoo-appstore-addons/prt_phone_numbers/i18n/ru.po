@@ -1,0 +1,537 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* prt_phone_numbers
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0-20180424\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-04 15:35+0000\n"
+"PO-Revision-Date: 2018-05-04 18:37+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 1.5.4\n"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_company_view_form
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_partner_view_form
+msgid "<strong>Duplicates found!</strong><br/>"
+msgstr "<strong>Обнаружены дубликаты!</strong><br/>"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_vcard_wizard_form
+msgid ""
+"<strong>Please install 'qrcode' python library to generate QR codes for "
+"Vcards!</strong><br/>"
+msgstr ""
+"<strong>Для генерации QR кодов необходимо установить библиотеку 'qrcode' !</"
+"strong><br/>"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,help:prt_phone_numbers.field_prt_phone_tags
+msgid "Any tags like 'WhatsApp', 'Telegram' etc"
+msgstr "Метки для номера (например 'WhatsApp', 'Telegram' итд)"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_vcard_wizard_form
+msgid "Be careful! Company profiles are exported same way as Person profiles."
+msgstr ""
+"Будьте внимательны! Профили людей экспортируются также как и профили "
+"компаний."
+
+#. module: prt_phone_numbers
+#: model:ir.actions.act_window,help:prt_phone_numbers.action_prt_phone
+msgid "Click to create new Phone Number or Username"
+msgstr "Нажмите чтобы создать Телефонный номер или Имя пользователя"
+
+#. module: prt_phone_numbers
+#: model:ir.actions.act_window,help:prt_phone_numbers.action_prt_phone_tag
+msgid "Click to create new Phone Number or Username Tag"
+msgstr ""
+"Нажмите чтобы создать новую метку для Телефонного номера или Имени "
+"пользователя"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_vcard_wizard_form
+msgid "Close"
+msgstr "Закрыть"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_tag_color
+msgid "Color index"
+msgstr "Индекс цвета"
+
+#. module: prt_phone_numbers
+#: model:ir.model,name:prt_phone_numbers.model_res_company
+msgid "Companies"
+msgstr "Компании"
+
+#. module: prt_phone_numbers
+#: model:ir.model,name:prt_phone_numbers.model_res_partner
+msgid "Contact"
+msgstr "Контакт"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_create_uid
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_create_uid
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_tag_create_uid
+msgid "Created by"
+msgstr "Создано"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_create_date
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_create_date
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_tag_create_date
+msgid "Created on"
+msgstr "Создан"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_display_name
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_display_name
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_tag_display_name
+msgid "Display Name"
+msgstr "Отображаемое Имя"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_res_company_phone_number_duplicates
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_res_partner_phone_number_duplicates
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_res_users_phone_number_duplicates
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_company_view_form
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_partner_view_form
+msgid "Duplicates"
+msgstr "Дубликаты"
+
+#. module: prt_phone_numbers
+#: selection:prt.phone,type:0
+msgid "Email"
+msgstr "Email"
+
+#. module: prt_phone_numbers
+#: model:ir.model,name:prt_phone_numbers.model_mail_thread
+msgid "Email Thread"
+msgstr "Цепочка эл.почты"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,help:prt_phone_numbers.field_prt_contact_export_wiz_export_picture
+msgid "Export contact's picture"
+msgstr "Экспортировать картинку контакта"
+
+#. module: prt_phone_numbers
+#: model:ir.actions.act_window,name:prt_phone_numbers.prt_contact_export
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_vcard_wizard_form
+msgid "Export contacts"
+msgstr "Эскпортировать контакты"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_export_picture
+msgid "Export picture"
+msgstr "Экспортировать картинку"
+
+#. module: prt_phone_numbers
+#: selection:prt.phone,type:0
+msgid "Extension phone"
+msgstr "Добавочный номер"
+
+#. module: prt_phone_numbers
+#: selection:prt.phone,type:0
+msgid "Fax"
+msgstr "Факс"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_vcard
+msgid "File"
+msgstr "Файл"
+
+#. module: prt_phone_numbers
+#: selection:prt.contact.export.wiz,name_format:0
+msgid "First name, Last name, Additional name"
+msgstr "Имя, Фамилия, Добавочное имя"
+
+#. module: prt_phone_numbers
+#: selection:prt.contact.export.wiz,name_format:0
+msgid "First name, Middle name, Last name"
+msgstr "Имя, Отчество, Фамилия"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_format_number
+msgid "Format numbers"
+msgstr "Форматировать номера"
+
+#. module: prt_phone_numbers
+#: model:res.groups,comment:prt_phone_numbers.prt_phone_supervisor
+msgid "Full access to Partner's Phone Numbers/Usernames"
+msgstr "Полный доступ к Телефонным номерам/Именам пользователя"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_phone_search
+msgid "Group By"
+msgstr "Группировать по"
+
+#. module: prt_phone_numbers
+#: selection:prt.phone,type:0
+msgid "Home phone"
+msgstr "Домашний номер"
+
+#. module: prt_phone_numbers
+#: model:prt.phone.tag,name:prt_phone_numbers.tag_icq
+msgid "ICQ"
+msgstr "ICQ"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_id
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_id
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_tag_id
+msgid "ID"
+msgstr "Номер"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_vcard_wizard_form
+msgid ""
+"If you want to export Person profiles only please apply search filter in "
+"Partners view!"
+msgstr ""
+"Если нужно экспортировать только профили людей, используйте фильтр при "
+"отображение партнёров!"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_image
+msgid "Image"
+msgstr "Изображение"
+
+#. module: prt_phone_numbers
+#: model:prt.phone.tag,name:prt_phone_numbers.tag_jabber
+msgid "Jabber"
+msgstr "Jabber"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz___last_update
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone___last_update
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_tag___last_update
+msgid "Last Modified on"
+msgstr "Последнее изменение"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_write_uid
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_tag_write_uid
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_write_uid
+msgid "Last Updated by"
+msgstr "Последний раз обновил"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_write_date
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_tag_write_date
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_write_date
+msgid "Last Updated on"
+msgstr "Последнее обновление"
+
+#. module: prt_phone_numbers
+#: selection:prt.contact.export.wiz,name_format:0
+msgid "Last name, First name, Additional name"
+msgstr "Фамилия, Имя, Дополнительное имя"
+
+#. module: prt_phone_numbers
+#: selection:prt.contact.export.wiz,name_format:0
+msgid "Last name, First name, Middle name"
+msgstr "Фамилия, Имя, Отчество"
+
+#. module: prt_phone_numbers
+#: selection:prt.contact.export.wiz,name_format:0
+msgid "Last name, Middle name, First name"
+msgstr "Фамилия, Отчество, Имя"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,help:prt_phone_numbers.field_prt_phone_sequence
+msgid "Lower value = Higher priority!"
+msgstr "Меньше значение = Выше приоритет!"
+
+#. module: prt_phone_numbers
+#: selection:prt.phone,type:0
+msgid "Main phone"
+msgstr "Основной номер"
+
+#. module: prt_phone_numbers
+#: model:res.groups,name:prt_phone_numbers.prt_phone_supervisor
+msgid "Manage Numbers/Usernames"
+msgstr "Управлять Номерами/Юзернеймами"
+
+#. module: prt_phone_numbers
+#: selection:prt.phone,type:0
+msgid "Mobile phone"
+msgstr "Мобильный номер"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_vcard_name
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_tag_name
+msgid "Name"
+msgstr "Название"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_name_format
+msgid "Name order"
+msgstr "Формат имени"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,help:prt_phone_numbers.field_prt_contact_export_wiz_name_format
+msgid "Name order for name parsing"
+msgstr "Формат имени для распознавания"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_note
+msgid "Note"
+msgstr "Заметка"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_res_company_phone_number_duplicates_count
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_res_partner_phone_number_duplicates_count
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_res_users_phone_number_duplicates_count
+msgid "Number of duplicates"
+msgstr "Кол-во дубликатов"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_number_searchable
+msgid "Number or Username"
+msgstr "Номер или Имя пользователя"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_phone_form
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_phone_tree_view
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_company_view_form
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_partner_view_form
+msgid "Numbers should start with country code (e.g. +1 202 ...)"
+msgstr "Номера следует начинать с кода страны (например +7 202 ...)"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,help:prt_phone_numbers.field_prt_phone_tag_color
+msgid "Odoo color index from 0 to 9"
+msgstr "Индекс цвета в системе Odoo от 0 до 9"
+
+#. module: prt_phone_numbers
+#: code:addons/prt_phone_numbers/models/prt_phone.py:86
+#, python-format
+msgid "Only one \"Main\" number per partner can exist!"
+msgstr "У партнёра может быть только один  \"Основной\"  номер!"
+
+#. module: prt_phone_numbers
+#: selection:prt.phone,type:0
+msgid "Other phone"
+msgstr "Другой номер"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_partner_id
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_phone_search
+msgid "Partner"
+msgstr "Партнёр"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,help:prt_phone_numbers.field_prt_phone_number
+msgid ""
+"Phone number can contain any symbols but only digits will be used while "
+"searching! \n"
+"  Should start with country code e.g. +1 100 123-4567 \n"
+" Username can contain letters e.g. 'much_username' but whitespaces will be "
+"skipped while searching usernames"
+msgstr ""
+"Номер телефона может содержать любые символы, но поиск осуществляется только "
+"по цифрам! \n"
+"  Предпочтительнее в международном формате, например +7 495 123-4567 \n"
+" Имя пользователя может содержать любые символы (например 'much_username'), "
+"но при поиске пробелы учитываться не будут"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_phone_form
+msgid "Phone or Username"
+msgstr "Телефон или Имя пользователя"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,help:prt_phone_numbers.field_prt_phone_type
+msgid ""
+"Phone type for number or 'Username' for username containing letters (e.g. "
+"Skype name)"
+msgstr ""
+"Тип номера для телефона или 'Имя пользователя' для имени, содержащего буквы "
+"(например имя Skype)"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_res_partner_phone_searchable
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_res_users_phone_searchable
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_partner_search
+msgid "Phone/Email/Username"
+msgstr "Телефон/Email/Имя пользователя"
+
+#. module: prt_phone_numbers
+#: model:ir.actions.act_window,name:prt_phone_numbers.action_prt_phone_tag
+msgid "Phone/Username Tags"
+msgstr "Тэги телефонов"
+
+#. module: prt_phone_numbers
+#: model:ir.actions.act_window,name:prt_phone_numbers.action_prt_phone
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_res_company_phone_number_ids
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_res_partner_phone_number_ids
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_res_users_phone_number_ids
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_phone_tree_view
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_company_view_form
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_partner_view_form
+msgid "Phones/Emails/Usernames"
+msgstr "Телефоны/Email/Имена пользователя"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_sequence
+msgid "Priority"
+msgstr "Приоритет"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_phone_form
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_phone_tree_view
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_company_view_form
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_partner_view_form
+msgid "Put your comment here"
+msgstr "Для комментария"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,help:prt_phone_numbers.field_prt_phone_note
+msgid "Put your note or comment here"
+msgstr "Для заметки или комментария"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_qrcode
+msgid "QR Code"
+msgstr "QR Code"
+
+#. module: prt_phone_numbers
+#: model:prt.phone.tag,name:prt_phone_numbers.tag_reddit
+msgid "Reddit"
+msgstr "Reddit"
+
+#. module: prt_phone_numbers
+#: model:prt.phone.tag,name:prt_phone_numbers.tag_sip
+msgid "SIP"
+msgstr "SIP"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_vcard_wizard_form
+msgid "Save"
+msgstr "Сохранить"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,help:prt_phone_numbers.field_prt_contact_export_wiz_format_number
+msgid "Save '+123456789' instead of '1(234)56-7 89'"
+msgstr "Сохраняет '+7123456789' вместо  '7(1234)56-7 89'"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_phone_form
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_company_view_form
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_partner_view_form
+msgid "Select 'Username' to store user name (e.g. Skype name)"
+msgstr ""
+"Выберите 'Имя пользователя' чтобы сохранить имя пользователя (например имя в "
+"Skype)"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_vcard_wizard_form
+msgid "Select name format, save record and donwload file"
+msgstr "Выберите формат имени, сохраните запись и скачайте файл"
+
+#. module: prt_phone_numbers
+#: model:prt.phone.tag,name:prt_phone_numbers.tag_signal
+msgid "Signal"
+msgstr "Signal"
+
+#. module: prt_phone_numbers
+#: model:prt.phone.tag,name:prt_phone_numbers.tag_skype
+msgid "Skype"
+msgstr "Skype"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_tags
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_phone_form
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_phone_tree_view
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_company_view_form
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_res_partner_view_form
+msgid "Tags"
+msgstr "Теги"
+
+#. module: prt_phone_numbers
+#: model:prt.phone.tag,name:prt_phone_numbers.tag_telegram
+msgid "Telegram"
+msgstr "Telegram"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,help:prt_phone_numbers.field_prt_phone_image
+msgid ""
+"This field holds the image used as avatar for this contact, limited to "
+"1024x1024px"
+msgstr ""
+"Это поле содержит изображение, используемое в качестве аватара для этого "
+"контакта, ограничено 1024x1024px"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_type
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_phone_search
+msgid "Type"
+msgstr "Тип"
+
+#. module: prt_phone_numbers
+#: model:ir.ui.view,arch_db:prt_phone_numbers.prt_vcard_wizard_form
+msgid "Use this link to download file ==>"
+msgstr "Используйте эту ссылку для скачивания файла ==>"
+
+#. module: prt_phone_numbers
+#: selection:prt.phone,type:0
+msgid "Username"
+msgstr "Имя пользователя"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_phone_number
+msgid "Value"
+msgstr "Значение"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,help:prt_phone_numbers.field_prt_phone_number_searchable
+#: model:ir.model.fields,help:prt_phone_numbers.field_res_partner_phone_searchable
+#: model:ir.model.fields,help:prt_phone_numbers.field_res_users_phone_searchable
+msgid "Value formatted for search"
+msgstr "Значение в формате поиска"
+
+#. module: prt_phone_numbers
+#: model:prt.phone.tag,name:prt_phone_numbers.tag_viber
+msgid "Viber"
+msgstr "Viber"
+
+#. module: prt_phone_numbers
+#: model:prt.phone.tag,name:prt_phone_numbers.tag_wechat
+msgid "WeChat"
+msgstr "WeChat"
+
+#. module: prt_phone_numbers
+#: model:prt.phone.tag,name:prt_phone_numbers.tag_whatsapp
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#. module: prt_phone_numbers
+#: selection:prt.phone,type:0
+msgid "Work phone"
+msgstr "Рабочий номер"
+
+#. module: prt_phone_numbers
+#: model:ir.model,name:prt_phone_numbers.model_prt_contact_export_wiz
+msgid "prt.contact.export.wiz"
+msgstr "prt.contact.export.wiz"
+
+#. module: prt_phone_numbers
+#: model:ir.model,name:prt_phone_numbers.model_prt_phone
+msgid "prt.phone"
+msgstr "prt.phone"
+
+#. module: prt_phone_numbers
+#: model:ir.model,name:prt_phone_numbers.model_prt_phone_tag
+msgid "prt.phone.tag"
+msgstr "prt.phone.tag"
+
+#. module: prt_phone_numbers
+#: model:ir.model.fields,field_description:prt_phone_numbers.field_prt_contact_export_wiz_qr_installed
+msgid "qrcode installed"
+msgstr "модуль qrcode установлен"
