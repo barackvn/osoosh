@@ -11,7 +11,7 @@ Key Features
     "category": "Custom",
     "website": "http://4devnet.com",
     "license": "LGPL-3",
-    "version": "1.0",
+    "version": "1.1",
     "depends": ["event_sale", "partner_company_registry", "mail"],
     "data": [
         "data/events_data.xml",
