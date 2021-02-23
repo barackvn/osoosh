@@ -10,12 +10,15 @@ class Task(models.Model):
 
 
     def _compute_meeting_count(self):
-        meeting_data = self.env["calendar.event"].read_group(
-            [("task_id", "in", self.ids)], ["task_id"], ["task_id"]
-        )
-        mapped_data = {m["task_id"][0]: m["task_id_count"] for m in meeting_data}
+        # meeting_data = self.env["calendar.event"].read_group(
+        #     [("task_id", "in", self.ids)], ["task_id"], ["task_id"]
+        # )
+        # mapped_data = {m["task_id"][0]: m["task_id_count"] for m in meeting_data}
+        # for task in self:
+        #     task.meeting_count = mapped_data.get(task.id, 0)
+        
         for task in self:
-            task.meeting_count = mapped_data.get(task.id, 0)
+            task.meeting_count = self.env['calendar.event'].search_count([('task_id','=',self.id)])
 
 
     def log_meeting(self, meeting_subject, meeting_date, duration):
