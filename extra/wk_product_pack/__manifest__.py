@@ -17,7 +17,7 @@
   "name"                 :  "Product Pack",
   "summary"              :  """Combine two or more products together in order to create a bundle product.""",
   "category"             :  "Sales Management",
-  "version"              :  "6.3.6",
+  "version"              :  "6.3.7",
   "sequence"             :  1,
   "author"               :  "Webkul Software Pvt. Ltd.",
   "license"              :  "Other proprietary",
