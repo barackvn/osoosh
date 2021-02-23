@@ -25,10 +25,12 @@ class res_company(models.Model):
     
     mpohoda_payment_type_ids = fields.One2many(
         comodel_name='mpohoda.payment.type',
+        inverse_name='company_id',
         string='Mpohoda Payment Types')
     
     mpohoda_invoice_type_ids = fields.One2many(
         comodel_name='mpohoda.invoice.type',
+        inverse_name='company_id',
         string='Mpohoda Invoice Types')
     
     
