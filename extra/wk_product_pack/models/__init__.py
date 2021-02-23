@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
+#  -*- coding: utf-8 -*-
 #################################################################################
 #
-#    Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>)
-#
+#   Copyright (c) 2019-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>)
+#   See LICENSE URL <https://store.webkul.com/license.html/> for full copyright and licensing details.
 #################################################################################
-
-
 from . import wk_product_pack
-
-# from . import inherited_stock This is no more needed.
+from . import inherited_stock
