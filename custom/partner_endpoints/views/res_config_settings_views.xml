@@ -12,7 +12,7 @@
                         <field name="partner_endpoint_auth_token"/>
                     </div>
                     <div>
-                        <i class="fa fa-arrow-right"/> <button type="object" name="generate_new_endpoint_token" string="Generate New Token" icon="fa-cogs" class="oe_inline oe_link"/>
+                        <i class="fa fa-arrow-right" title=""/> <button type="object" name="generate_new_endpoint_token" string="Generate New Token" icon="fa-cogs" class="oe_inline oe_link"/>
                     </div>
             </div>
             </field>

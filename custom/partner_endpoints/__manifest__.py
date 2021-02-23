@@ -9,7 +9,7 @@ Partner Endpoints
     """,
     "author": "James Porlante",
     "website": "http://devnizer.com",
-    "version": "1.0",
+    "version": "1.1",
     "depends": [
         "registry_parser_integration",
         "event_join_existing_from_so",
