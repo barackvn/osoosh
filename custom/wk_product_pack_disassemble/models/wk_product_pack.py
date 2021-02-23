@@ -29,9 +29,9 @@ class ProductPack(models.Model):
     wk_price = fields.Float(string="Price")
 
 
-    @api.onchange("product_name")
+    @api.onchange("product_id")
     def _update_wk_price(self):
-        self.wk_price = self.product_name.lst_price if self.product_name else 0.0
+        self.wk_price = self.product_id.lst_price if self.product_id else 0.0
 
 
 class ProductTemplate(models.Model):
@@ -46,7 +46,7 @@ class ProductTemplate(models.Model):
                 price = 0
                 price1 = 0
                 for prod in product.wk_product_pack:
-                    price = price + prod.product_name.lst_price * prod.product_quantity
+                    price = price + prod.product_id.lst_price * prod.product_quantity
                     price1 = price1 + prod.wk_price * prod.product_quantity
                 rem_price = price - product.lst_price
                 product.pack_products_total_price = price
