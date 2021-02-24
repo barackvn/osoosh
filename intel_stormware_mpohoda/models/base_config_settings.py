@@ -42,5 +42,8 @@ class ResConfigSettings(models.TransientModel):
     mserver_document_path = fields.Text(
         related='company_id.mserver_document_path', 
         readonly=False)
+    
+    def connect_mpohoda(self):
+        return True
 
     

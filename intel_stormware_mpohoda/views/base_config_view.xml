@@ -92,6 +92,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="mpohoda_connect" title="Connect">
+                        <div class="o_setting_left_pane">
+                            <button name="connect_mpohoda" string="Connect" type="object" class="oe_inline"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="connect_mpohoda"/>
+                            <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+                            <div class="text-muted">
+                                Cnnect Mpohoda
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </xpath>
         </field>
