@@ -5,23 +5,27 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="account.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[@id='update_currency_live']" position="after">
-                <div>
-                    <div class="row mt16">
-                        <label string="Is VAT Payer?" for="is_vat_payer" class="col-lg-3 o_light_label"/>
-                        <field name="is_vat_payer"/>
+            <xpath expr="//div[@name='default_taxes_setting_container']" position="after">
+                <h2>Stormware MPOHODA</h2>
+                <div class="col-12 col-lg-6 o_setting_box" id="default_mpohoda" title="MPOHODA settings.">
+                    <div class="o_setting_left_pane"/>
+                    <div class="o_setting_right_pane">
+                        <span class="o_form_label">Default Taxes</span>
+                        <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+                        <div class="text-muted">
+                            Default taxes applied to local transactions
+                        </div>
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label string="Is VAT Payer?" for="is_vat_payer" class="col-lg-3 o_light_label"/>
+                                <field name="is_vat_payer"/>
+                            </div>
+                            <div class="row">
+                                <label string="mServer Port" for="mserver_port" class="col-lg-3 o_light_label"/>
+                                <field name="mserver_port"/>
+                            </div>
+                        </div>
                     </div>
-                    <div class="row">
-                        <label string="mServer Port" for="mserver_port" class="col-lg-3 o_light_label"/>
-                        <field name="mserver_port"/>
-                    </div>
-                    <!-- <div class="mt8 row">
-                        <label string="Next Run" for="currency_next_execution_date" class="col-lg-3 o_light_label"/>
-                        <field name="currency_next_execution_date"/>
-                        <button name="update_currency_rates_manually" type="object" class="btn-link">
-                            <i title="Update now" role="img" aria-label="Update now" class="fa fa-fw fa-refresh"></i>
-                        </button>
-                    </div> -->
                 </div>
             </xpath>
         </field>
