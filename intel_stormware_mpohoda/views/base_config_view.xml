@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="row mt16">
                                     <label string="Password" for="mserver_password" class="col-lg-3 o_light_label"/>
-                                    <field name="mserver_password"/>
+                                    <field name="mserver_password" password="True"/>
                                 </div>
                                 <div class="row mt16">
                                     <label string="Port" for="mserver_port" class="col-lg-3 o_light_label"/>
@@ -75,6 +75,7 @@
                                         <tree editable="bottom">
                                             <field name="mpohoda_journal"/>
                                             <field name="journal_id"/>
+                                            <field name="company_id" invisible="0"/>
                                         </tree>
                                     </field>
                                 </div>
@@ -84,6 +85,7 @@
                                         <tree editable="bottom">
                                             <field name="mpohoda_journal"/>
                                             <field name="journal_id"/>
+                                            <field name="company_id" invisible="1"/>
                                         </tree>
                                     </field>
                                 </div>
