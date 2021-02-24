@@ -25,7 +25,7 @@ class ProductTemplate(models.Model):
 				rem_price = price - product.lst_price
 				product.pack_products_price = price
 				if rem_price <= 0:
-					product.p0- = True
+					product.has_discounted_amount = True
 
 	is_pack = fields.Boolean(
 		string='Is product pack')
