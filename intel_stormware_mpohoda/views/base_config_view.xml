@@ -8,7 +8,7 @@
             <xpath expr="//div[@name='default_taxes_setting_container']" position="after">
                 <h2>Stormware MPOHODA</h2>
                 <div class="row mt16 o_settings_container" name="default_mpohoda_setting_container">
-                    <div class="col-12 col-lg-6 o_setting_box" id="vat_payer" title="VAT settings">
+                    <div class="col-12 col-lg-6 o_setting_box" id="mpohoda_vat_payer" title="VAT settings">
                         <div class="o_setting_left_pane">
                             <field name="is_vat_payer"/>
                         </div>
@@ -17,6 +17,18 @@
                             <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
                             <div class="text-muted">
                                 Allow to configure the vat payer
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="mpohoda_store_document" title="Store Documents">
+                        <div class="o_setting_left_pane">
+                            <field name="store_document"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="store_document"/>
+                            <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+                            <div class="text-muted">
+                                Choose if PDF documents will be stored at server
                             </div>
                         </div>
                     </div>
