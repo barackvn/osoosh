@@ -9,6 +9,10 @@ class res_company(models.Model):
         string='Is VAT Payer?', 
         readonly=False)
     
+    mserver_host = fields.Char(
+        string='mServer Host', 
+        readonly=False)
+    
     mserver_port = fields.Integer(
         string='mServer Port', 
         digits=(4,0), 

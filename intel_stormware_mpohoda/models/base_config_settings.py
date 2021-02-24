@@ -15,6 +15,10 @@ class ResConfigSettings(models.TransientModel):
         related='company_id.is_vat_payer', 
         readonly=False)
     
+    mserver_host = fields.Char(
+        related='company_id.mserver_host', 
+        readonly=False)
+    
     mserver_port = fields.Integer(
         related='company_id.mserver_port', 
         readonly=False)
@@ -44,6 +48,7 @@ class ResConfigSettings(models.TransientModel):
         readonly=False)
     
     def connect_mpohoda(self):
+
         return True
 
     

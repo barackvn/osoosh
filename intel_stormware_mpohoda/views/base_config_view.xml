@@ -42,16 +42,20 @@
                             </div>
                             <div class="content-group">
                                 <div class="row mt16">
+                                    <label string="Host" for="mserver_host" class="col-lg-3 o_light_label"/>
+                                    <field name="mserver_host"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label string="Port" for="mserver_port" class="col-lg-3 o_light_label"/>
+                                    <field name="mserver_port"/>
+                                </div>
+                                <div class="row mt16">
                                     <label string="User" for="mserver_user" class="col-lg-3 o_light_label"/>
                                     <field name="mserver_user"/>
                                 </div>
                                 <div class="row mt16">
                                     <label string="Password" for="mserver_password" class="col-lg-3 o_light_label"/>
                                     <field name="mserver_password" password="True"/>
-                                </div>
-                                <div class="row mt16">
-                                    <label string="Port" for="mserver_port" class="col-lg-3 o_light_label"/>
-                                    <field name="mserver_port"/>
                                 </div>
                                 <div class="row mt16">
                                     <label string="Document Path" for="mserver_document_path" class="col-lg-3 o_light_label"/>
@@ -93,14 +97,12 @@
                         </div>
                     </div>
                     <div class="col-12 col-lg-6 o_setting_box" id="mpohoda_connect" title="Connect">
-                        <div class="o_setting_left_pane">
-                            <button name="connect_mpohoda" string="Connect" type="object" class="oe_inline"/>
-                        </div>
+                        <div class="o_setting_left_pane"/>
                         <div class="o_setting_right_pane">
-                            <label for="connect_mpohoda"/>
+                            <button name="connect_mpohoda" string="Connect" type="object" class="oe_highlight"/>
                             <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
                             <div class="text-muted">
-                                Cnnect Mpohoda
+                                Connect Mpohoda
                             </div>
                         </div>
                     </div>
