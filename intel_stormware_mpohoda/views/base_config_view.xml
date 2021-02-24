@@ -42,20 +42,50 @@
                             </div>
                             <div class="content-group">
                                 <div class="row mt16">
-                                    <label string="mServer User" for="mserver_user" class="col-lg-3 o_light_label"/>
+                                    <label string="User" for="mserver_user" class="col-lg-3 o_light_label"/>
                                     <field name="mserver_user"/>
                                 </div>
                                 <div class="row mt16">
-                                    <label string="mServer Password" for="mserver_password" class="col-lg-3 o_light_label"/>
+                                    <label string="Password" for="mserver_password" class="col-lg-3 o_light_label"/>
                                     <field name="mserver_password"/>
                                 </div>
                                 <div class="row mt16">
-                                    <label string="mServer Port" for="mserver_port" class="col-lg-3 o_light_label"/>
+                                    <label string="Port" for="mserver_port" class="col-lg-3 o_light_label"/>
                                     <field name="mserver_port"/>
                                 </div>
                                 <div class="row mt16">
-                                    <label string="mServer Document Path" for="mserver_document_path" class="col-lg-3 o_light_label"/>
+                                    <label string="Document Path" for="mserver_document_path" class="col-lg-3 o_light_label"/>
                                     <field name="mserver_document_path"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="mpohoda_types" title="Types">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Payment and Invoice Types</span>
+                            <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+                            <div class="text-muted">
+                                Map payment and invoice types from mpohoda
+                            </div>
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label string="Payment Types" for="mpohoda_payment_type_ids" class="col-lg-3 o_light_label"/>
+                                    <field name="mpohoda_payment_type_ids">
+                                        <tree editable="bottom">
+                                            <field name="mpohoda_journal"/>
+                                            <field name="journal_id"/>
+                                        </tree>
+                                    </field>
+                                </div>
+                                <div class="row mt16">
+                                    <label string="Invoice Types" for="mpohoda_invoice_type_ids" class="col-lg-3 o_light_label"/>
+                                    <field name="mpohoda_invoice_type_ids">                                            
+                                        <tree editable="bottom">
+                                            <field name="mpohoda_journal"/>
+                                            <field name="journal_id"/>
+                                        </tree>
+                                    </field>
                                 </div>
                             </div>
                         </div>

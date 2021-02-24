@@ -44,7 +44,7 @@ class res_company(models.Model):
     # Creation atuomaticaly setting (select on what action will be sync done) => MANUAL SYNC WITH sTATUS REPORT => READY SENT, ERROR with error message
 
     store_document = fields.Boolean(
-        string='Store Documents on Application',
+        string='Store documents on Odoo',
         help='Choose if PDF documents will be stored at server',
         default=True)
     
