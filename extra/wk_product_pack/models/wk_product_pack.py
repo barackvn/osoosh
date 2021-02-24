@@ -14,7 +14,7 @@ from odoo.tools.float_utils import float_compare
 class ProductTemplate(models.Model):
 	_inherit = 'product.template'
 
-	@api.depends('wk_product_pack','lst_price','product_quantity')
+	@api.depends('wk_product_pack')
 	def compute_discounted_pack_price(self):
 		for product in self:
 			product.has_discounted_amount = False
