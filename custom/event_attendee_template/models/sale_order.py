@@ -330,6 +330,6 @@ class SaleOrderLine(models.Model):
                 registration["sale_order_line_id"] = order_line
                 registration['is_a_template'] = True
                 Registration.with_context(registration_force_draft=True).create(
-                    Registration._prepare_attendee_values(registration)
+                    Registration._synchronize_so_line_values(order_line)
                 )
         return True
