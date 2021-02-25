@@ -66,19 +66,20 @@ class Attendee(models.Model):
 
 
     @api.model
-    def _prepare_attendee_values(self, registration):
-        att_data = super(Attendee, self)._prepare_attendee_values(registration)
-        line_id = registration.get('sale_order_line_id')
-        att_data.update({'is_a_template': True})
-        if not line_id.product_id.event_template_id.id:
-            raise UserError(_("Please define event template in ({0} , {1})".format(line_id.product_id.name, line_id.product_id.id)))
-        att_data.update({
-            'event_id': line_id.product_id.event_template_id.id,
-            'event_ticket_id': line_id.product_id.ticket_id.id,
-            'name': '',
-            'email': '',
-            'phone': ''
-        })
+    def _synchronize_so_line_values(self, so_line):
+        att_data = super(Attendee, self)._prepare_attendee_values(so_line)
+        # line_id = registration.get('sale_order_line_id')
+        if so_line:
+            att_data.update({'is_a_template': True})
+            if not so_line.product_id.event_template_id.id:
+                raise UserError(_("Please define event template in ({0} , {1})".format(line_id.product_id.name, line_id.product_id.id)))
+            att_data.update({
+                'event_id': so_line.product_id.event_template_id.id,
+                'event_ticket_id': so_line.product_id.ticket_id.id,
+                'name': '',
+                'email': '',
+                'phone': ''
+            })
         return att_data
 
 
