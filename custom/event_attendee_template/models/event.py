@@ -67,7 +67,7 @@ class Attendee(models.Model):
 
     @api.model
     def _synchronize_so_line_values(self, so_line):
-        att_data = super(Attendee, self)._prepare_attendee_values(so_line)
+        att_data = super(Attendee, self)._synchronize_so_line_values(so_line)
         # line_id = registration.get('sale_order_line_id')
         if so_line:
             att_data.update({'is_a_template': True})
