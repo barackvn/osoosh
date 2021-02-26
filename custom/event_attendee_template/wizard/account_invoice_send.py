@@ -40,12 +40,13 @@ class AccountInvoiceSend(models.TransientModel):
             for inv_line in invoice_id.invoice_line_ids:
                 so_line_ids += inv_line.sale_line_ids.ids
                 _logger.info('SO Lines IDs %s'%so_line_ids)
-            att_ids = self.env["event.registration"].search(
+            att_ids = self.env["event.event"].search(
                 [
                     ("sale_order_line_id", "in", so_line_ids),
-                    ("is_a_template", "=", False),
                 ]
             )
+            # ("is_a_template", "=", False),
+
             _logger.info('att_ids %s'%att_ids)
             event_ids = att_ids.mapped("event_id")
             _logger.info('event_ids %s'%event_ids)
