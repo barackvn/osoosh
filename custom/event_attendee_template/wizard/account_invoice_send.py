@@ -26,9 +26,13 @@ class AccountInvoiceSend(models.TransientModel):
             view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu
         )
         _logger.info('Context %s'%self.env.context)
-        invoice_id = self.env["account.move"].browse(
-            self.env.context.get("active_id")
-        )
+        active_id = self.env.context.get('active_id', False)
+        if self.env.context.get('params', False):
+            params = self.env.context.get('params', False)
+            if params['model'] == 'account.move':
+                active_id = params['id']
+
+        invoice_id = self.env["account.move"].browse(active_id)
         _logger.info('Invoice ID %s'%invoice_id)
         _logger.info('Invoice Lines IDs %s'%invoice_id.invoice_line_ids)
         if invoice_id.invoice_line_ids: 
