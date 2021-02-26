@@ -238,6 +238,8 @@ class SaleOrderLine(models.Model):
 
             for att_id in template_attendee_ids:
                 vals["template_id"] = att_id.id
+                vals['sale_order_id'] = self.order_id.id
+                vals["sale_order_line_id"] = self.id
                 att_id.copy(vals)
 
 
@@ -293,6 +295,8 @@ class SaleOrderLine(models.Model):
 
         for att_id in template_attendee_ids:
             vals["template_id"] = att_id.id
+            vals['sale_order_id'] = self.order_id.id
+            vals["sale_order_line_id"] = self.id
             att_id.copy(vals)
 
         self.order_id.write({"joined_event_ids": [(4, event_id.id)]})
