@@ -47,6 +47,7 @@ class Event(models.Model):
                             "release_date": datetime.now().strftime("%Y-%m-%d"),
                         }
                     )
+                    self.env.cr.commit()
             cert_ids = att_ids.mapped("certificate_ids")
             for c in cert_ids:
                 # self.env["ir.actions.report"].get_pdf(c, "event_custom_4devnet.report_certificate")
