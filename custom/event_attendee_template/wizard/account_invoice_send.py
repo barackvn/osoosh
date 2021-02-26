@@ -72,6 +72,7 @@ class AccountInvoiceSend(models.TransientModel):
             invoice_id = self.env["account.move"].browse(active_id)
             for inv_line in invoice_id.invoice_line_ids:
                 so_line_ids += inv_line.sale_line_ids.ids
+            _logger.info("Event %s"%self.event_ids)
             cert_ids = self.event_ids.generate_event_certificates(
                 invoice_id.id, so_line_ids
             )
