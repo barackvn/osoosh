@@ -12,10 +12,9 @@
                             <!-- <label for="event_ids"/> -->
                             <field name="event_ids" widget="many2many_tags"/>
                         </group>
-                            <div class="o_row">
-                                <field name="generate_certificates" attrs="{'readonly':[('generate_certificates','!=',False)]}"/>
-                            </div>
-                        <group />
+                        <group>
+                            <field name="generate_certificates" attrs="{'readonly':[('generate_certificates','!=',False)]}"/>
+                        </group>
                     </group>
                 </field>
             </field>

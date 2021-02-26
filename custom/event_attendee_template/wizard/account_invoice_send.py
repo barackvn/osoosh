@@ -54,7 +54,7 @@ class AccountInvoiceSend(models.TransientModel):
             result["arch"] = etree.tostring(doc)
         return result
 
-    @api.depends('generate_certificates')
+    @api.onchange('generate_certificates')
     def button_generate_certificates(self):
         # self.attachment_ids = [(6, 0, self.attachment_ids.ids)]
         if self.generate_certificates and self.event_ids:
