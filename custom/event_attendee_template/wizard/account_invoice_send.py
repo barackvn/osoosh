@@ -80,5 +80,3 @@ class AccountInvoiceSend(models.TransientModel):
                 )
                 if cert_attachment_ids:
                     self.attachment_ids = [(6,0,self.attachment_ids.ids + cert_attachment_ids.ids)]
-                        
-        return {}
