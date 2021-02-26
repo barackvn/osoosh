@@ -31,7 +31,7 @@ class AccountInvoiceSend(models.TransientModel):
         )
         _logger.info('Invoice ID %s'%invoice_id)
         _logger.info('Invoice Lines IDs %s'%invoice_id.invoice_line_ids)
-        if invoice_id.invoice_line_ids:
+        if invoice_id.invoice_line_ids: 
             so_line_ids = []
             for inv_line in invoice_id.invoice_line_ids:
                 so_line_ids += inv_line.sale_line_ids.ids
