@@ -20,6 +20,9 @@ class AccountInvoiceSend(models.TransientModel):
         "Events",
     )
 
+    generate_certificates = fields.Boolean(
+        string='Generate Certificates')
+
     @api.model
     def fields_view_get(self, view_id=None, view_type=False, toolbar=False, submenu=False):
         result = super(AccountInvoiceSend, self).fields_view_get(
@@ -40,11 +43,9 @@ class AccountInvoiceSend(models.TransientModel):
             for inv_line in invoice_id.invoice_line_ids:
                 so_line_ids += inv_line.sale_line_ids.ids
                 _logger.info('SO Lines IDs %s'%so_line_ids)
-            event_ids = self.env["event.event"].search([("sale_order_line_origin", "in", so_line_ids)])
-            # ("is_a_template", "=", False),
-
-            # _logger.info('att_ids %s'%att_ids)
-            # event_ids = att_ids.mapped("event_id")
+            att_ids = self.env["event.registration"].search([("sale_order_line_id", "in", so_line_ids)])
+            _logger.info('att_ids %s'%att_ids)
+            event_ids = att_ids.mapped("event_id")
             _logger.info('event_ids %s'%event_ids)
             doc = etree.XML(result["arch"])
             node = doc.xpath("//field[@name='event_ids']")[0]
@@ -53,7 +54,7 @@ class AccountInvoiceSend(models.TransientModel):
             result["arch"] = etree.tostring(doc)
         return result
 
-
+    @api.onchange('generate_certificates')
     def button_generate_certificates(self):
         if self.event_ids:
             so_line_ids = []
@@ -77,15 +78,6 @@ class AccountInvoiceSend(models.TransientModel):
                     ]
                 )
                 if cert_attachment_ids:
-                    self.write(
-                        {
-                            "attachment_ids": [
-                                (
-                                    6,
-                                    0,
-                                    self.attachment_ids.ids + cert_attachment_ids.ids,
-                                )
-                            ]
-                        }
-                    )
-        return {"type": "scrollTop"}
+                    self.attachment_ids = [(6,0,self.attachment_ids.ids + cert_attachment_ids.ids)]
+                        
+        return True
