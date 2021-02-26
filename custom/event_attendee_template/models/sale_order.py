@@ -299,7 +299,7 @@ class SaleOrderLine(models.Model):
 
 
     def _update_registrations(
-        self, confirm=True, cancel_to_draft=False, registration_data=None
+        self, confirm=True, mark_as_paid=False, cancel_to_draft=False, registration_data=None
     ):
         """ Create or update registrations linked to a sales order line. A sale
         order line has a product_uom_qty attribute that will be the number of
