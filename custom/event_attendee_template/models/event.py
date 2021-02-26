@@ -49,10 +49,10 @@ class Event(models.Model):
                     )
             cert_ids = att_ids.mapped("certificate_ids")
             for c in cert_ids:
-                self.env["ir.actions.report"].get_pdf(c, "event_custom_4devnet.report_certificate")
-                # self.env.ref(
-                #     "event_custom_4devnet.event_certificate_report"
-                # ).render_qweb_pdf(c.ids)
+                # self.env["ir.actions.report"].get_pdf(c, "event_custom_4devnet.report_certificate")
+                self.env.ref(
+                    "event_custom_4devnet.event_certificate_report"
+                )._render_qweb_pdf(c.ids)
         return cert_ids
 
 
