@@ -3,7 +3,9 @@
 from datetime import datetime
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+import logging
 
+_logger = logging.getLogger(__name__)
 
 
 class Event(models.Model):
@@ -33,21 +35,19 @@ class Event(models.Model):
         """
             Generates certificates for possibly multiple events with sale order line in so_line_ids (a list) and invoice id (an int)
         """
-        cert_ids = False
+        cert_ids = []
         att_ids = self.mapped("registration_ids").filtered(
             lambda r: r.sale_order_line_id.id in so_line_ids and r.state == "done"
         )
+        _logger.info('att_ids %s'%att_ids)
         if att_ids:
             for att_id in att_ids:
                 if not att_id.certificate_ids and att_id.event_id.is_event_certificate:
-                    cert_id = self.env["event.certificate"].create(
-                        {
-                            "attendee_id": att_id.id,
-                            "invoice_id": invoice_id,
-                            "release_date": datetime.now().strftime("%Y-%m-%d"),
-                        }
-                    )
-                    self.env.cr.commit()
+                    cert_id = self.env["event.certificate"].create({
+                                "attendee_id": att_id.id,
+                                "invoice_id": invoice_id,
+                                "release_date": datetime.now().strftime("%Y-%m-%d")})
+                    _logger.info('CERTIFICATE %s'%cert_id)
             cert_ids = att_ids.mapped("certificate_ids")
             for c in cert_ids:
                 # self.env["ir.actions.report"].get_pdf(c, "event_custom_4devnet.report_certificate")
