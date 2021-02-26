@@ -83,5 +83,4 @@ class AccountInvoiceSend(models.TransientModel):
                             ]
                         }
                     )
-        # return {"type": "ir.actions.act_window_close"}
-        return True
+        return {"type": "ir.actions.do_nothing"}
