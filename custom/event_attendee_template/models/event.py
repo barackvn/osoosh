@@ -80,7 +80,7 @@ class Attendee(models.Model):
                     'event_ticket_id': so_line.product_id.ticket_id.id,
                     'name': '',
                     'email': '',
-                    'phone': '',
+                    'phone': ''
                 })
         return att_data
 
