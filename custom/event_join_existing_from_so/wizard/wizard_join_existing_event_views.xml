@@ -31,7 +31,6 @@
          <record id="action_manage_events_in_so" model="ir.actions.act_window">
             <field name="name">Manage Events in Sales Order</field>
             <field name="res_model">event.join.existing.wizard</field>
-
             <field name="view_mode">form</field>
             <field name="target">new</field>
          </record>

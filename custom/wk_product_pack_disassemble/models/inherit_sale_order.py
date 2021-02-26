@@ -32,16 +32,16 @@ class SaleOrder(models.Model):
             for prod in pack_product.wk_product_pack:
 
                 # Update description of Sale Order Line
-                name = prod.product_name.name_get()[0][1]
-                if prod.product_name.description_sale:
-                    name += "\n" + prod.product_name.description_sale
+                name = prod.product_id.name_get()[0][1]
+                if prod.product_id.description_sale:
+                    name += "\n" + prod.product_id.description_sale
                 name = (
                     "Item disassembled from " + pack_line.product_id.name + "\n" + name
                 )
 
                 # Order line values
                 values = {
-                    "product_id": prod.product_name.id,
+                    "product_id": prod.product_id.id,
                     "name": name,
                     "product_uom_qty": prod.product_quantity
                     * pack_line.product_uom_qty,
@@ -49,8 +49,8 @@ class SaleOrder(models.Model):
                     "product_uom": prod.uom_id.id,
                     "price_unit": prod.wk_price,
                     "discount": pack_line.discount or 0.0,
-                    "customer_lead": prod.product_name.sale_delay,
-                    "tax_id": [(6, 0, prod.product_name.taxes_id.ids)],
+                    "customer_lead": prod.product_id.sale_delay,
+                    "tax_id": [(6, 0, prod.product_id.taxes_id.ids)],
                 }
                 try:
                     self.env["sale.order.line"].sudo().create(values)
@@ -62,7 +62,7 @@ class SaleOrder(models.Model):
         product_obj = order_line.product_id
         if product_obj.is_pack and len(
             product_obj.wk_product_pack.filtered(
-                lambda rec: rec.product_name.type == "service"
+                lambda rec: rec.product_id.type == "service"
             )
         ):
             return True
