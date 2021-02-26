@@ -44,12 +44,10 @@ class ProductTemplate(models.Model):
 	has_discounted_amount = fields.Boolean(
 		compute="compute_discounted_pack_price",
 		store=True,
-		compute_sudo=True,
 		string="Remaining price")
 	pack_products_price = fields.Float(
 		compute="compute_discounted_pack_price",
 		store=True,
-		compute_sudo=True,
 		string="Total Product Price")
 
 

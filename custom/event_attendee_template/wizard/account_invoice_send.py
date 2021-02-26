@@ -3,9 +3,6 @@
 from lxml import etree
 
 from odoo import api, fields, models
-import logging
-
-_logger = logging.getLogger(__name__)
 # from odoo.osv.orm import setup_modifiers
 
 
@@ -22,6 +19,9 @@ class AccountInvoiceSend(models.TransientModel):
 
     @api.model
     def fields_view_get(self, view_id=None, view_type=False, toolbar=False, submenu=False):
+        import logging
+
+        _logger = logging.getLogger(__name__)
         _logger.info('Context %s'%self.env.context)
         result = super(AccountInvoiceSend, self).fields_view_get(
             view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu
