@@ -14,6 +14,6 @@ class Attendee(models.Model):
     def bulk_close_attendees(self):
         for att in self:
             try:
-                att.button_reg_close()
+                att.action_set_done()
             except Exception as e:
                 pass
