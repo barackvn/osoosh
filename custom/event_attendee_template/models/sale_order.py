@@ -267,7 +267,7 @@ class SaleOrderLine(models.Model):
 
         if not template_attendee_ids:
             counter = 0
-            while counter < line.product_uom_qty:
+            while counter < self.product_uom_qty:
                 vals = {
                     "event_id": event_template.id,
                     "partner_id": self.order_id.partner_id.id,

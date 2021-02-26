@@ -72,7 +72,7 @@ class Attendee(models.Model):
         if so_line:
             att_data.update({'is_a_template': True})
             if not so_line.product_id.event_template_id.id:
-                raise UserError(_("Please define event template in ({0} , {1})".format(line_id.product_id.name, line_id.product_id.id)))
+                raise UserError(_("Please define event template in ({0} , {1})".format(so_line.product_id.name, so_line.product_id.id)))
             att_data.update({
                 'event_id': so_line.product_id.event_template_id.id,
                 'event_ticket_id': so_line.product_id.ticket_id.id,
