@@ -40,11 +40,7 @@ class AccountInvoiceSend(models.TransientModel):
             for inv_line in invoice_id.invoice_line_ids:
                 so_line_ids += inv_line.sale_line_ids.ids
                 _logger.info('SO Lines IDs %s'%so_line_ids)
-            att_ids = self.env["event.event"].search(
-                [
-                    ("sale_order_line_id", "in", so_line_ids),
-                ]
-            )
+            att_ids = self.env["event.event"].search([("sale_order_line_origin", "in", so_line_ids)])
             # ("is_a_template", "=", False),
 
             _logger.info('att_ids %s'%att_ids)
@@ -61,9 +57,12 @@ class AccountInvoiceSend(models.TransientModel):
     def button_generate_certificates(self):
         if self.event_ids:
             so_line_ids = []
-            invoice_id = self.env["account.move"].browse(
-                self.env.context.get("active_id")
-            )
+            active_id = self.env.context.get('active_id', False)
+            if self.env.context.get('params', False):
+                params = self.env.context.get('params', False)
+                if params['model'] == 'account.move':
+                    active_id = params['id']
+            invoice_id = self.env["account.move"].browse(active_id)
             for inv_line in invoice_id.invoice_line_ids:
                 so_line_ids += inv_line.sale_line_ids.ids
             cert_ids = self.event_ids.generate_event_certificates(
