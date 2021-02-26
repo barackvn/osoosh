@@ -26,7 +26,7 @@ class AccountInvoiceSend(models.TransientModel):
         )
         if self.env.context.get("active_model") == "account.move":
             invoice_id = self.env["account.move"].browse(
-                self.env.context.get("active_ids")
+                self.env.context.get("active_id")
             )
             so_line_ids = []
             for inv_line in invoice_id.invoice_line_ids:
