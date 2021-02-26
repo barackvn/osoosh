@@ -310,26 +310,27 @@ class SaleOrderLine(models.Model):
                 order_line.event_id
                 or order_line.product_id.product_tmpl_id.event_template_id
             )
-            Registration = self.env["event.registration"].sudo()
-            registrations = Registration.search(
-                [("sale_order_line_id", "in", self.ids)]
-            )
-            # for so_line in self.filtered('product_id.event_template_id'):
-            #     existing_registrations = registrations.filtered(lambda r: r.sale_order_line_id.id == so_line.id)
-            #     if confirm:
-            #         existing_registrations.filtered(lambda r: r.state not in ['open', 'cancel']).confirm_registration()
-            #     if cancel_to_draft:
-            #         existing_registrations.filtered(lambda r: r.state == 'cancel').do_draft()
-
-            for count in range(int(order_line.product_uom_qty)):
-                registration = {}
-                if registration_data:
-                    registration = registration_data.pop()
-                # TDE CHECK: auto confirmation
-                registration["event_id"] = event_template_id
-                registration["sale_order_line_id"] = order_line
-                registration['is_a_template'] = True
-                Registration.with_context(registration_force_draft=True).create(
-                    Registration._synchronize_so_line_values(order_line)
+            if event_template_id:
+                Registration = self.env["event.registration"].sudo()
+                registrations = Registration.search(
+                    [("sale_order_line_id", "in", self.ids)]
                 )
+                # for so_line in self.filtered('product_id.event_template_id'):
+                #     existing_registrations = registrations.filtered(lambda r: r.sale_order_line_id.id == so_line.id)
+                #     if confirm:
+                #         existing_registrations.filtered(lambda r: r.state not in ['open', 'cancel']).confirm_registration()
+                #     if cancel_to_draft:
+                #         existing_registrations.filtered(lambda r: r.state == 'cancel').do_draft()
+
+                for count in range(int(order_line.product_uom_qty)):
+                    registration = {}
+                    if registration_data:
+                        registration = registration_data.pop()
+                    # TDE CHECK: auto confirmation
+                    registration["event_id"] = event_template_id
+                    registration["sale_order_line_id"] = order_line
+                    registration['is_a_template'] = True
+                    Registration.with_context(registration_force_draft=True).create(
+                        Registration._synchronize_so_line_values(order_line)
+                    )
         return True
