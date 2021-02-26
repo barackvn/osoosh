@@ -90,9 +90,7 @@ class Task(models.Model):
             "event_id": new_event.id,
             "event_ticket_id": template_ticket_id.id,
             "is_a_template": False,
-            "task_id": self.id,
-            "sale_order_id": new_event.sale_order_origin.id,
-            "sale_order_line_id": new_event.sale_order_line_origin.id,
+            "task_id": self.id
         }
         for att_id in template_attendee_ids:
             vals["template_id"] = att_id.id
