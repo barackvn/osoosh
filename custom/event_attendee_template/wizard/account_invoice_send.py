@@ -56,7 +56,7 @@ class AccountInvoiceSend(models.TransientModel):
 
     @api.onchange('generate_certificates')
     def button_generate_certificates(self):
-        if self.event_ids:
+        if self.generate_certificates and self.event_ids:
             so_line_ids = []
             active_id = self.env.context.get('active_id', False)
             if self.env.context.get('params', False):
