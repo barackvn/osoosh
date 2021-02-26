@@ -24,8 +24,8 @@ class AccountInvoiceSend(models.TransientModel):
         result = super(AccountInvoiceSend, self).fields_view_get(
             view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu
         )
-        if self.env.context.get("active_model") == "account.invoice":
-            invoice_id = self.env["account.invoice"].browse(
+        if self.env.context.get("active_model") == "account.move":
+            invoice_id = self.env["account.move"].browse(
                 self.env.context.get("active_ids")
             )
             so_line_ids = []
@@ -49,7 +49,7 @@ class AccountInvoiceSend(models.TransientModel):
     def button_generate_certificates(self):
         if self.event_ids:
             so_line_ids = []
-            invoice_id = self.env["account.invoice"].browse(
+            invoice_id = self.env["account.move"].browse(
                 self.env.context.get("active_id")
             )
             for inv_line in invoice_id.invoice_line_ids:
