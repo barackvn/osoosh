@@ -39,6 +39,7 @@ class Event(models.Model):
         att_ids = self.mapped("registration_ids").filtered(
             lambda r: r.sale_order_line_id.id in so_line_ids and r.state == "done"
         )
+        _logger.info('registration_ids %s'%self.mapped("registration_ids"))
         _logger.info('att_ids %s'%att_ids)
         if att_ids:
             for att_id in att_ids:
