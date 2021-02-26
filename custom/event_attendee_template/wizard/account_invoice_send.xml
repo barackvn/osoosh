@@ -13,7 +13,7 @@
                             <field name="event_ids" widget="many2many_tags"/>
                         </group>
                         <group>
-                            <field name="generate_certificates"/> <!-- attrs="{'invisible':[('event_ids','=',[])],'readonly':[('generate_certificates','!=',False)]}" ->
+                            <field name="generate_certificates"/> <!--  attrs="{'invisible':[('event_ids','=',[])],'readonly':[('generate_certificates','!=',False)]}" -->
                         </group>
                     </group>
                 </field>
