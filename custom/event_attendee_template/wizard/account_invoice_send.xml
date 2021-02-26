@@ -13,7 +13,7 @@
                             <field name="event_ids" widget="many2many_tags"/>
                         </group>
                             <div class="o_row">
-                                <button name="button_generate_certificates" string="Generate Certificates" type="object" class="oe_inline fa fa-arrow right oe_link"/>
+                                <button name="button_generate_certificates" string="Generate Certificates" type="object"/>
                             </div>
                         <group />
                     </group>
