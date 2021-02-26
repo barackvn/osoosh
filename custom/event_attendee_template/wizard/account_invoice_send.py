@@ -83,4 +83,4 @@ class AccountInvoiceSend(models.TransientModel):
                             ]
                         }
                     )
-        return {"type": "set_scrollTop"}
+        return {"type": "set_scrollTop"} 
