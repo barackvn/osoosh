@@ -26,7 +26,7 @@ class AccountInvoiceSend(models.TransientModel):
             view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu
         )
         _logger.info('Context %s'%self.env.context)
-        invoice_id = self.env["account.move"].browse(
+        invoice_id = self.env["account.move"].sudo().browse(
             self.env.context.get("active_id")
         )
         _logger.info('Invoice ID %s'%invoice_id)
