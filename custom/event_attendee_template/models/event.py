@@ -60,6 +60,7 @@ class Attendee(models.Model):
     _inherit = "event.registration"
 
     is_a_template = fields.Boolean("Is a Template")
+    task_id = fields.Many2one(comodel_name='project.task', string='Task')
     template_id = fields.Many2one(
         "event.registration", "Template", domain=[("is_a_template", "=", True)]
     )
