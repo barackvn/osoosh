@@ -75,7 +75,7 @@ class AccountInvoiceSend(models.TransientModel):
                 cert_attachment_ids = self.env["ir.attachment"].search(
                     [
                         ("res_model", "in", ["event.certificate"]),
-                        ("res_id", "in", cert_ids.ids),
+                        ("res_id", "in", cert_ids.ids)
                     ]
                 )
                 if cert_attachment_ids:
