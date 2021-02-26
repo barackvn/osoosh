@@ -61,7 +61,7 @@ class Attendee(models.Model):
             att_ids.generate_event_certificates()
             cert_ids = att_ids.mapped("certificate_ids")
             for c in cert_ids:
-                self.env["report"].get_pdf(
+                self.env["ir.actions.report"].get_pdf(
                     c.ids, "event_custom_4devnet.report_certificate"
                 )
             attachment_ids = self.env["ir.attachment"].search(
