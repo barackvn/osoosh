@@ -26,11 +26,12 @@ class AccountInvoiceSend(models.TransientModel):
             view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu
         )
         _logger.info('Context %s'%self.env.context)
-        invoice_id = self.env["account.move"].sudo().browse(
-            self.env.context.get("active_id")
-        )
-        _logger.info('Invoice ID %s'%invoice_id)
-        _logger.info('Invoice Lines IDs %s'%invoice_id.sudo().invoice_line_ids)
+        # invoice_id = self.env["account.move"].sudo().browse(
+        #     self.env.context.get("active_id")
+        # )
+        # _logger.info('Invoice ID %s'%invoice_id)
+        invoice_lines = self.env['account.move.line'].search([('invoice_id','=',self.env.context.get("active_id"))])
+        _logger.info('Invoice Lines IDs %s'%invoice_lines)
         # so_line_ids = []
         # for inv_line in invoice_id.invoice_line_ids:
         #     so_line_ids += inv_line.sale_line_ids.ids
