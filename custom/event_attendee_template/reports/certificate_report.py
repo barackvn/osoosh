@@ -44,6 +44,7 @@ class CertificateReport(models.AbstractModel):
             #         a.task_id.sale_line_id.attendee_ids.filtered(lambda r: r.name == attendee_template_id.name and r.state == 'done') 
             
             # event_ids = attendee_ids.mapped('event_id').sorted(key=lambda r: r.date_begin)
+            _logger.info('EVENT IDs %s'%event_ids)
             event_ids = event_ids.sorted(key=lambda r: r.date_begin)
             tz = self.env.user.partner_id.tz
             user_tz = timezone(tz or 'utc')
