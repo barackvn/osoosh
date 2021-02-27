@@ -44,6 +44,7 @@ class Event(models.Model):
         _logger.info('att_ids %s'%att_ids)
         if att_ids:
             for att_id in att_ids:
+                _logger.info('ATT %s'%att_id)
                 if not att_id.certificate_ids and att_id.event_id.is_event_certificate:
                     cert_id = self.env["event.certificate"].create({
                                 "attendee_id": att_id.id,
