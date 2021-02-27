@@ -110,8 +110,8 @@
                                                 </p>
                                                 <p><strong>Místo a datum vydání osvědčení: </strong>v Praze dne <span t-esc="datetime.datetime.strptime(str(doc.release_date), '%Y-%m-%d %H:%M:%S').strftime('%d.%m.%Y')"/>
                                             </p>
-                                            <p><strong>Datum zahájení: </strong><span t-esc="datetime.datetime.strptime(str(doc.event_id.date_begin), '%Y-%m-%d %H:%M:%S').strftime('%d.%m.%Y')"/></p>
-                                     
+                                            <!-- <p><strong>Datum zahájení: </strong><span t-esc="datetime.datetime.strptime(str(doc.event_id.date_begin), '%Y-%m-%d %H:%M:%S').strftime('%d.%m.%Y')"/></p> -->
+                                            <p><strong>Datum zahájení: </strong><t t-esc="events_dict[doc.id]['date_begin']"/></p>
                                             <p><strong>Číslo osvědčení: </strong><span t-field="doc.name"/></p>
                                             <p><strong>Způsob zakončení programu: </strong> Absolvoval(a)</p>
                                         </div>
