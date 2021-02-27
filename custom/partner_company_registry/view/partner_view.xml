@@ -10,6 +10,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='title']" position="after">
                     <field name="company_registry"/>
+                    <field name="database_id_v9"/>
                 </xpath>
             </field>
         </record>
