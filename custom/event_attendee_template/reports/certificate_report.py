@@ -48,8 +48,8 @@ class CertificateReport(models.AbstractModel):
             event_ids = event_ids.sorted(key=lambda r: r.date_begin)
             tz = self.env.user.partner_id.tz
             user_tz = timezone(tz or 'utc')
-            date_begin = datetime.strptime(event_ids[0].date_begin, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone('utc')).astimezone(user_tz)
-            date_end = datetime.strptime(event_ids[-1].date_end, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone('utc')).astimezone(user_tz)
+            date_begin = datetime.strptime(str(event_ids[0].date_begin), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone('utc')).astimezone(user_tz)
+            date_end = datetime.strptime(str(event_ids[-1].date_end), '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone('utc')).astimezone(user_tz)
 
             events_dict[doc.id] = {
                 'event_ids': event_ids,
