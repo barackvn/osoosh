@@ -23,11 +23,27 @@ uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
 models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
 print(uid_v_9)
 
-
+size = 100
+offset = 0
 partners = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
-    'res.partner', 'search_read',[[('active', '=', True)]],{'offset': 0, 'limit': 1})
+    'res.partner', 'search_read',[[('active', '=', True)]],{'offset': 0, 'limit': size})
 
-for partner in partners:
+for i, partner in enumerate(partners):
+    i = i+1
+    print("Processing %s of %s [%s] %s"%(i, size, 100 * i/size, '%'))
+    partner['image_1920'] = partner['image']
+    partner['image_medium'] = partner['image_small']
+    partner['company_id'] = False
+    partner['country_id'] = 56
+    partner['customer_rank'] = 1 if partner['customer'] else 0
+    partner['supplier_rank'] = 1 if partner['supplier'] else 0
+    partner['user_id'] = 1
+
+    # print(partner['id'])
+    del partner['commercial_partner_id']
+    del partner['id']
+    del partner['state_id']
+    del partner['user_id']
     del partner['message_last_post']
     del partner['use_parent_address']
     del partner['notify_email']
@@ -38,8 +54,8 @@ for partner in partners:
     del partner['survey_ids']
     del partner['contracts_count']
     del partner['mails_to']
-    del partner['supplier'] # to move
-    del partner['customer'] # to move
+    del partner['supplier']
+    del partner['customer']
     del partner['mails_from']
     del partner['survey_inputs']
     del partner['survey_input_lines']
@@ -53,10 +69,16 @@ for partner in partners:
     del partner['payment_method_count']
     del partner['email_score'] 
     del partner['issued_total']
+    del partner['image']
+    del partner['id_numbers']
+    del partner['tracking_emails_count']
+    del partner['phonecall_ids']
+    del partner['tracking_email_ids']
     
+    # continue
     
     id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'res.partner', 'create', [partner])
-    print(id)
+    print("Processed %s of %s [%s] %s"%(i, size, 100 * i/size, '%'))
 
 
 

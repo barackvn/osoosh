@@ -29,6 +29,7 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     company_registry = fields.Char(string="Company Registry")
+    database_id_v9 = fields.Integer(string='Database ID V9')
 
 
 class ResCompany(models.Model):
