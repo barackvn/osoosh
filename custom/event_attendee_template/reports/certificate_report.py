@@ -31,8 +31,8 @@ class CertificateReport(models.AbstractModel):
             #event_ids = a.event_id
             
             event_ids = self.env['event.event'].search([
-            '|',('sale_order_line_origin','=', a.sale_order_line_id),('sale_order_line_origin','=', a.task_id.sale_line_id),
-                ('registration_ids','in',[a.id])])
+            '|',('sale_order_line_origin','=', a.sale_order_line_id.id),('sale_order_line_origin','=', a.task_id.sale_line_id.id),
+                ('registration_ids','in',[a.id]),('sale_order_line_origin','!=',False)])
 
             # if a.is_a_template or a.template_id:
             #     attendee_ids = a.sale_order_line_id.attendee_ids.filtered(lambda r: r.template_id.id == attendee_template_id.id and r.state == 'done') + \
