@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 
 
 class CertificateReport(models.AbstractModel):
-    _name = "report.event_custom_4devnet.report_certificate"
+    _name = "report.event_attendee_template.report_certificate"
 
     @api.model
     def _get_report_values(self, docids, data=None):
