@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <report
-            id="event_certificate_report"
+            id="event_certificate_report_template"
             model="event.certificate"
             string="Certificate Gala"
             report_type="qweb-pdf"
