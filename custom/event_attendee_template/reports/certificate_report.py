@@ -27,9 +27,6 @@ class CertificateReport(models.AbstractModel):
             attendee_ids = a
             event_ids = a.event_id
 
-                lambda r: (r.sale_order_line_id.id in so_line_ids or r.task_id.sale_line_id.id in so_line_ids) and r.state == "done"
-
-
             if a.is_a_template or a.template_id:
                 attendee_ids = a.sale_order_line_id.attendee_ids.filtered(
                     lambda r: r.template_id.id == attendee_template_id.id
