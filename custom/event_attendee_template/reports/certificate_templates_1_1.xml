@@ -89,14 +89,14 @@
               <p><strong>Způsob zakončení programu: </strong> Absolvoval(a)</p>
           </div>
                   <t t-if="company_id.id==3">
-                   <t t-if="doc.release_date &gt; '2017-08-14'">
+                   <t t-if="str(doc.release_date) &gt; '2017-08-14'">
           <div class="col-xs-4 text-center">
               <img src="/event_custom_4devnet_bug_fixes/static/src/img/sign3.png" height="160px"/>
               <p class="mt32">Ing. Martin Drábek</p>
               <p>ředitel ITveSkole.cz, o.p.s.</p>
           </div>
                    </t>
-                   <t t-if="not doc.release_date &gt; '2017-08-14'">
+                   <t t-if="not str(doc.release_date) &gt; '2017-08-14'">
           <div class="col-xs-4 text-center">
               <img src="/event_custom_4devnet_bug_fixes/static/src/img/sign.png" height="100px"/>
               <p class="mt32">RNDr. Robert Gamba</p>
@@ -105,7 +105,7 @@
                    </t>
                   </t>
                   <t t-if="company_id.id==1">
-                   <t t-if="doc.release_date &gt; '2017-08-14'">
+                   <t t-if="str(doc.release_date) &gt; '2017-08-14'">
           <div class="col-xs-4 text-center">
               <img src="/event_custom_4devnet_bug_fixes/static/src/img/sign4.png" height="120px"/>
               <p class="mt32">Ing. Josef Dostál</p>
