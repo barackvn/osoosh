@@ -16,11 +16,12 @@ class CertificateReport(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        report_obj = self.env["ir.actions.report"]
-        report = report_obj._get_report_from_name(
-            "report_certificate"
-        )
-        docs = self.env[report.model].browse(docids)
+        # report_obj = self.env["ir.actions.report"]
+        # report = report_obj._get_report_from_name(
+        #     "event_custom_4devnet.report_certificate"
+        # )
+        model = 'event.certificate'
+        docs = self.env[model].browse(docids)
 
         events_dict = {} 
 
@@ -91,7 +92,7 @@ class CertificateReport(models.AbstractModel):
 
         return {
             "doc_ids": docids,
-            "doc_model": report.model,
+            "doc_model": model,
             "docs": docs,
             "events_dict": events_dict,
         }
