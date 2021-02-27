@@ -18,7 +18,7 @@ class CertificateReport(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         report_obj = self.env["ir.actions.report"]
         report = report_obj._get_report_from_name(
-            "event_custom_4devnet.report_certificate"
+            "report_certificate"
         )
         docs = self.env[report.model].browse(docids)
 
