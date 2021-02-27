@@ -6,8 +6,8 @@
             model="event.certificate"
             string="Certificate Gala"
             report_type="qweb-pdf"
-            name="event_custom_4devnet.report_certificate"
-            file="event_custom_4devnet.report_certificate"
+            name="event_attendee_template.report_certificate"
+            file="event_attendee_template.report_certificate"
             attachment_use="True"
             attachment="(object.name).replace('/','')+'.pdf'"
         />
