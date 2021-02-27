@@ -36,6 +36,8 @@ class Event(models.Model):
             Generates certificates for possibly multiple events with sale order line in so_line_ids (a list) and invoice id (an int)
         """
         cert_ids = []
+        _logger.info('Event %s'%self._origin)
+        _logger.info('Event 2 %s'%self._origin.id)
         att_ids = self.mapped("registration_ids").filtered(
             lambda r: (r.sale_order_line_id.id in so_line_ids or r.task_id.sale_line_id.id in so_line_ids) and r.state == "done"
         )
