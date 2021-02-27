@@ -43,6 +43,7 @@ class CertificateReport(models.AbstractModel):
                     lambda r: r.name == attendee_template_id.name
                 ) + a.task_id.sale_line_id.attendee_ids.filtered(
                     lambda r: r.name == attendee_template_id.name
+                )
                 
 
             event_ids = attendee_ids.mapped("event_id").sorted(
