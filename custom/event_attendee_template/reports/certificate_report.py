@@ -27,18 +27,26 @@ class CertificateReport(models.AbstractModel):
             attendee_ids = a
             event_ids = a.event_id
 
+                lambda r: (r.sale_order_line_id.id in so_line_ids or r.task_id.sale_line_id.id in so_line_ids) and r.state == "done"
+
+
             if a.is_a_template or a.template_id:
                 attendee_ids = a.sale_order_line_id.attendee_ids.filtered(
                     lambda r: r.template_id.id == attendee_template_id.id
+                ) + a.task_id.sale_line_id.attendee_ids.filtered(
+                    lambda r: r.template_id.id == attendee_template_id.id
                 )
                 if (
-                    not a.sale_order_line_id.product_id.product_tmpl_id.is_learning_product
+                    not a.sale_order_line_id.product_id.product_tmpl_id.is_learning_product or
+                    not a.task_id.sale_line_id.product_id.product_tmpl_id.is_learning_product
                 ):
                     attendee_ids = attendee_template_id | attendee_ids
             else:
                 attendee_ids = a.sale_order_line_id.attendee_ids.filtered(
                     lambda r: r.name == attendee_template_id.name
-                )
+                ) + a.task_id.sale_line_id.attendee_ids.filtered(
+                    lambda r: r.name == attendee_template_id.name
+                
 
             event_ids = attendee_ids.mapped("event_id").sorted(
                 key=lambda r: r.date_begin
