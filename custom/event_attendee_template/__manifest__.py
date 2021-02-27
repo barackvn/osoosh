@@ -29,7 +29,7 @@ When user adds to cart a learning product in the frontend, attendee records are 
         "views/sale_order_views.xml",
         "views/task_views.xml",
         # "reports/certificate_templates.xml",
-        # "reports/certificate_templates_1_1.xml",
+        "reports/certificate_templates_1_1.xml",
         "templates/website_templates.xml",
         "wizard/account_invoice_send.xml",
     ],
