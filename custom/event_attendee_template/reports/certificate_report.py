@@ -19,7 +19,7 @@ class CertificateReport(models.AbstractModel):
         )
         docs = self.env[report.model].browse(docids)
 
-        events_dict = {}
+        events_dict = {} 
 
         for doc in docs:
             a = doc.attendee_id
