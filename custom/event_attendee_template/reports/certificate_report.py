@@ -6,6 +6,9 @@ import pytz
 from pytz import timezone
 
 from odoo import _, api, models
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class CertificateReport(models.AbstractModel):
@@ -25,19 +28,23 @@ class CertificateReport(models.AbstractModel):
             a = doc.attendee_id
             attendee_template_id = a.template_id if a.template_id else a
             attendee_ids = a
-            event_ids = a.event_id
-
-            if a.is_a_template or a.template_id:
-                attendee_ids = a.sale_order_line_id.attendee_ids.filtered(lambda r: r.template_id.id == attendee_template_id.id and r.state == 'done') + \
-                    a.task_id.sale_line_id.attendee_ids.filtered(lambda r: r.template_id.id == attendee_template_id.id and r.state == 'done')
-                if not a.sale_order_line_id.product_id.product_tmpl_id.is_learning_product or not a.task_id.sale_line_id.product_id.product_tmpl_id.is_learning_product:
-                    attendee_ids = attendee_template_id | attendee_ids
-            else:
-                attendee_ids = a.sale_order_line_id.attendee_ids.filtered(lambda r: r.name == attendee_template_id.name and r.state == 'done') + \
-                    a.task_id.sale_line_id.attendee_ids.filtered(lambda r: r.name == attendee_template_id.name and r.state == 'done') 
+            #event_ids = a.event_id
             
-            event_ids = attendee_ids.mapped('event_id').sorted(key=lambda r: r.date_begin)
+            event_ids = self.env['event.event'].search([
+            '|',('sale_order_line_origin','=', a.sale_order_line_id),('sale_order_line_origin','=', a.task_id.sale_line_id),
+                ('registration_ids','in',[a.id])])
 
+            # if a.is_a_template or a.template_id:
+            #     attendee_ids = a.sale_order_line_id.attendee_ids.filtered(lambda r: r.template_id.id == attendee_template_id.id and r.state == 'done') + \
+            #         a.task_id.sale_line_id.attendee_ids.filtered(lambda r: r.template_id.id == attendee_template_id.id and r.state == 'done')
+            #     if not a.sale_order_line_id.product_id.product_tmpl_id.is_learning_product and not a.task_id.sale_line_id.product_id.product_tmpl_id.is_learning_product:
+            #         attendee_ids = attendee_template_id | attendee_ids
+            # else:
+            #     attendee_ids = a.sale_order_line_id.attendee_ids.filtered(lambda r: r.name == attendee_template_id.name and r.state == 'done') + \
+            #         a.task_id.sale_line_id.attendee_ids.filtered(lambda r: r.name == attendee_template_id.name and r.state == 'done') 
+            
+            # event_ids = attendee_ids.mapped('event_id').sorted(key=lambda r: r.date_begin)
+            event_ids = event_ids.sorted(key=lambda r: r.date_begin)
             tz = self.env.user.partner_id.tz
             user_tz = timezone(tz or 'utc')
             date_begin = datetime.strptime(event_ids[0].date_begin, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone('utc')).astimezone(user_tz)
