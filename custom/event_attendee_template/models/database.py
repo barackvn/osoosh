@@ -24,38 +24,22 @@ from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
 
-
-class ResPartner(models.Model):
-    _inherit = "res.partner"
-
-    company_registry = fields.Char(string="Company Registry")
+class Event(models.Model):
+    _inherit = 'event.event'
+    
     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
 
-
-class ResCompany(models.Model):
-    _inherit = "res.company"
-
-    x_acreditation = fields.Char(string="Akreditace Organizace ")
-
-
-class ProjectTask(models.Model):
-    _inherit = 'project.task'
-
+class EventReg(models.Model):
+    _inherit = 'event.registration'
+    
     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
 
-class Project(models.Model):
-    _inherit = 'project.project'
-
+class EventCer(models.Model):
+    _inherit = 'event.certificate'
+    
     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
 
-
-class Template(models.Model):
-    _inherit = 'product.template'
-
+class EventAcc(models.Model):
+    _inherit = 'event.accreditation'
+    
     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
-
-class Product(models.Model):
-    _inherit = 'product.product'
-
-    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
-
