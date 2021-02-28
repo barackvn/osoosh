@@ -23,7 +23,7 @@ uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
 models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
 print(uid_v_9)
 
-done = 1+3+1+53
+done = 1+3+1+53+123
 size = 1000 - done
 offset = 0 + done
 print('Offset:', offset)
@@ -120,7 +120,7 @@ for i, template in enumerate(templates):
     
     # del template['task_id']
 
-    # print(template)
+    print(template)
 
     id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'product.template', 'create', [template])
     models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'product.template', 'write', [[id], {

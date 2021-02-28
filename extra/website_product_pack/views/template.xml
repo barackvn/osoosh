@@ -11,7 +11,7 @@
 		</template>
 
 		<template id="website_product_pack_ribbon_wrapper" inherit_id="website_sale.products_item">
-			<xpath expr="//div[hasclass('o_wsale_product_information')]" position="after" >					
+			<xpath expr="//t[@t-name='website_sale.products_item']//div[hasclass('o_wsale_product_information')]" position="after" >					
 				<div t-if="product.is_pack" class="wk_pack_product_wrapper">
 			    	<div class="wk_pack_ribbon">Pack</div>
 			 	 </div>
