@@ -23,14 +23,16 @@ uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
 models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
 print(uid_v_9)
 
-size = 1
-offset = 0
+done = 110
+size = 120 - done
+offset = 10000 + done
+print('Offset:', offset)
 partners = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
-    'res.partner', 'search_read',[[('active', '=', True),('parent_id','=',False)]],{'offset': 0, 'limit': size})
+    'res.partner', 'search_read',[[('active', '=', True),('parent_id','!=',False)]],{'offset': offset, 'limit': size})
 
 for i, partner in enumerate(partners):
     i = i+1
-    print("Processing %s of %s [%s] %s"%(i, size, 100 * i/size, '%'))
+    print("Processing [%s] %s of %s [%s] %s"%(partner['id'], i, size, 100 * i/size, '%'))
     partner['image_1920'] = partner['image']
     partner['image_medium'] = partner['image_small']
     partner['company_id'] = False
@@ -39,10 +41,16 @@ for i, partner in enumerate(partners):
     partner['supplier_rank'] = 1 if partner['supplier'] else 0
     partner['database_id_v9'] = partner['id']
     partner['user_id'] = 2
+    partner['currency_id'] = 9
     partner['property_account_receivable_id'] = 123
     partner['property_account_payable_id'] = 128
     partner['property_product_pricelist'] = 1
     partner['property_payment_term_id'] = 1
+    partner['message_is_follower'] = False
+    if partner['title']:
+        partner['title']  = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+    'res.partner.title', 'search_read',[[('name', '=', partner['title'][1])]],{'limit': 1})[0]
+
 
     
 
@@ -50,30 +58,46 @@ for i, partner in enumerate(partners):
     # del partner['image_medium']
     # del partner['image']
     # del partner['image_small']
-   
+    del partner['activation']
     del partner['product_ids']
     del partner['child_ids']
     del partner['category_id']
     del partner['commercial_partner_id']
+    del partner['invoice_ids']
+    del partner['task_ids']
+    del partner['implemented_partner_ids']
+    del partner['contract_ids']
+    del partner['team_id']
+    del partner['opportunity_ids']
+    del partner['bank_ids']
+    del partner['last_website_so_id']
+    del partner['grade_id']
+    
     # del partner['property_account_receivable_id']
     # del partner['property_account_payable_id']
     # del partner['property_product_pricelist']
     # del partner['property_payment_term_id']
     del partner['property_stock_customer']
+    del partner['property_stock_supplier']
+    del partner['property_account_position_id']
     del partner['message_follower_ids']
     del partner['sale_order_count']
     del partner['sale_order_ids']
     del partner['create_uid']
     del partner['write_uid']
-    del partner['property_stock_supplier']
     del partner['message_ids']
     del partner['meeting_ids']
     del partner['message_partner_ids']
     # 'message_is_follower': True, 
     
     # del partner['id']
+    del partner['parent_id']
+    del partner['ref_company_ids']
+    del partner['message_channel_ids']
+    del partner['channel_ids']
     del partner['state_id']
     del partner['user_id']
+    del partner['user_ids']
     del partner['message_last_post']
     del partner['use_parent_address']
     del partner['notify_email']
@@ -105,13 +129,11 @@ for i, partner in enumerate(partners):
     del partner['phonecall_ids']
     del partner['tracking_email_ids']
 
-    
     print(partner)
     # continue
     
     id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'res.partner', 'create', [partner])
-    models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'res.partner', 'write', [[id], {
-    'id': partner['database_id_v9']}])
+    
     print("Processed partner id [%s] %s of %s [%s] %s"%(id, i, size, 100 * i/size, '%'))
 
 
