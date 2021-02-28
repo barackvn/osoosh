@@ -48,6 +48,12 @@ class Project(models.Model):
 
     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
 
+class TaskType(models.Model):
+    _inherit = 'project.task.type'
+
+    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
+
 
 class Template(models.Model):
     _inherit = 'product.template'

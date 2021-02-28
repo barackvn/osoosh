@@ -34,17 +34,18 @@ packs = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
 for i, pack in enumerate(packs):
     pack['product_id'] = pack['product_name']
     del pack['product_name']
+    print("Processing pack id [%s] %s of %s [%s] %s"%(pack['id'], i, size, 100 * i/size, '%'))
 
     if pack['wk_product_template']:
         wk_product_template = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-        'product.template', 'search_read',[[('database_id_v9','=',pack['wk_product_template'][0])]],{'offset': 0, 'limit': 1})
+        'product.template', 'search_read',[['|',('active','=',True),('active','=',False),('database_id_v9','=',pack['wk_product_template'][0])]],{'offset': 0, 'limit': 1})
         if wk_product_template:
             wk_product_template = wk_product_template[0]['id']
             pack['wk_product_template'] = wk_product_template
     
             if pack['product_id']:
                 product_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-                'product.product', 'search_read',[[('name','=',pack['product_id'][1])]],{'offset': 0, 'limit': 1})
+                'product.product', 'search_read',[['|',('active','=',True),('active','=',False),('name','=',pack['product_id'][1])]],{'offset': 0, 'limit': 1})
                 if product_id:
                     product_id = product_id[0]['id']
                     pack['product_id'] = product_id

@@ -33,7 +33,61 @@ projects = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
 for i, project in enumerate(projects):
     i = i+1
     print("Processing [%s] %s of %s [%s] %s"%(project['id'], i, size, 100 * i/size, '%'))
-    print(project)
+    project['database_id_v9'] = project['id']
+    project['currency_id'] = 9
+
+    del project['members']
+    del project['use_issues']
+    del project['debit']
+    del project['project_ids']
+    del project['code']
+    del project['is_visible_happy_customer']
+    del project['task_needaction_count']
+    del project['state']
+    del project['percentage_satisfaction_task']
+    del project['balance']
+    del project['line_ids']
+    del project['credit']
+    del project['issue_count']
+    del project['percentage_satisfaction_project']
+    del project['message_last_post']
+    del project['alias_model']
+    del project['issue_needaction_count']
+    del project['label_issues']
+    del project['vuente_tags']
+    del project['project_count']
+    del project['task_team_ids']
+    del project['team_id']
+    del project['use_timesheets']
+    del project['tag_ids']
+    del project['use_tasks']
+    del project['percentage_satisfaction_issue']
+    del project['account_type']
+    del project['issue_ids']
+    del project['autostaging_enabled']
+    del project['company_uom_id']
+    del project['alias_parent_model_id']
+    del project['tasks']
+    del project['message_ids']
+    del project['task_ids']
+    del project['message_follower_ids']
+    del project['website_message_ids']
+    del project['company_id']
+    del project['analytic_account_id']
+    del project['alias_id']
+    del project['message_partner_ids']
+    del project['alias_model_id']
+    del project['message_channel_ids']
+    del project['create_uid']
+    del project['write_uid']
+    del project['user_id']
+
     
+    del project['type_ids'] 
+    
+
+    print(project)
+    id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'project.project', 'create', [project])
+
     print("Processed [%s] %s of %s [%s] %s"%(project['id'], i, size, 100 * i/size, '%'))
 
