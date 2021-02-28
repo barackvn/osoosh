@@ -110,7 +110,7 @@ for i, template in enumerate(templates):
         del template['website_message_ids']
         del template['message_channel_ids']
         del template['wk_product_pack']
-        # del template['is_pack']
+        del template['is_pack']
         del template['project_id']
         del template['create_uid']
         del template['write_uid']

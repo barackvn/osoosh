@@ -27,6 +27,6 @@
     "author": "ICTSTUDIO, André Schenkels",
     "license": "AGPL-3",
     "website": "http://www.ictstudio.eu",
-    "depends": ["sale", 'project', 'event_attendee_template'],
+    "depends": ["sale", 'project_create_event_from_task', 'event_attendee_template'],
     "data": ["view/partner_view.xml"],
 }
