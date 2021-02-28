@@ -43,30 +43,30 @@ class ProjectTask(models.Model):
 
     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
 
-class Project(models.Model):
-    _inherit = 'project.project'
+# class Project(models.Model):
+#     _inherit = 'project.project'
 
-    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+#     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
 
-class Event(models.Model):
-    _inherit = 'event.event'
+# class Event(models.Model):
+#     _inherit = 'event.event'
     
-    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+#     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
 
-class EventReg(models.Model):
-    _inherit = 'event.registration'
+# class EventReg(models.Model):
+#     _inherit = 'event.registration'
     
-    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+#     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
 
-class EventCer(models.Model):
-    _inherit = 'event.certificate'
+# class EventCer(models.Model):
+#     _inherit = 'event.certificate'
     
-    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+#     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
 
-class EventAcc(models.Model):
-    _inherit = 'event.accreditation'
+# class EventAcc(models.Model):
+#     _inherit = 'event.accreditation'
     
-    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+#     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
 
 
 class Template(models.Model):
