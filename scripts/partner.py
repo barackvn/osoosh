@@ -23,9 +23,9 @@ uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
 models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
 print(uid_v_9)
 
-done = 110
-size = 120 - done
-offset = 10000 + done
+done = 0
+size = 1000 - done
+offset = 38000 + done
 print('Offset:', offset)
 partners = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
     'res.partner', 'search_read',[[('active', '=', True),('parent_id','!=',False)]],{'offset': offset, 'limit': size})
@@ -47,9 +47,9 @@ for i, partner in enumerate(partners):
     partner['property_product_pricelist'] = 1
     partner['property_payment_term_id'] = 1
     partner['message_is_follower'] = False
-    if partner['title']:
-        partner['title']  = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-    'res.partner.title', 'search_read',[[('name', '=', partner['title'][1])]],{'limit': 1})[0]
+    # if partner['title']:
+    #     partner['title']  = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+    # 'res.partner.title', 'search_read',[[('name', '=', partner['title'][1])]],{'limit': 1})[0]
 
 
     
@@ -58,6 +58,7 @@ for i, partner in enumerate(partners):
     # del partner['image_medium']
     # del partner['image']
     # del partner['image_small']
+    del partner['title']
     del partner['activation']
     del partner['product_ids']
     del partner['child_ids']
@@ -129,7 +130,7 @@ for i, partner in enumerate(partners):
     del partner['phonecall_ids']
     del partner['tracking_email_ids']
 
-    print(partner)
+    # print(partner)
     # continue
     
     id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'res.partner', 'create', [partner])

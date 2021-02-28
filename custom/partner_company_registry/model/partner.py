@@ -36,3 +36,20 @@ class ResCompany(models.Model):
     _inherit = "res.company"
 
     x_acreditation = fields.Char(string="Akreditace Organizace ")
+
+
+class Project(models.Model):
+    _inherit = 'project.task'
+
+    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
+class Template(models.Model):
+    _inherit = 'product.template'
+
+    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
+class Product(models.Model):
+    _inherit = 'product.product'
+
+    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
