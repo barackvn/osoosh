@@ -38,10 +38,36 @@ class ResCompany(models.Model):
     x_acreditation = fields.Char(string="Akreditace Organizace ")
 
 
-class Project(models.Model):
+class ProjectTask(models.Model):
     _inherit = 'project.task'
 
     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
+class Project(models.Model):
+    _inherit = 'project.project'
+
+    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
+class Event(models.Model):
+    _inherit = 'event.event'
+    
+    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
+class EventReg(models.Model):
+    _inherit = 'event.registration'
+    
+    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
+class EventCer(models.Model):
+    _inherit = 'event.certificate'
+    
+    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
+class EventAcc(models.Model):
+    _inherit = 'event.accreditation'
+    
+    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
 
 class Template(models.Model):
     _inherit = 'product.template'

@@ -24,13 +24,16 @@ models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, p
 print(uid_v_9)
 
 done = 0
-size = 1000 - done
+size = 1#1000 - done
 offset = 0 + done
 print('Offset:', offset)
 projects = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
-    'project.project', 'search_read',[[]],{'offset': offset, 'limit': size})
+    'project.project', 'search_read',[['|',('active','=',True),('active','=',False)]],{'offset': offset, 'limit': size})
 
 for i, project in enumerate(projects):
     i = i+1
     print("Processing [%s] %s of %s [%s] %s"%(project['id'], i, size, 100 * i/size, '%'))
+    print(project)
+    
+    print("Processed [%s] %s of %s [%s] %s"%(project['id'], i, size, 100 * i/size, '%'))
 

@@ -23,7 +23,7 @@ uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
 models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
 print(uid_v_9)
 
-done = 1+3+1
+done = 0
 size = 1000 - done
 offset = 0 + done
 print('Offset:', offset)
@@ -37,6 +37,7 @@ for i, template in enumerate(templates):
     # del template['image_small']
     # del template['image']
     # del template['image_medium']
+    template['database_id_v9'] = template['id']
     template['image_512'] = template['image_small']
     template['image_1920'] = template['image']
     template['image_1024'] = template['image_medium']
@@ -62,9 +63,9 @@ for i, template in enumerate(templates):
     
     if template['product_tmpl_id']:
         product_tmpl_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-    'product.template', 'search_read',[[('database_id_v9','=',product_tmpl_id['id'])]],{'offset': 0, 'limit': 1})
+    'product.template', 'search_read',[[('database_id_v9','=',template['product_tmpl_id'])]],{'offset': 0, 'limit': 1})
         if product_tmpl_id:
-            template['product_tmpl_id'].append(product_tmpl_id[0]['id'])
+            template['product_tmpl_id'] = product_tmpl_id[0]['id']
         
 
 
@@ -117,9 +118,12 @@ for i, template in enumerate(templates):
     del template['create_uid']
     del template['write_uid']
 
+    del template['company_id']
     del template['attribute_line_ids']
     del template['seller_ids']
     del template['alternative_product_ids']
+    del template['accessory_product_ids']
+    del template['related_product_ids']
     # del template['website_message_ids']
     
     
@@ -128,8 +132,8 @@ for i, template in enumerate(templates):
 
     # print(template)
 
-    id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'product.template', 'create', [template])
-    models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'product.template', 'write', [[id], {
+    id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'product.product', 'create', [template])
+    models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'product.product', 'write', [[id], {
         'list_price': template['list_price']
     }])
     print("Processed template id [%s] %s of %s [%s] %s"%(id, i, size, 100 * i/size, '%'))
