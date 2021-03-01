@@ -6,10 +6,10 @@
 	<data>
 		<template id="inherit_website_product_pack_for_wk_price" inherit_id="website_product_pack.website_product_pack_save_price">
 			<xpath expr="//div[@id='open_products_modal']//t[@t-if='pack_id.product_id.website_published == True ']//span[@class='wk_pack_product_unit_price']" position="attributes">
-				<attribute name="t-esc">pack_id.product_id.product_tmpl_id.wk_price</attribute>
+				<attribute name="t-esc">pack_id.wk_price</attribute>
 			</xpath>
 			<xpath expr="//div[@id='open_products_modal']//t[@t-if='pack_id.product_id.website_published == False ']//span[@class='wk_pack_product_unit_price']" position="attributes">
-				<attribute name="t-esc">pack_id.product_id.product_tmpl_id.wk_price</attribute> 
+				<attribute name="t-esc">pack_id.wk_price</attribute> 
 			</xpath>
 		</template>
 	</data>
