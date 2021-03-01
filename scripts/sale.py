@@ -24,7 +24,7 @@ models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, p
 print(uid_v_9)
 
 done = 0
-size = 1#1000 - done
+size = 1000 - done
 offset = 0 + done
 print('Offset:', offset)
 
@@ -148,9 +148,9 @@ for i, order in enumerate(orders):
     # del order['options']
     # del order['options']
 
-    print(order)
+    # print(order)
     order_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'sale.order', 'create', [order])
-    order_line_ids = [28748]
+    order_line_ids = order['order_line']
     print('order_line_ids', order_line_ids)
     order_lines = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
     'sale.order.line', 'search_read',[[('id','in',order_line_ids)]],{'offset': 0, 'limit': 1000})
@@ -212,7 +212,7 @@ for i, order in enumerate(orders):
         # del line['is_low_forecast']
         
 
-        print(line)
+        # print(line)
         line_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'sale.order.line', 'create', [line])
 
     print("Processed [%s] %s of %s [%s] %s"%(order_id, i, size, 100 * i/size, '%'))

@@ -15,6 +15,7 @@ When user adds to cart a learning product in the frontend, attendee records are 
         "base",
         "account",
         "event_sale",
+        "hr",
         "event_custom_4devnet",
         "event_join_existing_from_so",
         "event_join_existing_from_task",
