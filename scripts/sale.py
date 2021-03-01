@@ -77,17 +77,26 @@ for i, order in enumerate(orders):
     if order['partner_id']:
         partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
             'res.partner', 'search_read',[[('database_id_v9','=',order['partner_id'][0])]],{'limit': size})
-        order['partner_id'] = partner_id[0]['id']
+        if partner_id:
+            order['partner_id'] = partner_id[0]['id']
+        else:
+            order['partner_id'] = False
     
     if order['partner_invoice_id']:
         partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
             'res.partner', 'search_read',[[('database_id_v9','=',order['partner_invoice_id'][0])]],{'limit': size})
-        order['partner_invoice_id'] = partner_id[0]['id']
+        if partner_id:
+            order['partner_invoice_id'] = partner_id[0]['id']
+        else:
+            order['partner_invoice_id'] = False
     
     if order['partner_shipping_id']:
         partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
             'res.partner', 'search_read',[[('database_id_v9','=',order['partner_shipping_id'][0])]],{'limit': size})
-        order['partner_shipping_id'] = partner_id[0]['id']
+        if partner_id:
+            order['partner_shipping_id'] = partner_id[0]['id']
+        else:
+            order['partner_shipping_id'] = False
     
     
     # if order['opportunity_id']:
