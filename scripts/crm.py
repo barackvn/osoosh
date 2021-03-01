@@ -122,7 +122,10 @@ for i, lead in enumerate(leads):
     # del lead['opt_out']
     # del lead['opt_out']
 
-    print(lead)
-    id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'crm.lead', 'create', [lead])
+    # print(lead)
+    try:
+        id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'crm.lead', 'create', [lead])
 
-    print("Processed [%s] %s of %s [%s] %s"%(lead['id'], i, size, 100 * i/size, '%'))
+        print("Processed [%s] %s of %s [%s] %s"%(lead['id'], i, size, 100 * i/size, '%'))
+    except Exception as e:
+        print(e)
