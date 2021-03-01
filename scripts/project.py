@@ -24,9 +24,9 @@ models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, p
 print(uid_v_9)
 
 # done = 5+29+52+20+157
-done = 0 #107+157+36+34+664 for #1000  #166+22+42+283+112 for 0###
+done = 447 #107+157+36+34+664 for #1000  #166+22+42+283+112 for 0###
 size = 1000 - done
-offset = 7000 + done
+offset = 3000 + done
 print('Offset:', offset)
 
 # tags = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,

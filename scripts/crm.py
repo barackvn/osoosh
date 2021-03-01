@@ -115,6 +115,7 @@ for i, lead in enumerate(leads):
     del lead['message_channel_ids']
     del lead['medium_id']
     del lead['title']
+    del lead['lost_reason_id']
     # del lead['opt_out']
     # del lead['opt_out']
     # del lead['opt_out']
