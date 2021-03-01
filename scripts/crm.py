@@ -23,7 +23,7 @@ uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
 models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
 print(uid_v_9)
 
-done = 0
+done = 4
 size = 1000 - done
 offset = 1000 + done
 print('Offset:', offset)
@@ -59,6 +59,16 @@ for i, lead in enumerate(leads):
         lead['user_id'] = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
         'res.users', 'search',[[('login','=',user['login'])]],{'limit': size})[0]
     
+    if lead['tag_ids']:
+        tags = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
+            'crm.tag', 'search_read',[[('id','in',lead['tag_ids'])]],{'limit': size})
+        lead['tag_ids'] = []
+        for tag in tags:
+            tag_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+            'crm.tag', 'search',[[('name','=',tag['name'])]],{'limit': size})[0]
+            lead['tag_ids'].append(tag_id)
+
+    
 
     del lead['opt_out']
     del lead['reminder_event_id']
@@ -91,6 +101,7 @@ for i, lead in enumerate(leads):
     del lead['source_id']
     del lead['message_channel_ids']
     del lead['medium_id']
+    del lead['title']
     # del lead['opt_out']
     # del lead['opt_out']
     # del lead['opt_out']

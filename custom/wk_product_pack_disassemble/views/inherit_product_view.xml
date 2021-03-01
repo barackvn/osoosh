@@ -20,5 +20,12 @@
             </field>
         </record>
 
+        <function model="ir.model.fields" name="formbuilder_whitelist">
+            <value>product.pack</value>
+            <value eval="[
+                'wk_price'
+            ]"/>
+        </function>
+
     </data>
 </odoo>
