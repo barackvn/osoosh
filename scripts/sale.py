@@ -90,13 +90,13 @@ for i, order in enumerate(orders):
         order['partner_shipping_id'] = partner_id[0]['id']
     
     
-    if order['opportunity_id']:
-        opportunity_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-            'crm.lead', 'search_read',[[('database_id_v9','=',order['opportunity_id'][0])]],{'limit': size})
-        if opportunity_id:
-            order['opportunity_id'] = opportunity_id[0]['id']
-        else:
-            order['opportunity_id'] = False
+    # if order['opportunity_id']:
+    #     opportunity_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+    #         'crm.lead', 'search_read',[[('database_id_v9','=',order['opportunity_id'][0])]],{'limit': size})
+    #     if opportunity_id:
+    #         order['opportunity_id'] = opportunity_id[0]['id']
+    #     else:
+    #         order['opportunity_id'] = False
     
     if order['tasks_ids']:
         task_ids = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
@@ -136,7 +136,8 @@ for i, order in enumerate(orders):
     del order['product_id']
     del order['delivery_price']
     del order['procurement_group_id']
-    del order['order_line']
+    del order['opportunity_id']
+    # del order['order_line']
     del order['joined_event_ids']
     del order['cancel_reason_id']
     # del order['options']
