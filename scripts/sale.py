@@ -150,8 +150,11 @@ for i, order in enumerate(orders):
     # del order['options']
 
     # print(order)
-    order_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'sale.order', 'create', [order])
     order_line_ids = order['order_line']
+    del order['order_line']
+    order_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'sale.order', 'create', [order])
+    
+
     print('order_line_ids', order_line_ids)
     order_lines = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
     'sale.order.line', 'search_read',[[('id','in',order_line_ids)]],{'offset': 0, 'limit': 1000})
