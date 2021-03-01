@@ -23,7 +23,7 @@ uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
 models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
 print(uid_v_9)
 
-done = 0
+done = 159
 size = 1000 - done
 offset = 0 + done
 print('Offset:', offset)

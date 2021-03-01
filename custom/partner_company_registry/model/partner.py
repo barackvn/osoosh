@@ -53,6 +53,11 @@ class TaskType(models.Model):
 
     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
 
+class TaskTags(models.Model):
+    _inherit = 'project.tags'
+
+    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
 
 
 class Template(models.Model):
