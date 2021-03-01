@@ -43,3 +43,13 @@ class EventAcc(models.Model):
     _inherit = 'event.accreditation'
     
     database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+    
+    database_id_v9 = fields.Integer(string='Database ID V9', index=True)
+
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+    
+    database_id_v9 = fields.Integer(string='Database ID V9', index=True)

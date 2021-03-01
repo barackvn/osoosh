@@ -25,7 +25,7 @@ print(uid_v_9)
 
 done = 0
 size = 1000 - done
-offset = 1000 + done
+offset = 2000 + done
 print('Offset:', offset)
 partners = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
     'res.partner', 'search_read',[[('active', '=', True),('parent_id','!=',False)]],{'offset': offset, 'limit': size})

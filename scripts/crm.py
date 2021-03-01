@@ -24,8 +24,8 @@ models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, p
 print(uid_v_9)
 
 done = 0
-size = 1#1000 - done
-offset = 0 + done
+size = 1000 - done
+offset = 1000 + done
 print('Offset:', offset)
 
 leads = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
@@ -35,6 +35,13 @@ for i, lead in enumerate(leads):
     i = i+1
 
     lead['company_currency'] = 9
+    lead['country_id'] = 56
+    lead['team_id'] = 1
+    
+    if lead['stage_id']:
+        stage_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+            'crm.stage', 'search',[[('name','=',lead['stage_id'][1])]],{'limit': size})
+        lead['stage_id'] = stage_id[0]
 
     if lead['partner_id']:
         partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
@@ -43,8 +50,15 @@ for i, lead in enumerate(leads):
     
     if lead['company_id']:
         company_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-    'res.company', 'search_read',[[('name','=',lead['company_id'][1])]],{'limit': size})
-        lead['company_id'] = company_id[0]['id']
+    'res.company', 'search',[[('name','=',lead['company_id'][1])]],{'limit': size})
+        lead['company_id'] = company_id[0]
+    
+    if lead['user_id']:
+        user = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
+            'res.users', 'search_read',[[('id','=',lead['user_id'][0])]],{'limit': size})[0]
+        lead['user_id'] = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+        'res.users', 'search',[[('login','=',user['login'])]],{'limit': size})[0]
+    
 
     del lead['opt_out']
     del lead['reminder_event_id']
@@ -71,10 +85,12 @@ for i, lead in enumerate(leads):
     del lead['message_partner_ids']
     del lead['message_follower_ids']
     del lead['website_message_ids']
-    # del lead['opt_out']
-    # del lead['opt_out']
-    # del lead['opt_out']
-    # del lead['opt_out']
+    del lead['campaign_id']
+    del lead['order_ids']
+    del lead['message_ids']
+    del lead['source_id']
+    del lead['message_channel_ids']
+    del lead['medium_id']
     # del lead['opt_out']
     # del lead['opt_out']
     # del lead['opt_out']

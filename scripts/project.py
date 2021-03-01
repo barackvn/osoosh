@@ -23,36 +23,37 @@ uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
 models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
 print(uid_v_9)
 
-done = 5+29+52
+# done = 5+29+52+20
+done = 22#107
 size = 1000 - done
-offset = 0 + done
+offset = 1000 + done
 print('Offset:', offset)
 
-tags = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
-    'project.tags', 'search_read',[[]],{'offset': offset, 'limit': size})
+# tags = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
+#     'project.tags', 'search_read',[[]],{'offset': 0, 'limit': 1000})
 
-for i, tag in enumerate(tags):
-    i = i+1
-    # del p_type['case_default']
-    # del p_type['autostaging_enabled']
-    # del p_type['legend_priority']
-    # del p_type['closed']
-    # del p_type['autostaging_idle_timeout']
-    # del p_type['autostaging_next_stage']
-    # del p_type['legend_blocked']
-    # del p_type['legend_normal']
-    # del p_type['legend_done']
-    # del p_type['project_ids']
-    # del p_type['rating_template_id']
-    # del p_type['survey_id']
+# for i, tag in enumerate(tags):
+#     i = i+1
+#     # del p_type['case_default']
+#     # del p_type['autostaging_enabled']
+#     # del p_type['legend_priority']
+#     # del p_type['closed']
+#     # del p_type['autostaging_idle_timeout']
+#     # del p_type['autostaging_next_stage']
+#     # del p_type['legend_blocked']
+#     # del p_type['legend_normal']
+#     # del p_type['legend_done']
+#     # del p_type['project_ids']
+#     # del p_type['rating_template_id']
+#     # del p_type['survey_id']
 
     
-    print("Processing [%s] %s of %s [%s] %s"%(tag['id'], i, size, 100 * i/size, '%'))
-    tag['database_id_v9'] = tag['id']
-    print(tag)
-    id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'project.tags', 'create', [tag])
+#     print("Processing [%s] %s of %s [%s] %s"%(tag['id'], i, size, 100 * i/size, '%'))
+#     tag['database_id_v9'] = tag['id']
+#     print(tag)
+#     id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'project.tags', 'create', [tag])
 
-    print("Processed [%s] %s of %s [%s] %s"%(tag['id'], i, size, 100 * i/size, '%'))
+#     print("Processed [%s] %s of %s [%s] %s"%(tag['id'], i, size, 100 * i/size, '%'))
 
 
 
@@ -164,6 +165,7 @@ for i, task in enumerate(tasks):
     'project.project', 'search',[[('database_id_v9','=',task['project_id'][0])]],{'limit': size})
         print(project_id)
         task['project_id'] = project_id[0]
+
     
     if task['stage_id']:
         stage_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
@@ -201,6 +203,14 @@ for i, task in enumerate(tasks):
         'res.users', 'search',[[('login','=',user['login'])]],{'limit': size})
             task['users_ids'].extend(user_id)
     
+    if task['tag_ids']:
+        tag_ids = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+        'project.tags', 'search',[[('database_id_v9','in',task['tag_ids'])]],{'limit': size})
+        if tag_ids:
+            task['tag_ids'] = tag_ids
+        else:
+            task['tag_ids'] = False
+    
     del task['users_id']
     del task['reminder_event_id']
     del task['survey_result_ids']
@@ -237,7 +247,7 @@ for i, task in enumerate(tasks):
 #     del task['message_follower_ids']
 #     del task['website_message_ids']
 #     del task['company_id']
-#     del project['analytic_account_id']
+    del task['analytic_account_id']
 #     del project['alias_id']
 #     del project['message_partner_ids']
 #     del project['alias_model_id']
