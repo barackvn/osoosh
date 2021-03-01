@@ -24,9 +24,9 @@ models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, p
 print(uid_v_9)
 
 # done = 5+29+52+20+157
-done = 107+157
+done = 0 #107+157+36+34+664 for #1000  #166+22+42+283+112 for 0###
 size = 1000 - done
-offset = 1000 + done
+offset = 7000 + done
 print('Offset:', offset)
 
 # tags = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
@@ -257,8 +257,11 @@ for i, task in enumerate(tasks):
 #     del project['user_id']
 #     del project['resource_calendar_id']
     
-    print(task)
-    id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'project.task', 'create', [task])
+    # print(task)
+    try:
+        id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'project.task', 'create', [task])
 
-    print("Processed [%s] %s of %s [%s] %s"%(task['id'], i, size, 100 * i/size, '%'))
+        print("Processed [%s] %s of %s [%s] %s"%(task['id'], i, size, 100 * i/size, '%'))
+    except Exception as e:
+        print(e)
 

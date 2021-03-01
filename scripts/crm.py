@@ -23,19 +23,20 @@ uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
 models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
 print(uid_v_9)
 
-done = 34
+done = 0 #648+28+229#34+18+22+181+567#
 size = 1000 - done
-offset = 1000 + done
+offset = 2000 + done
 print('Offset:', offset)
 
 leads = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
-    'crm.lead', 'search_read',[[]],{'offset': offset, 'limit': size})
+    'crm.lead', 'search_read',[[('active','=',False)]],{'offset': offset, 'limit': size})
 
 for i, lead in enumerate(leads):
     i = i+1
 
     lead['company_currency'] = 9
     lead['country_id'] = 56
+    lead['state_id'] = False
     lead['team_id'] = 1
     
     if lead['stage_id']:
@@ -45,8 +46,17 @@ for i, lead in enumerate(leads):
 
     if lead['partner_id']:
         partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-    'res.partner', 'search_read',[[('database_id_v9','=',lead['partner_id'][0])]],{'limit': size})
-        lead['partner_id'] = partner_id[0]['id']
+            'res.partner', 'search_read',[[('database_id_v9','=',lead['partner_id'][0])]],{'limit': size})
+        if partner_id:
+            lead['partner_id'] = partner_id[0]['id']
+        else:
+            lead['partner_id']  = False
+
+    
+    if lead['partner_assigned_id']:
+        partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+            'res.partner', 'search_read',[[('database_id_v9','=',lead['partner_assigned_id'][0])]],{'limit': size})
+        lead['partner_assigned_id'] = partner_id[0]['id']
     
     if lead['company_id']:
         company_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
@@ -54,13 +64,15 @@ for i, lead in enumerate(leads):
         lead['company_id'] = company_id[0]
     
     if lead['user_id']:
-        user = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
-            'res.users', 'search_read',[[('id','=',lead['user_id'][0])]],{'limit': size})[0]
-        lead['user_id'] = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-        'res.users', 'search',[[('login','=',user['login'])]],{'limit': size})[0]
+        try:
+            user = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
+                'res.users', 'search_read',[[('id','=',lead['user_id'][0])]],{'limit': size})[0]
+            lead['user_id'] = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+            'res.users', 'search',[[('login','=',user['login'])]],{'limit': size})[0]
+        except:
+            lead['user_id'] = False
     
     if lead['tag_ids']:
-        print('Tags', lead['tag_ids'])
         tags = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
             'crm.lead.tag', 'search_read',[[('id','in',lead['tag_ids'])]],{'limit': size})
         lead['tag_ids'] = []

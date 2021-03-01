@@ -23,9 +23,9 @@ uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
 models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
 print(uid_v_9)
 
-done = 399
+done = 0
 size = 1000 - done
-offset = 2000 + done
+offset = 6000 + done
 print('Offset:', offset)
 partners = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
     'res.partner', 'search_read',[[('active', '=', True),('parent_id','!=',False)]],{'offset': offset, 'limit': size})
