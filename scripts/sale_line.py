@@ -64,6 +64,7 @@ for i, line in enumerate(order_lines):
             line['product_id'] = product_id[0]['id']
         else:
             line['product_id'] = False
+            continue
     # if line['product_tmpl_id']:
     #     product_tmpl_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
     #     'product.template', 'search_read',[[('database_id_v9','=',line['product_tmpl_id'][0])]],{'limit': size})
