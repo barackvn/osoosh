@@ -359,6 +359,7 @@ for i, line in enumerate(order_lines):
     del line['x_bseprice']
     del line['product_tmpl_id']
     del line['property_ids']
+    del line['tax_id']
     # del line['is_low_forecast']
     # del line['is_low_forecast']
     # del line['is_low_forecast']
