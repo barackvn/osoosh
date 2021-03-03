@@ -298,7 +298,7 @@ for i, line in enumerate(order_lines):
                 del template['alternative_product_ids']
                 del template['accessory_product_ids']
                 del template['related_product_ids']
-                # del template['website_message_ids']
+                del template['attribute_value_ids']
                 
                 
                 
