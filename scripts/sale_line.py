@@ -78,13 +78,16 @@ for i, line in enumerate(order_lines):
                 
 
                 if order['tag_ids']:
-                    tags = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
-                        'crm.order.tag', 'search_read',[[('id','in',order['tag_ids'])]],{'limit': size})
-                    order['tag_ids'] = []
-                    for tag in tags:
-                        tag_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-                        'crm.tag', 'search',[[('name','=',tag['name'])]],{'limit': size})[0]
-                        order['tag_ids'].append(tag_id)
+                    try:
+                        tags = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
+                            'crm.order.tag', 'search_read',[[('id','in',order['tag_ids'])]],{'limit': size})
+                        order['tag_ids'] = []
+                        for tag in tags:
+                            tag_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+                            'crm.tag', 'search',[[('name','=',tag['name'])]],{'limit': size})[0]
+                            order['tag_ids'].append(tag_id)
+                    except:
+                        order['tag_ids'] = []
                 
                 if order['company_id']:
                     company_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
@@ -363,6 +366,7 @@ for i, line in enumerate(order_lines):
     # del line['is_low_forecast']
     # del line['is_low_forecast']
     # del line['is_low_forecast']
+
     
 
     print(line)
