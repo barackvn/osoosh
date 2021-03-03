@@ -299,6 +299,13 @@ for i, line in enumerate(order_lines):
                 del template['accessory_product_ids']
                 del template['related_product_ids']
                 del template['attribute_value_ids']
+                del template['delivery_count']
+                # del template['delivery_count']
+                # del template['delivery_count']
+                # del template['delivery_count']
+                # del template['delivery_count']
+                # del template['delivery_count']
+                # del template['delivery_count']
                 
                 
                 
