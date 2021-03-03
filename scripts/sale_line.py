@@ -213,6 +213,7 @@ for i, line in enumerate(order_lines):
                 template['image_512'] = template['image_small']
                 template['image_1920'] = template['image']
                 template['image_1024'] = template['image_medium']
+                template['combination_indices'] = False
                 template['currency_id'] = 9
                 if template['categ_id']:
                     template['categ_id'] = template['categ_id'][0]
