@@ -261,6 +261,7 @@ for i, line in enumerate(order_lines):
                 del template['company_ids']
                 del template['mo_count']
                 del template['state']
+                del template['name_template']
                 del template['website_style_ids']
                 del template['purchase_count']
                 del template['warranty']
