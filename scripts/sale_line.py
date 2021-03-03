@@ -44,6 +44,8 @@ for i, line in enumerate(order_lines):
         else:
             line['order_partner_id'] = False
     line['currency_id'] = 9
+    if line['tax_id']:
+        line['tax_id'] = [(6, 0, line['tax_id'])]
    
     if line['company_id']:
         company_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
