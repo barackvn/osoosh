@@ -56,8 +56,138 @@ for i, line in enumerate(order_lines):
         if order_id:
             line['order_id'] = order_id[0]
         else:
+            orders = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
+                'sale.order', 'search_read',[[('id','=',line['order_id'][0])]],{'offset': offset, 'limit': size})
+            for order in orders:
+                order['database_id_v9'] = order['id']
+                # order['message_partner_ids'] = 9
+                # order['country_id'] = 56
+                order['currency_id'] = 9
+                order['team_id'] = 1
+                order_line_ids = order['order_line']
+
+                if order['payment_term_id']:
+                    order['payment_term_id'] = order['payment_term_id'][0]
+                if order['pricelist_id']:
+                    order['pricelist_id'] = order['pricelist_id'][0]
+                if order['template_id']:
+                    order['template_id'] = order['template_id'][0]
+                    
+                
+
+                if order['tag_ids']:
+                    tags = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
+                        'crm.order.tag', 'search_read',[[('id','in',order['tag_ids'])]],{'limit': size})
+                    order['tag_ids'] = []
+                    for tag in tags:
+                        tag_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+                        'crm.tag', 'search',[[('name','=',tag['name'])]],{'limit': size})[0]
+                        order['tag_ids'].append(tag_id)
+                
+                if order['company_id']:
+                    company_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+                        'res.company', 'search',[[('name','=',order['company_id'][1])]],{'limit': size})
+                    order['company_id'] = company_id[0]
+                
+                if order['user_id']:
+                    try:
+                        user = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
+                            'res.users', 'search_read',[[('id','=',order['user_id'][0])]],{'limit': size})[0]
+                        order['user_id'] = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+                        'res.users', 'search',[[('login','=',user['login'])]],{'limit': size})[0]
+                    except:
+                        order['user_id'] = False
+
+                if order['partner_id']:
+                    partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+                        'res.partner', 'search_read',[[('database_id_v9','=',order['partner_id'][0])]],{'limit': size})
+                    if partner_id:
+                        order['partner_id'] = partner_id[0]['id']
+                    else:
+                        order['partner_id'] = False
+                
+                if order['partner_invoice_id']:
+                    partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+                        'res.partner', 'search_read',[[('database_id_v9','=',order['partner_invoice_id'][0])]],{'limit': size})
+                    if partner_id:
+                        order['partner_invoice_id'] = partner_id[0]['id']
+                    else:
+                        order['partner_invoice_id'] = False
+                
+                if order['partner_shipping_id']:
+                    partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+                        'res.partner', 'search_read',[[('database_id_v9','=',order['partner_shipping_id'][0])]],{'limit': size})
+                    if partner_id:
+                        order['partner_shipping_id'] = partner_id[0]['id']
+                    else:
+                        order['partner_shipping_id'] = False
+                
+                
+                # if order['opportunity_id']:
+                #     opportunity_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+                #         'crm.lead', 'search_read',[[('database_id_v9','=',order['opportunity_id'][0])]],{'limit': size})
+                #     if opportunity_id:
+                #         order['opportunity_id'] = opportunity_id[0]['id']
+                #     else:
+                #         order['opportunity_id'] = False
+                
+                if order['tasks_ids']:
+                    task_ids = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
+                        'project.task', 'search',[[('database_id_v9','in',order['tasks_ids'])]],{'limit': size})
+                    if task_ids:
+                        order['tasks_ids'] = task_ids
+                    else:
+                        order['tasks_ids'] = []
+                        
+
+
+                del order['message_partner_ids']
+                del order['event_ids']
+                del order['source_id']
+                del order['invoice_ids']
+                del order['attendee_ids']
+                del order['message_ids']
+                del order['warehouse_id']
+                del order['website_message_ids']
+                del order['message_channel_ids']
+                del order['medium_id']
+                del order['message_follower_ids']
+                del order['options']
+                del order['has_stock_reservation']
+                del order['x_admin_backend']
+                del order['template_id']
+                del order['message_last_post']
+                del order['payment_tx_id']
+                del order['payment_acquirer_id']
+                del order['has_delivery']
+                del order['invoice_shipping_on_delivery']
+                del order['is_stock_reservable']
+                del order['requested_date']
+                del order['attachment_count']
+                del order['x_executive_date']
+                del order['quote_viewed']
+                del order['product_id']
+                del order['delivery_price']
+                del order['procurement_group_id']
+                del order['opportunity_id']
+                # del order['order_line']
+                del order['joined_event_ids']
+                del order['cancel_reason_id']
+                # del order['options']
+                # del order['options']
+                # del order['options']
+                # del order['options']
+                # del order['options']
+                # del order['options']
+                # del order['options']
+                # del order['options']
+
+                # print(order)
+                del order['order_line']
+                line['order_id'] = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'sale.order', 'create', [order])
+                print('Created Order')
             print('No order_id')
-            continue
+            
 
     if line['product_uom']:
         line['product_uom'] = line['product_uom'][0]
