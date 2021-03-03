@@ -306,7 +306,7 @@ for i, line in enumerate(order_lines):
 
                 line['product_id'] = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'product.product', 'create', [template])
                 models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'product.product', 'write', [[id], {
-                    'list_price': template['list_price']
+                    'list_price': template['list_price']})
                 print('Created Product')
             print('No product')
             
