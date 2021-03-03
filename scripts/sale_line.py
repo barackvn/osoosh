@@ -31,6 +31,9 @@ order_lines = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
 'sale.order.line', 'search_read',[[]],{'offset': offset, 'limit': size})
 
 for i, line in enumerate(order_lines):
+    i = i+1
+    print("Processing [%s] %s of %s [%s] %s"%(line['id'], i, size, 100 * i/size, '%'))
+    
     line['database_id_v9'] = line['id']
     if line['order_partner_id']:
         partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
@@ -52,6 +55,7 @@ for i, line in enumerate(order_lines):
         if order_id:
             line['order_id'] = order_id[0]
         else:
+            print('No order_id')
             continue
 
     if line['product_uom']:
@@ -59,11 +63,12 @@ for i, line in enumerate(order_lines):
     
     if line['product_id']:
         product_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-        'product.product', 'search_read',[[('name','=',line['product_id'][1])]],{'limit': size})
+        'product.product', 'search',[[('name','=',line['product_id'][1])]],{'limit': size})
         if product_id:
-            line['product_id'] = product_id[0]['id']
+            line['product_id'] = product_id[0]
         else:
             line['product_id'] = False
+            print('No product')
             continue
     # if line['product_tmpl_id']:
     #     product_tmpl_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
@@ -82,6 +87,7 @@ for i, line in enumerate(order_lines):
             'res.users', 'search',[[('login','=',user['login'])]],{'limit': size})[0]
         except:
             line['salesman_id'] = False
+            print('No salesman_id')
     
     
     del line['event_ticket_id']
