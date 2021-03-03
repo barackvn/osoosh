@@ -33,6 +33,7 @@ order_lines = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
 for i, line in enumerate(order_lines):
     i = i+1
     print("Processing [%s] %s of %s [%s] %s"%(line['id'], i, size, 100 * i/size, '%'))
+    print(line)
     
     line['database_id_v9'] = line['id']
     if line['order_partner_id']:
