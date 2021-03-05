@@ -199,7 +199,7 @@ for i, line in enumerate(order_lines):
     
     if line['product_id']:
         product_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-        'product.product', 'search',[[('name','=',line['product_tmpl_id'][1])]],{'limit': size})
+            'product.product', 'search',[[('name','=',line['product_tmpl_id'][1])]],{'limit': 1})
         if product_id:
             line['product_id'] = product_id[0]
         else:
