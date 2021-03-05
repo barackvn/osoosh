@@ -5,6 +5,7 @@ import datetime
 import xml.etree.ElementTree as ET
 import logging
 import base64
+import requests
 
 _logger = logging.getLogger(__name__)
 
@@ -63,21 +64,29 @@ class MpohodaAPI():
             self.authorization_code =  base64.b64encode(self.user+':'+self.password)
     
 
-    def get_payment_types(self, registry):
+    def get_payment_types(self):
         payload = """<?xml version="1.0" encoding="Windows-1250"?>
-                <dat:dataPack version="2.0" id="Ex008" ico="%s" application="StwTest" note="Žádost o seznamy" 
-                xmlns:dat="http://www.stormware.cz/schema/version_2/data.xsd" 
-                xmlns:lst="http://www.stormware.cz/schema/version_2/list.xsd">
+                        <dat:dataPack version="2.0" id="Ex008" ico="%s" application="StwTest" note="Žádost o seznamy" 
+                        xmlns:dat="http://www.stormware.cz/schema/version_2/data.xsd" 
+                        xmlns:lst="http://www.stormware.cz/schema/version_2/list.xsd">
 
-                    <dat:dataPackItem id="SC001" version="2.0">
-                <lst:listBankAccountRequest version="2.0" bankAccountVersion="2.0">
-                <lst:requestBankAccount> </lst:requestBankAccount>
-                </lst:listBankAccountRequest>
-                    </dat:dataPackItem>
+                            <dat:dataPackItem id="SC001" version="2.0">
+                        <lst:listBankAccountRequest version="2.0" bankAccountVersion="2.0">
+                        <lst:requestBankAccount> </lst:requestBankAccount>
+                        </lst:listBankAccountRequest>
+                            </dat:dataPackItem>
 
-                </dat:dataPack>"""%self.registry
+                    </dat:dataPack>"""%self.registry
+        headers = {
+            'Stw-Authorization': 'Basic {}'.format(self.authorization_code),
+            'Authorization': 'Basic {}'.format(self.authorization_code),
+            'Content-Type': 'text/plain',
+        }
+
+        response = requests.request("POST", self.host, data=payload, headers=headers)
+        print(response)
         
-        
+
         
 
         
