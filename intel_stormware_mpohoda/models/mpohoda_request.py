@@ -83,7 +83,7 @@ class MpohodaAPI():
             'Content-Type': 'text/plain',
         }
 
-        response = requests.request("POST", self.host, data=payload, headers=headers)
+        response = requests.request("POST", self.host, data=payload, headers=headers) 
         print(response)
         
 
