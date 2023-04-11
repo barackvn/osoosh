@@ -13,38 +13,34 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 
 class PartnerEndpoints(http.Controller):
     def validate_request(self, token):
-        if token and token == request.env["ir.config_parameter"].sudo().get_param(
-            "partner_endpoint_auth_token"
-        ):
-            return True
-        return False
+        return bool(
+            token
+            and token
+            == request.env["ir.config_parameter"]
+            .sudo()
+            .get_param("partner_endpoint_auth_token")
+        )
 
     def prepare_partner_data(self, partner_id):
         return {
             "id": partner_id.id,
-            "company_registry": partner_id.company_registry
-            if partner_id.company_registry
-            else "",
+            "company_registry": partner_id.company_registry or "",
             "name": partner_id.name,
             "street": partner_id.street,
-            "street2": partner_id.street2 if partner_id.street2 else "",
-            "city": partner_id.city if partner_id.city else "",
+            "street2": partner_id.street2 or "",
+            "city": partner_id.city or "",
             "zip": partner_id.zip if partner_id.city else "",
             "country": partner_id.country_id.name if partner_id.country_id else "",
             "state": partner_id.state_id.name if partner_id.state_id else "",
             "active": partner_id.active,
-            "website": partner_id.website if partner_id.website else "",
-            "email": partner_id.email if partner_id.email else "",
-            "phone": partner_id.phone if partner_id.phone else "",
-            "mobile": partner_id.mobile if partner_id.mobile else "",
-            "director": partner_id.director if partner_id.director else "",
+            "website": partner_id.website or "",
+            "email": partner_id.email or "",
+            "phone": partner_id.phone or "",
+            "mobile": partner_id.mobile or "",
+            "director": partner_id.director or "",
             "write_date": partner_id.write_date.strftime(DATETIME_FORMAT),
-            "partner_latitude": partner_id.partner_latitude
-            if partner_id.partner_latitude
-            else "",
-            "partner_longitude": partner_id.partner_longitude
-            if partner_id.partner_longitude
-            else "",
+            "partner_latitude": partner_id.partner_latitude or "",
+            "partner_longitude": partner_id.partner_longitude or "",
             "categories": partner_id.category_id.mapped("name"),
         }
 
@@ -60,7 +56,6 @@ class PartnerEndpoints(http.Controller):
         valid = self.validate_request(post.get("token", False))
         if not valid:
             return wrappers.Response(json.dumps({"error": "Invalid token."}), 400)
-        result = {}
         partner_id = post.get("id", False)
         if partner_id:
             partner_id = (
@@ -68,9 +63,7 @@ class PartnerEndpoints(http.Controller):
                 .sudo()
                 .search([("id", "=", int(partner_id)), ("is_company", "=", True)])
             )
-            if partner_id:
-                result = self.prepare_partner_data(partner_id)
-
+        result = self.prepare_partner_data(partner_id) if partner_id else {}
         return request.make_response(
             json.dumps(result), headers={"content_type": "application/json"}
         )
@@ -93,19 +86,14 @@ class PartnerEndpoints(http.Controller):
             return wrappers.Response(json.dumps({"error": "Invalid token."}), 400)
         limit = post.get("limit", 10000)
         offset = post.get("offset", 0)
-        tag = post.get("tag", False)
-
-        result = []
-
         search_domain = [("is_company", "=", True)]
         search_domain += [("director", "!=", "")]
-        if tag:
-            tag_ids = (
+        if tag := post.get("tag", False):
+            if tag_ids := (
                 request.env["res.partner.category"]
                 .sudo()
                 .search([("name", "=ilike", tag)])
-            )
-            if tag_ids:
+            ):
                 search_domain += [("category_id", "in", tag_ids.ids)]
             else:
                 return request.make_response(
@@ -119,8 +107,7 @@ class PartnerEndpoints(http.Controller):
             .sudo()
             .search(search_domain, limit=limit, offset=offset)
         )
-        for partner_id in partner_ids:
-            result.append(self.prepare_partner_data(partner_id))
+        result = [self.prepare_partner_data(partner_id) for partner_id in partner_ids]
         return request.make_response(
             json.dumps({"partners": result, "count": count, "pages": pages}),
             headers={"content_type": "application/json"},
@@ -133,10 +120,12 @@ class PartnerEndpoints(http.Controller):
             address = {
                 "name": address_id.name,
                 "street": address_id.street,
-                "street2": address_id.street2 if address_id.street2 else "",
-                "city": address_id.city if address_id.city else "",
+                "street2": address_id.street2 or "",
+                "city": address_id.city or "",
                 "zip": address_id.zip if address_id.city else "",
-                "country": address_id.country_id.name if address_id.country_id else "",
+                "country": address_id.country_id.name
+                if address_id.country_id
+                else "",
                 "state": address_id.state_id.name if address_id.state_id else "",
             }
         return {
@@ -148,29 +137,29 @@ class PartnerEndpoints(http.Controller):
             if event_id.date_end
             else "",
             "state": event_id.state,
-            "event_type": event_id.event_type_id.name if event_id.event_type_id else "",
+            "event_type": event_id.event_type_id.name
+            if event_id.event_type_id
+            else "",
             "name": event_id.name,
             "lectore": event_id.user_id.name if event_id.user_id else "",
             "template_id": event_id.sale_order_line_origin.product_id.id
             if event_id.sale_order_line_origin.product_id
             else "",
-            "seats_availability": event_id.seats_availability
-            if event_id.seats_availability
-            else 0,
-            "seats_reserved": count_attendees if count_attendees else 0,
-            "organizer": event_id.organizer_id.name if event_id.organizer_id else "",
-            "organizer_id": event_id.organizer_id.id if event_id.organizer_id else "",
-            "is_event_certificate": event_id.is_event_certificate
-            if event_id.is_event_certificate
+            "seats_availability": event_id.seats_availability or 0,
+            "seats_reserved": count_attendees or 0,
+            "organizer": event_id.organizer_id.name
+            if event_id.organizer_id
             else "",
+            "organizer_id": event_id.organizer_id.id
+            if event_id.organizer_id
+            else "",
+            "is_event_certificate": event_id.is_event_certificate or "",
             "partner_id": partner_id.id if partner_id else "",
-            "event_description": event_id.event_description
-            if event_id.event_description
-            else "",
+            "event_description": event_id.event_description or "",
         }
 
     def convert_sdt_to_utc_sdt(self, t):
-        res = datetime.strptime(t[0:19], "%Y-%m-%dT%H:%M:%S")
+        res = datetime.strptime(t[:19], "%Y-%m-%dT%H:%M:%S")
         if t[-6] == "+":
             res += timedelta(hours=int(t[-5:-3]), minutes=int(t[-2:]))
         elif t[-6] == "-":
@@ -204,10 +193,10 @@ class PartnerEndpoints(http.Controller):
                     ]
                 )
             )
-            if event_id:
-                result = self.prepare_event_data(
-                    event_id, partner_id=False, count_attendees=False
-                )
+        if event_id:
+            result = self.prepare_event_data(
+                event_id, partner_id=False, count_attendees=False
+            )
         return request.make_response(
             json.dumps(result), headers={"content_type": "application/json"}
         )
@@ -254,12 +243,12 @@ class PartnerEndpoints(http.Controller):
                         .sudo()
                         .search(search_domain, limit=limit, offset=offset)
                     )
-                    for event_id in event_ids:
-                        result.append(
-                            self.prepare_event_data(
-                                event_id, partner_id=False, count_attendees=False
-                            )
+                    result.extend(
+                        self.prepare_event_data(
+                            event_id, partner_id=False, count_attendees=False
                         )
+                        for event_id in event_ids
+                    )
             except:
                 return wrappers.Response(
                     json.dumps({"error": "Invalid partner ID."}), 400
@@ -293,18 +282,18 @@ class PartnerEndpoints(http.Controller):
         search_domain = [("website_published", "=", True), ("date_begin", ">=", now)]
         if partner_id:
             try:
-                partner_id = (
+                if partner_id := (
                     request.env["res.partner"]
                     .sudo()
-                    .search([("id", "=", int(partner_id)), ("is_company", "=", True)])
-                )
-                if partner_id:
-                    attendee_ids = (
+                    .search(
+                        [("id", "=", int(partner_id)), ("is_company", "=", True)]
+                    )
+                ):
+                    if attendee_ids := (
                         request.env["event.registration"]
                         .sudo()
                         .search([("partner_id", "=", partner_id.id)])
-                    )
-                    if attendee_ids:
+                    ):
                         search_domain += [
                             ("id", "in", attendee_ids.mapped("event_id").ids)
                         ]
@@ -319,12 +308,12 @@ class PartnerEndpoints(http.Controller):
                             .sudo()
                             .search(search_domain, limit=limit, offset=offset)
                         )
-                        for event_id in event_ids:
-                            result.append(
-                                self.prepare_event_data(
-                                    event_id, partner_id=False, count_attendees=False
-                                )
+                        result.extend(
+                            self.prepare_event_data(
+                                event_id, partner_id=False, count_attendees=False
                             )
+                            for event_id in event_ids
+                        )
             except:
                 return wrappers.Response(
                     json.dumps({"error": "Invalid partner ID."}), 400
@@ -376,12 +365,13 @@ class PartnerEndpoints(http.Controller):
         )
         for partner_id in partner_ids:
             try:
-                partner_id = (
+                if partner_id := (
                     request.env["res.partner"]
                     .sudo()
-                    .search([("id", "=", int(partner_id)), ("is_company", "=", True)])
-                )
-                if partner_id:
+                    .search(
+                        [("id", "=", int(partner_id)), ("is_company", "=", True)]
+                    )
+                ):
                     cr = request.env.cr
                     sql_res = """
                         SELECT cast(CONCAT(SO.partner_id::text,SOL.id::text,EVENT.id::text)as int8) as uniq_number,SO.partner_id as partner_id,PT.id, PT.name, PROJECT.analytic_account_id as project_id, AAA.name as project, (SOL.product_uom_qty - SOL.qty_invoiced) as qty, PPUBLICCAT.id as category_id, PPUBLICCAT.name as category_name, CASE WHEN EVENTREG.event_id is null THEN EVENTREG.event_id = 0 END, EVENTREG.event_id as registration_event_id, COUNT(EVENTREG.event_id) as count_registrated,EMP.id as lectore_id, EMP.name_related as lectore_name, EVENT.active as event_active, to_char(EVENT.date_begin,'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as date_begin, to_char(EVENT.date_end,'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as date_end, EVENT.state as state, event.event_type_id as event_type_id, EVTYPE.name as event_type_name, EVENT.seats_availability as event_seats_availability, EVENT.organizer_id as organizer_id, EVENT.is_event_certificate as is_certificated, EVENT.event_description as description, ADDRESS.id as address_id,ADDRESS.name as address_name,ADDRESS.street as address_street,ADDRESS.street2 as address_street2,ADDRESS.city as address_city,ADDRESS.zip as address_zip,ADDRESS.country_id as address_country
@@ -449,15 +439,13 @@ class PartnerEndpoints(http.Controller):
         :param int offset: Number of records to skip
         :return: json object with http response code
         """
-        result = []
         valid = self.validate_request(post.get("token", False))
         if not valid:
             return wrappers.Response(json.dumps({"error": "Invalid token."}), 400)
         project_ids = (
             request.env["project.project"].sudo().search([("active", "=", True)])
         )
-        for project_id in project_ids:
-            result.append(self.prepare_project_data(project_id))
+        result = [self.prepare_project_data(project_id) for project_id in project_ids]
         return request.make_response(
             json.dumps({"projects": result}),
             headers={"content_type": "application/json"},

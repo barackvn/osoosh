@@ -98,26 +98,19 @@ class MailMessage(models.Model):
         # Check access rights
         self.unlink_rights_check()
 
-        # Update notifications
-        notifications = []
         partner_ids = [partner.id for partner in self.mapped("ref_partner_ids")]
         if self.env.user.partner_id.id not in partner_ids:
             partner_ids.append(self.env.user.partner_id.id)
-        for partner_id in partner_ids:
-            notifications.append(
-                [
-                    (self._cr.dbname, "res.partner", partner_id),
-                    {"type": "deletion", "message_ids": self.ids},
-                ]
-            )
+        notifications = [
+            [
+                (self._cr.dbname, "res.partner", partner_id),
+                {"type": "deletion", "message_ids": self.ids},
+            ]
+            for partner_id in partner_ids
+        ]
         self.env["bus.bus"].sendmany(notifications)
 
-        # Store lead ids from messages in case we want to delete empty leads later
-        lead_ids = []
-        for rec in self.sudo():
-            if rec.model == "crm.lead":
-                lead_ids.append(rec.res_id)
-
+        lead_ids = [rec.res_id for rec in self.sudo() if rec.model == "crm.lead"]
         # Unlink
         if self.env.user.has_group("prt_mail_messages_pro.group_lost"):
             # Check is deleting lost messages
@@ -203,23 +196,20 @@ class MailMessage(models.Model):
         if not self.env.user.has_group("prt_mail_messages.group_move"):
             raise AccessError(_("You cannot move messages!"))
 
-        # Prepare data for notifications. Store old record data
-        old_records = []
-        for message in self:
-            old_records.append(
-                {
-                    "message_id": message.id,
-                    "originalThread": {
-                        "thread_id": message.res_id,
-                        "thread_model": message.model,
-                    },
-                    "movedThread": {
-                        "thread_id": dest_res_id,
-                        "thread_model": dest_model,
-                    },
-                }
-            )
-
+        old_records = [
+            {
+                "message_id": message.id,
+                "originalThread": {
+                    "thread_id": message.res_id,
+                    "thread_model": message.model,
+                },
+                "movedThread": {
+                    "thread_id": dest_res_id,
+                    "thread_model": dest_model,
+                },
+            }
+            for message in self
+        ]
         # Store leads from messages in case we want to delete empty leads later
         leads = False
         if lead_delete:
@@ -248,8 +238,7 @@ class MailMessage(models.Model):
                 [("id", "in", conversation_messages.mapped("res_id"))]
             )
 
-        # Get new parent message
-        parent_message = self.env["mail.message"].search(
+        if parent_message := self.env["mail.message"].search(
             [
                 ("model", "=", dest_model),
                 ("res_id", "=", dest_res_id),
@@ -257,10 +246,7 @@ class MailMessage(models.Model):
             ],
             order="id asc",
             limit=1,
-        )
-
-        # Move messages
-        if parent_message:
+        ):
             self.sudo().write(
                 {
                     "model": dest_model,
@@ -282,20 +268,16 @@ class MailMessage(models.Model):
         if notify and notify != "0":
             subtype = "mail.mt_note" if notify == "1" else "mail.mt_comment"
             body = _("%s messages moved to this record:") % (str(len(self)))
-            # Add messages ref to body:
-            i = 1
             url = (
                 self.env["ir.config_parameter"].sudo().get_param("web.base.url")
                 + "/web#id="
             )
-            for message in self:
+            for i, message in enumerate(self, start=1):
                 body += (
-                    (' <a target="_blank" href="%s">')
-                    % (url + str(message.id) + "&model=mail.message&view_type=form")
-                    + (_("Message %s") % (str(i)))
+                    f' <a target="_blank" href="{url + str(message.id) + "&model=mail.message&view_type=form"}">'
+                    + _("Message %s") % (str(i))
                     + "</a>"
                 )
-                i += 1
             self.env[dest_model].browse([dest_res_id]).message_post(
                 body=body,
                 subject=_("Messages moved"),
@@ -306,22 +288,20 @@ class MailMessage(models.Model):
         if conversations:
             self.env["mail.message"]._delete_conversations(conversations.ids)
 
-        # Update notifications
-        notifications = []
         partner_ids = [partner.id for partner in self.mapped("ref_partner_ids")]
         if self.env.user.partner_id.id not in partner_ids:
             partner_ids.append(self.env.user.partner_id.id)
-        for partner_id in partner_ids:
-            notifications.append(
-                [
-                    (self._cr.dbname, "res.partner", partner_id),
-                    {
-                        "type": "message_updated",
-                        "action": "move",
-                        "message_ids": old_records,
-                    },
-                ]
-            )
+        notifications = [
+            [
+                (self._cr.dbname, "res.partner", partner_id),
+                {
+                    "type": "message_updated",
+                    "action": "move",
+                    "message_ids": old_records,
+                },
+            ]
+            for partner_id in partner_ids
+        ]
         self.env["bus.bus"].sendmany(notifications)
 
         # Update Conversation last message data if moved to Conversation
@@ -390,9 +370,9 @@ class MailMove(models.TransientModel):
         else:
             thread_message_id = self._context.get("thread_message_id", False)
             message_ids = (
-                self._context.get("active_ids", False)
-                if not thread_message_id
-                else [thread_message_id]
+                [thread_message_id]
+                if thread_message_id
+                else self._context.get("active_ids", False)
             )
             if not message_ids or len(message_ids) < 1:
                 return
@@ -472,21 +452,19 @@ class MessageEdit(models.TransientModel):
     def save(self):
         res = super(MessageEdit, self).save()
 
-        # Update notifications
-        notifications = []
         partner_ids = [partner.id for partner in self.message_id.ref_partner_ids]
         if self.env.user.partner_id.id not in partner_ids:
             partner_ids.append(self.env.user.partner_id.id)
-        for partner_id in partner_ids:
-            notifications.append(
-                [
-                    (self._cr.dbname, "res.partner", partner_id),
-                    {
-                        "type": "message_updated",
-                        "action": "edit",
-                        "message_ids": [{"message_id": self.message_id.id}],
-                    },
-                ]
-            )
+        notifications = [
+            [
+                (self._cr.dbname, "res.partner", partner_id),
+                {
+                    "type": "message_updated",
+                    "action": "edit",
+                    "message_ids": [{"message_id": self.message_id.id}],
+                },
+            ]
+            for partner_id in partner_ids
+        ]
         self.env["bus.bus"].sendmany(notifications)
         return res

@@ -19,11 +19,13 @@ class WebsiteEventController(WebsiteEventController):
         tickets = self._process_tickets_details(post)
         request.session["event_id"] = event.id
         question = event.question_ids
-        if not tickets:
-            return False
-        return request.env["ir.ui.view"].render_template(
-            "website_event.registration_attendee_details",
-            {"tickets": tickets, "event": event[0], "question": question},
+        return (
+            request.env["ir.ui.view"].render_template(
+                "website_event.registration_attendee_details",
+                {"tickets": tickets, "event": event[0], "question": question},
+            )
+            if tickets
+            else False
         )
 
     def _process_registration_details(self, details):
@@ -39,7 +41,7 @@ class WebsiteEventController(WebsiteEventController):
             if counter == "0":
                 global_values[field_name] = value
             else:
-                registrations.setdefault(counter, dict())[field_name] = value
+                registrations.setdefault(counter, {})[field_name] = value
         for key, value in global_values.items():
             for registration in registrations.values():
                 registration[key] = value
@@ -122,7 +124,7 @@ class WebsiteEventController(WebsiteEventController):
         # })
 
         event = request.env["event.event"].browse(event)
-        template = "/page/confirm_reg/%s" % (Attendees[0].sudo().id,)
+        template = f"/page/confirm_reg/{Attendees[0].sudo().id}"
         return werkzeug.utils.redirect(template)
 
     # @http.route(
@@ -160,10 +162,11 @@ class WebsiteEventController(WebsiteEventController):
         attendee_orm = request.env["event.registration"].sudo()
         iobj = attendee_orm.sudo().search([("id", "=", int(attendees_id))])
         values = {"attendees": iobj}
-        if not iobj:
-            return json.dumps({"success": "Successfully Error created"})
-        return json.dumps({"success": "Successfully created"})
-        return request.render("event_questions.registration_feedback", values)
+        return (
+            json.dumps({"success": "Successfully created"})
+            if iobj
+            else json.dumps({"success": "Successfully Error created"})
+        )
 
     @http.route(["/page/feedback"], type="http", auth="public", website=True)
     def feedback(self, page=1, **searches):

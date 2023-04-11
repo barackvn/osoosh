@@ -53,28 +53,32 @@ class PaymentAcquirerStripe(models.Model):
         else:
             percentage = self.fees_int_var
             fixed = self.fees_int_fixed
-        fees = (percentage / 100.0 * amount + fixed) / (1 - percentage / 100.0)
-        return fees
+        return (percentage / 100.0 * amount + fixed) / (1 - percentage / 100.0)
 
     def stripe_form_generate_values(self, tx_values):
         self.ensure_one()
-        if self.fees_active:
-            base_url = self.get_base_url()
-            stripe_session_data = {
-                'payment_method_types[]': 'card',
-                'line_items[][amount]': int((tx_values['amount'] + tx_values['fees']) if tx_values['currency'].name in INT_CURRENCIES else float_round((tx_values['amount'] + tx_values['fees']) * 100, 2)),
-                'line_items[][currency]': tx_values['currency'].name,
-                'line_items[][quantity]': 1,
-                'line_items[][name]': tx_values['reference'],
-                'client_reference_id': tx_values['reference'],
-                'success_url': urls.url_join(base_url, StripeController._success_url) + '?reference=%s' % tx_values['reference'],
-                'cancel_url': urls.url_join(base_url, StripeController._cancel_url) + '?reference=%s' % tx_values['reference'],
-                'customer_email': tx_values['partner_email'],
-            }
-            tx_values['session_id'] = self._create_stripe_session(stripe_session_data)
-            return tx_values
-        else:
+        if not self.fees_active:
             return super(PaymentAcquirerStripe, self).stripe_form_generate_values(tx_values)
+        base_url = self.get_base_url()
+        stripe_session_data = {
+            'payment_method_types[]': 'card',
+            'line_items[][amount]': int(
+                (tx_values['amount'] + tx_values['fees'])
+                if tx_values['currency'].name in INT_CURRENCIES
+                else float_round(
+                    (tx_values['amount'] + tx_values['fees']) * 100, 2
+                )
+            ),
+            'line_items[][currency]': tx_values['currency'].name,
+            'line_items[][quantity]': 1,
+            'line_items[][name]': tx_values['reference'],
+            'client_reference_id': tx_values['reference'],
+            'success_url': f"{urls.url_join(base_url, StripeController._success_url)}?reference={tx_values['reference']}",
+            'cancel_url': f"{urls.url_join(base_url, StripeController._cancel_url)}?reference={tx_values['reference']}",
+            'customer_email': tx_values['partner_email'],
+        }
+        tx_values['session_id'] = self._create_stripe_session(stripe_session_data)
+        return tx_values
 
 
 class PaymentTransaction(models.Model):
@@ -105,14 +109,13 @@ class PaymentTransaction(models.Model):
         return res
 
     def _stripe_form_get_invalid_parameters(self, data):
-        if self.provider == 'stripe' and self.acquirer_id.fees_active:
-            invalid_parameters = []
-            if data.get('amount') != int((self.amount + self.fees) if self.currency_id.name in INT_CURRENCIES else float_round((self.amount + self.fees) * 100, 2)):
-                invalid_parameters.append(('Amount', data.get('amount'), self.amount * 100))
-            if data.get('currency').upper() != self.currency_id.name:
-                invalid_parameters.append(('Currency', data.get('currency'), self.currency_id.name))
-            if data.get('payment_intent') and data.get('payment_intent') != self.stripe_payment_intent:
-                invalid_parameters.append(('Payment Intent', data.get('payment_intent'), self.stripe_payment_intent))
-            return invalid_parameters
-        else:
+        if self.provider != 'stripe' or not self.acquirer_id.fees_active:
             return super(PaymentTransaction, self)._stripe_form_get_invalid_parameters(data)
+        invalid_parameters = []
+        if data.get('amount') != int((self.amount + self.fees) if self.currency_id.name in INT_CURRENCIES else float_round((self.amount + self.fees) * 100, 2)):
+            invalid_parameters.append(('Amount', data.get('amount'), self.amount * 100))
+        if data.get('currency').upper() != self.currency_id.name:
+            invalid_parameters.append(('Currency', data.get('currency'), self.currency_id.name))
+        if data.get('payment_intent') and data.get('payment_intent') != self.stripe_payment_intent:
+            invalid_parameters.append(('Payment Intent', data.get('payment_intent'), self.stripe_payment_intent))
+        return invalid_parameters

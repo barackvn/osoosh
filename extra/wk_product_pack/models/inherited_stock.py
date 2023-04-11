@@ -13,9 +13,7 @@ class ProductTemplate(models.Model):
 	
 	def _compute_quantities_dict(self):
 		res = super(ProductTemplate, self)._compute_quantities_dict()
-		if len(self) > 1:
-			pass
-		else:
+		if len(self) <= 1:
 			ACT_VARIANTS = self.mapped('product_variant_ids')
 			variants_available = self.mapped('product_variant_ids')._product_available()
 			prod_available = {}
@@ -38,7 +36,7 @@ class ProductTemplate(models.Model):
 							variants_list = [template.product_variant_ids.id]
 						for pp in template.wk_product_pack:
 							variants_list.append(pp.product_id.id)
-						
+
 						variants = self.env['product.product'].browse(variants_list)
 						variants_available.update(variants._product_available())
 						qty_avail = []
@@ -89,9 +87,7 @@ class SaleOrderLine(models.Model):
 	
 	def _get_delivered_qty(self):
 		res = super(SaleOrderLine, self)._get_delivered_qty()
-		if self.product_id.is_pack:
-			return self.product_uom_qty
-		return res
+		return self.product_uom_qty if self.product_id.is_pack else res
 	
 	@api.depends('product_id', 'customer_lead', 'product_uom_qty', 'product_uom', 'order_id.warehouse_id', 'order_id.commitment_date')
 	def _compute_qty_at_date(self):

@@ -78,9 +78,9 @@ class MailComposer(models.TransientModel):
         wizard when sending an email related a previous email (parent_id) or
         a document (model, res_id). This is based on previously computed default
         values. """
-        result = {}
         subj = self._context.get("default_subject", False)
         subject = tools.ustr(subj) if subj else False
+        result = {}
         if not subject:
             if values.get("parent_id"):
                 parent = self.env["mail.message"].browse(values.get("parent_id"))
@@ -90,11 +90,14 @@ class MailComposer(models.TransientModel):
                     result["model"] = parent.model
                 if not values.get("res_id"):
                     result["res_id"] = parent.res_id
-                partner_ids = values.get("partner_ids", list()) + [
+                partner_ids = values.get("partner_ids", []) + [
                     (4, xid)
                     for xid in parent.partner_ids.filtered(
                         lambda rec: rec.email
-                        not in [self.env.user.email, self.env.user.company_id.email]
+                        not in [
+                            self.env.user.email,
+                            self.env.user.company_id.email,
+                        ]
                     ).ids
                 ]
                 if (
@@ -118,8 +121,10 @@ class MailComposer(models.TransientModel):
                 else _("Re:")
             )
 
-            if subject and not (
-                subject.startswith("Re:") or subject.startswith(re_prefix)
+            if (
+                subject
+                and not subject.startswith("Re:")
+                and not subject.startswith(re_prefix)
             ):
                 subject = " ".join((re_prefix, subject))
 

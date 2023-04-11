@@ -22,18 +22,12 @@ class Task(models.Model):
 
 
     def log_meeting(self, meeting_subject, meeting_date, duration):
-        if not duration:
-            duration = _("unknown")
-        else:
-            duration = str(duration)
+        duration = str(duration) if duration else _("unknown")
         meet_date = fields.Datetime.from_string(meeting_date)
         meeting_usertime = fields.Datetime.to_string(
             fields.Datetime.context_timestamp(self, meet_date)
         )
-        html_time = "<time datetime='%s+00:00'>%s</time>" % (
-            meeting_date,
-            meeting_usertime,
-        )
+        html_time = f"<time datetime='{meeting_date}+00:00'>{meeting_usertime}</time>"
         message = _(
             "Meeting scheduled at '%s'<br> Subject: %s <br> Duration: %s hour(s)"
         ) % (html_time, meeting_subject, duration)
@@ -42,7 +36,7 @@ class Task(models.Model):
 
     def action_schedule_meeting(self):
         self.ensure_one()
-        description = "Task: " + self.name
+        description = f"Task: {self.name}"
         action = self.env.ref("calendar.action_calendar_event").read()[0]
         partner_ids = self.env.user.partner_id.ids
         if self.partner_id:

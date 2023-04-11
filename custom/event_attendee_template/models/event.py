@@ -43,17 +43,17 @@ class Event(models.Model):
         att_ids = self._origin.mapped("registration_ids").filtered(
             lambda r: (r.sale_order_line_id.id in so_line_ids or r.task_id.sale_line_id.id in so_line_ids) and r.state == "done"
         )
-        _logger.info('registration_ids %s'%self.mapped("registration_ids"))
-        _logger.info('att_ids %s'%att_ids)
+        _logger.info(f'registration_ids {self.mapped("registration_ids")}')
+        _logger.info(f'att_ids {att_ids}')
         if att_ids:
             for att_id in att_ids:
-                _logger.info('ATT %s'%att_id)
+                _logger.info(f'ATT {att_id}')
                 if not att_id.certificate_ids and att_id.event_id.is_event_certificate:
                     cert_id = self.env["event.certificate"].create({
                                 "attendee_id": att_id.id,
                                 "invoice_id": invoice_id,
                                 "release_date": datetime.now().strftime("%Y-%m-%d")})
-                    _logger.info('CERTIFICATE %s'%cert_id)
+                    _logger.info(f'CERTIFICATE {cert_id}')
             cert_ids = att_ids.mapped("certificate_ids")
             for c in cert_ids:
                 # self.env["ir.actions.report"].get_pdf(c, "event_custom_4devnet.report_certificate")
@@ -99,10 +99,7 @@ class Attendee(models.Model):
             self.is_a_template or ("is_a_template" in vals and vals["is_a_template"])
         ) and any(f in vals for f in template_fields):
             att_ids_to_update = self.search([("template_id", "=", self.id)])
-            values_to_update = {}
-            for f in template_fields:
-                if f in vals:
-                    values_to_update[f] = vals[f]
+            values_to_update = {f: vals[f] for f in template_fields if f in vals}
             for att_id in att_ids_to_update:
                 att_id.write(values_to_update)
         return res
@@ -133,27 +130,27 @@ class Attendee(models.Model):
         # If attendee is not a template, check if data on the template is complete
         # Migration reqt: Current attendees in db should be marked as a template or if not, assign a template
         for att in self:
-            if att.sale_order_state not in ["draft", "cancel"]:
-                if att.is_a_template:
-                    can_send_reminder = not (att.name and att.email)
-                    if can_send_reminder and att.event_id.is_event_certificate:
-                        can_send_reminder = not (
-                            att.attendee_title and att.attendee_dob
-                        )
-                    att.can_send_reminder = can_send_reminder
-                elif att.template_id:
-                    template_id = att.template_id
-                    can_send_reminder = not (template_id.name and template_id.email)
-                    event_template_id = (
-                        att.sale_order_line_id.product_id.event_template_id
+            if (
+                att.sale_order_state not in ["draft", "cancel"]
+                and att.is_a_template
+            ):
+                can_send_reminder = not (att.name and att.email)
+                if can_send_reminder and att.event_id.is_event_certificate:
+                    can_send_reminder = not (
+                        att.attendee_title and att.attendee_dob
                     )
-                    if can_send_reminder and event_template_id.is_event_certificate:
-                        can_send_reminder = not (
-                            template_id.attendee_title and template_id.attendee_dob
-                        )
-                    att.can_send_reminder = can_send_reminder
-                else:
-                    att.can_send_reminder = False
+                att.can_send_reminder = can_send_reminder
+            elif att.sale_order_state not in ["draft", "cancel"] and att.template_id:
+                template_id = att.template_id
+                can_send_reminder = not (template_id.name and template_id.email)
+                event_template_id = (
+                    att.sale_order_line_id.product_id.event_template_id
+                )
+                if can_send_reminder and event_template_id.is_event_certificate:
+                    can_send_reminder = not (
+                        template_id.attendee_title and template_id.attendee_dob
+                    )
+                att.can_send_reminder = can_send_reminder
             else:
                 att.can_send_reminder = False
 
@@ -171,5 +168,5 @@ class Attendee(models.Model):
                 att_ids_to_update = self.search([("template_id", "=", self.id)])
                 for att_id_to_update in att_ids_to_update:
                     att_id_to_update.write(values)
-            elif not att_id.is_a_template and att_id.template_id:
+            elif att_id.template_id:
                 att_id.template_id.write(values)

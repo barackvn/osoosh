@@ -42,8 +42,6 @@ try:
     import qrcode
 except ImportError:
     QR_ENABLE = False
-    pass
-
 # Dict for parsing phone labels
 PHONE_TYPES = {
     "0": "MAIN",
@@ -150,11 +148,8 @@ class PRTPhoneExport(models.TransientModel):
             if not self.name_format:
                 continue
 
-            # Prepare list of partners
-            partner_ids = self._context.get("active_ids", False)
-            if partner_ids:
-                file = self.generate_vcard(partner_ids, self.export_picture)
-                if file:
+            if partner_ids := self._context.get("active_ids", False):
+                if file := self.generate_vcard(partner_ids, self.export_picture):
                     # Create new attachments
                     att_id = self.env["ir.attachment"].create(
                         {

@@ -43,9 +43,7 @@ class ResConfigSettings(models.TransientModel):
             )
         )
         for record in self:
-            record.partner_names_order_changed = bool(
-                record.partner_names_order != current
-            )
+            record.partner_names_order_changed = record.partner_names_order != current
 
     def _partners_for_recalculating(self):
         return self.env["res.partner"].search(

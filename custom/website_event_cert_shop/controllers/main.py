@@ -12,10 +12,11 @@ class ExtendedWebsiteEventController(WebsiteEventController):
         for registration in registrations:
             if not registration.get("attendee_dob"):
                 registration["attendee_dob"] = None
-            answer_ids = []
-            for key, value in registration.items():
-                if key.startswith("answer_ids-"):
-                    answer_ids.append([4, int(value)])
+            answer_ids = [
+                [4, int(value)]
+                for key, value in registration.items()
+                if key.startswith("answer_ids-")
+            ]
             registration["answer_ids"] = answer_ids
         return registrations
 
@@ -72,7 +73,7 @@ class ExtendedLateReg(LateReg):
         post.pop("sale_order_id")
         for key, value in post.items():
             att_id, field_name = key.split("-", 1)
-            registrations.setdefault(att_id, dict())[field_name] = value
+            registrations.setdefault(att_id, {})[field_name] = value
         for att_id in registrations:
             if (
                 "attendee_dob" in registrations[att_id]

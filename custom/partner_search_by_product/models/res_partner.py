@@ -15,6 +15,5 @@ class ResPartner(models.Model):
     def _compute_products(self):
         product_ids = []
         for sale_order_id in self.sale_order_ids:
-            for line in sale_order_id.order_line:
-                product_ids.append(line.product_id.id)
+            product_ids.extend(line.product_id.id for line in sale_order_id.order_line)
         self.product_ids = self.env["product.product"].browse(list(set(product_ids)))

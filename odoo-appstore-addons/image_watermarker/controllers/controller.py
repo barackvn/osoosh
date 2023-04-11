@@ -60,9 +60,6 @@ class Binary(Binary):
         if watermarker_id.positioning == 'vertical':
             angle = 45
             watermark = watermark.rotate(angle, expand=1)
-        else:
-            pass
-
         transparent_mode = 'RGBA' if wk_image_mode == 'P' else 'RGB'
         transparent = Image.new(mode=transparent_mode,
                                 size=wk_image.size, color=(0, 0, 0, 0))
@@ -131,7 +128,12 @@ class Binary(Binary):
             download=download, width=width, height=height, crop=crop, access_token=access_token
         )
         watermarker_id = None
-        if (id != None) and (model=='product.template' or model=='product.image') and field in ['image_1920','image_1024','image_512','image_256','image_128']:
+        if (
+            id != None
+            and model in ['product.template', 'product.image']
+            and field
+            in ['image_1920', 'image_1024', 'image_512', 'image_256', 'image_128']
+        ):
             template = model == 'product.template' and request.env[model].browse(int(id)).sudo() or request.env[model].browse(int(id)).sudo().product_tmpl_id.sudo()
             product_variant_ids = len(template) and template.product_variant_ids or 0
             product_variant_ids = product_variant_ids and product_variant_ids.filtered(lambda variant: variant.watermarker_id)

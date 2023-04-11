@@ -32,7 +32,7 @@ class Attendee(models.Model):
         result = action.read()[0]
         # override the context to get rid of the default filtering on picking type
         result["context"] = {}
-        certificate_ids = sum([r.certificate_ids.ids for r in self], [])
+        certificate_ids = sum((r.certificate_ids.ids for r in self), [])
         # choose the view_mode accordingly
         if len(certificate_ids) > 1:
             result["domain"] = (
@@ -56,8 +56,7 @@ class Attendee(models.Model):
     def generate_event_certificates_by_so_lines(self, so_line_ids):
         cert_ids, attachment_ids = False, False
         att_ids = self.search([("sale_order_line_id", "in", so_line_ids)])
-        att_ids = att_ids.filtered(lambda r: r.event_id.is_event_certificate)
-        if att_ids:
+        if att_ids := att_ids.filtered(lambda r: r.event_id.is_event_certificate):
             att_ids.generate_event_certificates()
             cert_ids = att_ids.mapped("certificate_ids")
             for c in cert_ids:

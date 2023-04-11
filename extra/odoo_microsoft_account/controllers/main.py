@@ -35,14 +35,14 @@ class OAuthLogin(Home):
         base_url = request.env["ir.config_parameter"].sudo().get_param("web.base.url")
         for provider in providers:
             if provider.get("id") == provider_microsoft.id:
-                return_url = base_url + "/auth_oauth/microsoft/signin"
+                return_url = f"{base_url}/auth_oauth/microsoft/signin"
                 params = dict(
                     client_id=provider["client_id"],
                     response_type="code",
                     redirect_uri=return_url,
                 )
             else:
-                return_url = base_url + "/auth_oauth/signin"
+                return_url = f"{base_url}/auth_oauth/signin"
                 state = self.get_state(provider)
                 params = dict(
                     response_type="token",
@@ -51,10 +51,9 @@ class OAuthLogin(Home):
                     scope=provider["scope"],
                     state=json.dumps(state),
                 )
-            provider["auth_link"] = "%s?%s" % (
-                provider["auth_endpoint"],
-                werkzeug.url_encode(params),
-            )
+            provider[
+                "auth_link"
+            ] = f'{provider["auth_endpoint"]}?{werkzeug.url_encode(params)}'
         return providers
 
 
@@ -66,7 +65,6 @@ class OAuthController(http.Controller):
         csrf=False,
         website=True,
     )
-    # @fragment_to_query_string
     def microsoft_signin(self, **kw):
         pool = request.env
         root_url = (
@@ -106,7 +104,7 @@ class OAuthController(http.Controller):
             # response = conn.getresponse()
             # data = simplejson.loads(response.read())
             headers = {
-                "Authorization": "Bearer %s" % access_token,
+                "Authorization": f"Bearer {access_token}",
                 "Accept": "application/json",
             }
 
@@ -139,12 +137,11 @@ class OAuthController(http.Controller):
                 )
             )
             request.cr.commit()
-            return login_and_redirect(*credentials, redirect_url=root_url + "web?")
+            return login_and_redirect(*credentials, redirect_url=f"{root_url}web?")
         except AttributeError:
             # auth_signup is not installed
             _logger.error(
-                "auth_signup not installed on database %s: oauth sign up cancelled."
-                % (request.cr.dbname,)
+                f"auth_signup not installed on database {request.cr.dbname}: oauth sign up cancelled."
             )
             url = "/web/login?oauth_error=1"
         except odoo.exceptions.AccessDenied:
@@ -158,6 +155,6 @@ class OAuthController(http.Controller):
             return redirect
         except Exception as e:
             # signup error
-            _logger.exception("OAuth2: %s" % str(e))
+            _logger.exception(f"OAuth2: {str(e)}")
             url = "web/login?oauth_error=2"
         return set_cookie_and_redirect(root_url + url)

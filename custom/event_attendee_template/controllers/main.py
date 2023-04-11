@@ -10,16 +10,9 @@ import re
 
 class AttTemplateWebsiteEvent(ExtendedWebsiteEventController):
     def _process_registration_details(self, details):
-        # event_id = details.get("_event_id")
-        registrations = super(
+        return super(
             ExtendedWebsiteEventController, self
         )._process_registration_details(details)
-        # event_id = request.env["event.registration"].sudo().browse([int(event_id)])
-
-        # for registration in registrations:
-        #     registration["event_id"] = event_id.id
-        #     registration["is_a_template"] = True
-        return registrations
 
 
 class AttTemplateLateReg(ExtendedLateReg):
@@ -57,7 +50,9 @@ class AttTemplateLateReg(ExtendedLateReg):
                     lambda a: not a.sale_order_line_id.product_id.product_tmpl_id.is_learning_product
                 )
                 # attendee_events = attendee_ids.mapped("event_id")
-                _logger.info("Available Events:{} - {}".format(all_attendee_ids.ids, all_attendee_ids.mapped('event_id')))
+                _logger.info(
+                    f"Available Events:{all_attendee_ids.ids} - {all_attendee_ids.mapped('event_id')}"
+                )
                 for event in sale_order.order_line.mapped('product_id.event_template_id'):
                     res[event.id] = {"event_obj": event, "tickets": {}}
                     tickets = attendee_ids.mapped("event_ticket_id").filtered(
@@ -68,24 +63,24 @@ class AttTemplateLateReg(ExtendedLateReg):
                             "ticket_obj": ticket,
                             "attendees": event.registration_ids,
                         }
-                _logger.info("Processed Available Events:{} - {}".format(all_attendee_ids.ids, res))
-                # learning_order_line_ids = sale_order.order_line.filtered(
-                #     lambda l: l.product_id.product_tmpl_id.is_learning_product
-                # )
+                _logger.info(f"Processed Available Events:{all_attendee_ids.ids} - {res}")
+                        # learning_order_line_ids = sale_order.order_line.filtered(
+                        #     lambda l: l.product_id.product_tmpl_id.is_learning_product
+                        # )
 
-                # for l in learning_order_line_ids:
-                #     res["learning-so-line-id--" + str(l.id)] = {
-                #         "event_obj": l.product_id.event_template_id,
-                #         "tickets": {
-                #             l.product_id.ticket_id.id: {
-                #                 "ticket_obj": l.product_id.ticket_id,
-                #                 "attendees": all_attendee_ids.filtered(
-                #                     lambda a: a.is_a_template
-                #                     and a.sale_order_line_id.id == l.id
-                #                 ),
-                #             }
-                #         },
-                #     }
+                        # for l in learning_order_line_ids:
+                        #     res["learning-so-line-id--" + str(l.id)] = {
+                        #         "event_obj": l.product_id.event_template_id,
+                        #         "tickets": {
+                        #             l.product_id.ticket_id.id: {
+                        #                 "ticket_obj": l.product_id.ticket_id,
+                        #                 "attendees": all_attendee_ids.filtered(
+                        #                     lambda a: a.is_a_template
+                        #                     and a.sale_order_line_id.id == l.id
+                        #                 ),
+                        #             }
+                        #         },
+                        #     }
         return request.render(
             "website_event_late_reg.complete_registration",
             {"valid": valid, "res": res, "sale_order": sale_order},
@@ -98,7 +93,7 @@ class AttTemplateLateReg(ExtendedLateReg):
         post.pop("sale_order_id")
         for key, value in post.items():
             att_id, field_name = key.split("-", 1)
-            registrations.setdefault(att_id, dict())[field_name] = value
+            registrations.setdefault(att_id, {})[field_name] = value
         for att_id in registrations:
             if (
                 "attendee_dob" in registrations[att_id]

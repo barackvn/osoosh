@@ -100,8 +100,6 @@ class Task(models.Model):
     def join_event_from_task(self, event_id, ticket_id):
         line = self.sale_line_id
         product_id = line.product_id
-        event_template = product_id.product_tmpl_id.event_template_id
-
         # Only write on the event_id field for the first event that will be linked to the sales order line
         if not line.event_id:
             line.write({"event_id": event_id.id, "event_ticket_id": ticket_id.id})
@@ -114,6 +112,8 @@ class Task(models.Model):
 
         if not template_attendee_ids:
             counter = 0
+            event_template = product_id.product_tmpl_id.event_template_id
+
             while counter < line.product_uom_qty:
                 vals = {
                     "event_id": event_template.id,

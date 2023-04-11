@@ -59,8 +59,8 @@ class res_users(models.Model):
     @api.model
     def microsoft_auth_oauth(self, provider, params):
         access_token = params.get("access_token")
-        login = self._microsoft_auth_oauth_signin(provider, params)
-        if not login:
+        if login := self._microsoft_auth_oauth_signin(provider, params):
+            # return user credentials
+            return (self._cr.dbname, login, access_token)
+        else:
             raise odoo.exceptions.AccessDenied()
-        # return user credentials
-        return (self._cr.dbname, login, access_token)

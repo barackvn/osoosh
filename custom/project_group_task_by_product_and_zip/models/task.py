@@ -20,7 +20,7 @@ class Task(models.Model):
     def _get_zip_first_two_digits(self):
         for task in self:
             task.zip_first_two_digits = (
-                task.partner_id.zip[0:2]
+                task.partner_id.zip[:2]
                 if task.partner_id.zip and len(task.partner_id.zip) >= 2
                 else ""
             )

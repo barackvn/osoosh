@@ -54,27 +54,28 @@ class TripDetails(models.Model):
         return super().write(vals)
 
     def cron_import_trip_details(self, to_date=False, from_date=False):
-        connections = self.env['traccar.configure'].search([('active', '=', True)], limit=1)
-        if connections:
+        if connections := self.env['traccar.configure'].search(
+            [('active', '=', True)], limit=1
+        ):
             try:
-                to_date = to_date if to_date else datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-                from_date = from_date if from_date else (fields.Datetime.from_string(datetime.now()) - timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%SZ")
-                devices = self.getDevices(connection=connections)
-                if devices:
+                to_date = to_date or datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+                from_date = from_date or (
+                    fields.Datetime.from_string(datetime.now())
+                    - timedelta(minutes=10)
+                ).strftime("%Y-%m-%dT%H:%M:%SZ")
+                if devices := self.getDevices(connection=connections):
                     for device in devices:
-                        url = "{}/api/reports/route?deviceId={}&from={}&to={}".format(connections.name, device, from_date, to_date)
+                        url = f"{connections.name}/api/reports/route?deviceId={device}&from={from_date}&to={to_date}"
                         response = requests.get(url, auth=(connections.user, connections.pwd))
                         if response.status_code == 200:
                             route_reports = response.json()
                             for route_report in route_reports:
-                                data = {}
                                 device_id = route_report.get('deviceId', '')
                                 vehicleObjs = self.env['fleet.vehicle'].search([('device_record_id', '=', device_id)], limit=1)
-                                if vehicleObjs and vehicleObjs.is_traccar:
-                                    vehicleObjs.is_online = 'online' if device_id in devices and devices[device_id] == 'online' else 'offline'
-                                    data['vehicle_id'] = vehicleObjs.id
-                                else:
+                                if not vehicleObjs or not vehicleObjs.is_traccar:
                                     continue
+                                vehicleObjs.is_online = 'online' if device_id in devices and devices[device_id] == 'online' else 'offline'
+                                data = {'vehicle_id': vehicleObjs.id}
                                 travel_id = route_report.get('id', '')
                                 resp = self.env['trip.details'].search([('travel_id', '=', travel_id)], limit=1, order="id desc")
                                 if resp:
@@ -96,21 +97,24 @@ class TripDetails(models.Model):
                                 data['device_id'] = device_id
                                 self.create(data)
                         elif response.status_code == 401:
-                            _logger.info(('Traccar Unauthorized Access: Check traccar credentials %s') % response.text)
-                        else :
-                            _logger.info(('Traccar Connection Error: %s') % response.text)
+                            _logger.info(
+                                f'Traccar Unauthorized Access: Check traccar credentials {response.text}'
+                            )
+                        else:
+                            _logger.info(f'Traccar Connection Error: {response.text}')
             except Exception as e:
                 _logger.info(('Error!\Traccar Connection Error: %s') % e)
         return True
 
     def getDevices(self, uniqueId=False, connection=False):
         devices = False
-        connection = connection if connection else self.env['traccar.configure'].search([('active', '=', True)], limit=1)
-        if connection:
-            url = connection.name + "/api/devices"
+        if connection := connection or self.env['traccar.configure'].search(
+            [('active', '=', True)], limit=1
+        ):
+            url = f"{connection.name}/api/devices"
             if uniqueId:
                 uniqueId = str(uniqueId)
-                url = "{}?uniqueId={}".format(url, uniqueId)
+                url = f"{url}?uniqueId={uniqueId}"
             try:
                 headers = {'Content-Type' : 'application/json'}
                 response = requests.get(url, auth=(connection.user, connection.pwd), headers=headers)
@@ -119,14 +123,14 @@ class TripDetails(models.Model):
                     devices = {device.get('id', 0):device.get('status', 'unknown') for device in deviceData}
             except Exception as e:
                 _logger.info("===========Exception==============: %r", [e])
-                pass
         return devices
 
     def createDevice(self, data, connection=False):
         devices = 0
-        connection = connection if connection else self.env['traccar.configure'].search([('active', '=', True)], limit=1)
-        if connection:
-            url = connection.name + "/api/devices"
+        if connection := connection or self.env['traccar.configure'].search(
+            [('active', '=', True)], limit=1
+        ):
+            url = f"{connection.name}/api/devices"
             try:
                 data = json.dumps(data)
                 response = requests.post(url, auth=(connection.user, connection.pwd), data=data, headers={'Content-Type' : 'application/json'}, timeout=1.000)
@@ -135,5 +139,4 @@ class TripDetails(models.Model):
                     devices = deviceData.get('id', 0)
             except Exception as e:
                 _logger.info("===========Exception==============: %r", [e])
-                pass
         return devices

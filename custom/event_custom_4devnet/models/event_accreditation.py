@@ -23,5 +23,4 @@ class EventAccreditation(models.Model):
                 self.env["ir.sequence"].sudo().next_by_code("event.accreditation")
                 or "New"
             )
-        result = super(EventAccreditation, self).create(vals)
-        return result
+        return super(EventAccreditation, self).create(vals)

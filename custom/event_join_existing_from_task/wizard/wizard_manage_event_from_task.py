@@ -25,30 +25,36 @@ class EventJoinExisting(models.TransientModel):
 
     @api.onchange("task_id")
     def onchange_sale_order_line_id(self):
-        if not self.task_id:
-            return {"domain": {"event_id": []}}
-        return {
-            "domain": {
-                "event_id": [
-                    (
-                        "event_template_id.id",
-                        "=",
-                        self.task_id.sale_line_id.product_id.event_template_id.id,
-                    ),
-                    ("state", "!=", "cancel"),
-                    ("date_begin", ">=", datetime.today()),
-                ]
+        return (
+            {
+                "domain": {
+                    "event_id": [
+                        (
+                            "event_template_id.id",
+                            "=",
+                            self.task_id.sale_line_id.product_id.event_template_id.id,
+                        ),
+                        ("state", "!=", "cancel"),
+                        ("date_begin", ">=", datetime.now()),
+                    ]
+                }
             }
-        }
+            if self.task_id
+            else {"domain": {"event_id": []}}
+        )
 
 
     @api.onchange("event_id")
     def onchange_event_id(self):
-        if not self.event_id:
-            return {"domain": {"ticket_id": []}}
-        return {
-            "domain": {"ticket_id": [("id", "in", self.event_id.event_ticket_ids.ids)]}
-        }
+        return (
+            {
+                "domain": {
+                    "ticket_id": [("id", "in", self.event_id.event_ticket_ids.ids)]
+                }
+            }
+            if self.event_id
+            else {"domain": {"ticket_id": []}}
+        )
 
 
     def button_manage_event(self):
@@ -57,11 +63,10 @@ class EventJoinExisting(models.TransientModel):
         if self.action == "create":
             self.task_id.create_event_from_task()
         if self.action == "join":
-            if self.event_id:
-                if self.ticket_id:
-                    self.task_id.join_event_from_task(self.event_id, self.ticket_id)
-                else:
-                    raise UserError(_("Please select a ticket."))
-            else:
+            if not self.event_id:
                 raise UserError(_("Please select an event to join."))
+            if self.ticket_id:
+                self.task_id.join_event_from_task(self.event_id, self.ticket_id)
+            else:
+                raise UserError(_("Please select a ticket."))
         return {"type": "ir.actions.act_window_close"}

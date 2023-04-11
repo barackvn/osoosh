@@ -19,7 +19,7 @@ class Invoice(models.Model):
         cert_ids.write(
             {
                 "invoice_id": self.id,
-                "release_date": datetime.today().strftime("%Y-%m-%d"),
+                "release_date": datetime.now().strftime("%Y-%m-%d"),
             }
         )
         return attachment_ids
@@ -27,8 +27,10 @@ class Invoice(models.Model):
 
     def invoice_validate(self):
         for invoice in self:
-            if invoice.type in ("in_invoice", "in_refund") and invoice.reference:
-                if self.search(
+            if (
+                invoice.type in ("in_invoice", "in_refund")
+                and invoice.reference
+                and self.search(
                     [
                         ("type", "=", invoice.type),
                         ("reference", "=", invoice.reference),
@@ -40,12 +42,13 @@ class Invoice(models.Model):
                         ),
                         ("id", "!=", invoice.id),
                     ]
-                ):
-                    raise UserError(
-                        _(
-                            "Duplicated vendor reference detected. You probably encoded twice the same vendor bill/refund."
-                        )
+                )
+            ):
+                raise UserError(
+                    _(
+                        "Duplicated vendor reference detected. You probably encoded twice the same vendor bill/refund."
                     )
+                )
         return self.write({"state": "open"})
 
 

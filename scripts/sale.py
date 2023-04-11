@@ -7,9 +7,13 @@ db_v_14 = 'boxed'
 username_v_14 = 'admin@boxed.cz'
 password_v_14 = '1Juzepe1'
 port_v_14 = '8069'
-common_v_14 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/common'.format(url_v_14, port_v_14))
+common_v_14 = xmlrpc.client.ServerProxy(
+    f'{url_v_14}:{port_v_14}/xmlrpc/2/common'
+)
 uid_v_14 = common_v_14.authenticate(db_v_14, username_v_14, password_v_14, {})
-models_v_14 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_14, port_v_14))
+models_v_14 = xmlrpc.client.ServerProxy(
+    f'{url_v_14}:{port_v_14}/xmlrpc/2/object'
+)
 print(uid_v_14)
 
 #v9
@@ -18,9 +22,9 @@ db_v_9 = 'boxed'
 username_v_9 = 'admin@boxed.cz'
 password_v_9 = '1Juzepe1'
 port_v_9 = '443'
-common_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/common'.format(url_v_9, port_v_9))
+common_v_9 = xmlrpc.client.ServerProxy(f'{url_v_9}:{port_v_9}/xmlrpc/2/common')
 uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
-models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
+models_v_9 = xmlrpc.client.ServerProxy(f'{url_v_9}:{port_v_9}/xmlrpc/2/object')
 print(uid_v_9)
 
 done = 0
@@ -33,9 +37,9 @@ orders = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
 
 for i, order in enumerate(orders):
     i = i+1
-    print("Processing [%s] %s of %s [%s] %s"%(order['id'], i, size, 100 * i/size, '%'))
+    print(f"Processing [{order['id']}] {i} of {size} [{100 * i / size}] %")
     order['database_id_v9'] = order['id']
-    
+
     # order['message_partner_ids'] = 9
     # order['country_id'] = 56
     order['currency_id'] = 9
@@ -48,8 +52,8 @@ for i, order in enumerate(orders):
         order['pricelist_id'] = order['pricelist_id'][0]
     if order['template_id']:
         order['template_id'] = order['template_id'][0]
-        
-    
+
+
 
     if order['tag_ids']:
         tags = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
@@ -59,12 +63,12 @@ for i, order in enumerate(orders):
             tag_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
             'crm.tag', 'search',[[('name','=',tag['name'])]],{'limit': size})[0]
             order['tag_ids'].append(tag_id)
-    
+
     if order['company_id']:
         company_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
             'res.company', 'search',[[('name','=',order['company_id'][1])]],{'limit': size})
         order['company_id'] = company_id[0]
-    
+
     if order['user_id']:
         try:
             user = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
@@ -75,30 +79,48 @@ for i, order in enumerate(orders):
             order['user_id'] = False
 
     if order['partner_id']:
-        partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-            'res.partner', 'search_read',[[('database_id_v9','=',order['partner_id'][0])]],{'limit': size})
-        if partner_id:
+        if partner_id := models_v_14.execute_kw(
+            db_v_14,
+            uid_v_14,
+            password_v_14,
+            'res.partner',
+            'search_read',
+            [[('database_id_v9', '=', order['partner_id'][0])]],
+            {'limit': size},
+        ):
             order['partner_id'] = partner_id[0]['id']
         else:
             order['partner_id'] = False
-    
+
     if order['partner_invoice_id']:
-        partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-            'res.partner', 'search_read',[[('database_id_v9','=',order['partner_invoice_id'][0])]],{'limit': size})
-        if partner_id:
+        if partner_id := models_v_14.execute_kw(
+            db_v_14,
+            uid_v_14,
+            password_v_14,
+            'res.partner',
+            'search_read',
+            [[('database_id_v9', '=', order['partner_invoice_id'][0])]],
+            {'limit': size},
+        ):
             order['partner_invoice_id'] = partner_id[0]['id']
         else:
             order['partner_invoice_id'] = False
-    
+
     if order['partner_shipping_id']:
-        partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-            'res.partner', 'search_read',[[('database_id_v9','=',order['partner_shipping_id'][0])]],{'limit': size})
-        if partner_id:
+        if partner_id := models_v_14.execute_kw(
+            db_v_14,
+            uid_v_14,
+            password_v_14,
+            'res.partner',
+            'search_read',
+            [[('database_id_v9', '=', order['partner_shipping_id'][0])]],
+            {'limit': size},
+        ):
             order['partner_shipping_id'] = partner_id[0]['id']
         else:
             order['partner_shipping_id'] = False
-    
-    
+
+
     # if order['opportunity_id']:
     #     opportunity_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
     #         'crm.lead', 'search_read',[[('database_id_v9','=',order['opportunity_id'][0])]],{'limit': size})
@@ -106,15 +128,21 @@ for i, order in enumerate(orders):
     #         order['opportunity_id'] = opportunity_id[0]['id']
     #     else:
     #         order['opportunity_id'] = False
-    
+
     if order['tasks_ids']:
-        task_ids = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-            'project.task', 'search',[[('database_id_v9','in',order['tasks_ids'])]],{'limit': size})
-        if task_ids:
+        if task_ids := models_v_14.execute_kw(
+            db_v_14,
+            uid_v_14,
+            password_v_14,
+            'project.task',
+            'search',
+            [[('database_id_v9', 'in', order['tasks_ids'])]],
+            {'limit': size},
+        ):
             order['tasks_ids'] = task_ids
         else:
             order['tasks_ids'] = []
-            
+
 
 
     del order['message_partner_ids']
@@ -162,7 +190,7 @@ for i, order in enumerate(orders):
     order_line_ids = order['order_line']
     del order['order_line']
     order_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'sale.order', 'create', [order])
-    
+
 
     # print('order_line_ids', order_line_ids)
     # order_lines = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
@@ -228,4 +256,4 @@ for i, order in enumerate(orders):
     #     # print(line)
     #     line_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'sale.order.line', 'create', [line])
 
-    print("Processed [%s] %s of %s [%s] %s"%(order_id, i, size, 100 * i/size, '%'))
+    print(f"Processed [{order_id}] {i} of {size} [{100 * i / size}] %")

@@ -30,11 +30,12 @@ class ProductPacktWizard(models.TransientModel):
 
 	@api.onchange('quantity', 'product_id')
 	def onchange_quantity_pack(self):
-		if self.quantity:
-			if self.product_id:
-				for prod in self.product_id.wk_product_pack:
-					if self.quantity > prod.product_id.virtual_available:
-						warn_msg = _('You plan to sell %s of the pack %s but you have only  %s quantities of the product %s available, and the total quantity to sell is  %s !!'%(self.quantity, prod.name, prod.product_id.virtual_available, prod.product_id.name, self.quantity * prod.product_quantity))
+		if self.quantity and self.product_id:
+			for prod in self.product_id.wk_product_pack:
+				if self.quantity > prod.product_id.virtual_available:
+					warn_msg = _(
+						f'You plan to sell {self.quantity} of the pack {prod.name} but you have only  {prod.product_id.virtual_available} quantities of the product {prod.product_id.name} available, and the total quantity to sell is  {self.quantity * prod.product_quantity} !!'
+					)
 						return {
 						'warning': {
 							'title': 'Invalid value',

@@ -49,18 +49,18 @@ class FleetVehicle(models.Model):
                 }
 
     def validate_device(self):
-        resp = self.env['trip.details'].getDevices(uniqueId=self.traccer_device_id)
-        if not resp:
-           data = {
-                "name":self.model_id.name,
-                "uniqueId" : self.traccer_device_id
-            }
-           resp = self.env['trip.details'].createDevice(data)
-           if resp:
-               self.device_record_id = resp
-               self.is_online = 'offline'
-        else:
+        if resp := self.env['trip.details'].getDevices(
+            uniqueId=self.traccer_device_id
+        ):
             for res in resp:
                 self.device_record_id = res
                 self.is_online = 'online' if resp[res] == 'online' else 'offline'
+        else:
+            data = {
+                 "name":self.model_id.name,
+                 "uniqueId" : self.traccer_device_id
+             }
+            if resp := self.env['trip.details'].createDevice(data):
+                self.device_record_id = resp
+                self.is_online = 'offline'
         return True

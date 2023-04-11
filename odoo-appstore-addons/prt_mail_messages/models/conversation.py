@@ -104,10 +104,11 @@ class Conversation(models.Model):
 
     # -- Name get. Currently using it only for Move Wizard!
     def name_get(self):
-        if not self._context.get("message_move_wiz", False):
-            return super(Conversation, self).name_get()
-        res = [(rec.id, "{} - {}".format(rec.name, rec.author_id.name)) for rec in self]
-        return res
+        return (
+            [(rec.id, f"{rec.name} - {rec.author_id.name}") for rec in self]
+            if self._context.get("message_move_wiz", False)
+            else super(Conversation, self).name_get()
+        )
 
     # -- Count messages. All messages except for notifications are counted
     @api.depends("message_ids")
@@ -140,13 +141,7 @@ class Conversation(models.Model):
             )
         )
 
-        # Get current timezone
-        tz = self.env.user.tz
-        if tz:
-            local_tz = pytz.timezone(tz)
-        else:
-            local_tz = pytz.utc
-
+        local_tz = pytz.timezone(tz) if (tz := self.env.user.tz) else pytz.utc
         # Get current time
         now = datetime.now(local_tz)
         # Compose subject
@@ -159,13 +154,9 @@ class Conversation(models.Model):
                 if days_diff == 0:
                     date_display = datetime.strftime(message_date, "%H:%M")
                 elif days_diff == 1:
-                    date_display = "{} {}".format(
-                        _("Yesterday"), datetime.strftime(message_date, "%H:%M"),
-                    )
+                    date_display = f'{_("Yesterday")} {datetime.strftime(message_date, "%H:%M")}'
                 elif now.year == message_date.year:
-                    date_display = "{} {}".format(
-                        str(message_date.day), _(MONTHS.get(message_date.month)),
-                    )
+                    date_display = f"{str(message_date.day)} {_(MONTHS.get(message_date.month))}"
                 else:
                     date_display = str(message_date.date())
             else:
@@ -178,55 +169,24 @@ class Conversation(models.Model):
             if message_count == 0:
                 message_count_text = _("No messages")
             else:
-                message_count_text = "{} {}".format(
-                    str(message_count),
-                    _("message") if message_count == 1 else _("messages"),
-                )
+                message_count_text = f'{str(message_count)} {_("message") if message_count == 1 else _("messages")}'
                 # New messages
                 message_needaction_count = rec.message_needaction_count
                 if message_needaction_count > 0:
-                    message_count_text = "{}, {} {}".format(
-                        message_count_text, str(message_needaction_count), _("new"),
-                    )
+                    message_count_text = f'{message_count_text}, {str(message_needaction_count)} {_("new")}'
 
             # Participants
             participant_text = ""
             for participant in rec.partner_ids:
-                participant_text = "{} {}".format(
-                    participant_text,
-                    '<img class="rounded-circle"'
-                    ' style="width:24px;max-height:24px;margin:2px;"'
-                    ' title="%s" src="data:image/png;base64, %s"/>'
-                    % (
-                        sanitize_name(participant.name),
-                        participant.image_128.decode("utf-8")
-                        if participant.image_128
-                        else IMAGE_PLACEHOLDER,
-                    ),
-                )
+                participant_text = f'{participant_text} <img class="rounded-circle" style="width:24px;max-height:24px;margin:2px;" title="{sanitize_name(participant.name)}" src="data:image/png;base64, {participant.image_128.decode("utf-8") if participant.image_128 else IMAGE_PLACEHOLDER}"/>'
             # Compose preview body
             plain_body = ""
             for message in rec.message_ids:
                 if message.message_type != "notification":
                     message_body = message.body
                     if len(message_body) > body_preview_length:
-                        message_body = "%s..." % message_body[:body_preview_length]
-                    plain_body = (
-                        '<img class="rounded-circle"'
-                        ' style="width:16px;max-height:16px;margin:2px;"'
-                        ' title="%s" src="data:image/png;base64, %s"/>'
-                        ' <span id="text-preview"'
-                        ' style="color:#808080;vertical-align:middle;">%s</p>'
-                        % (
-                            sanitize_name(message.author_id.name)
-                            if message.author_id
-                            else "",
-                            message.author_avatar.decode("utf-8")
-                            if message.author_avatar
-                            else IMAGE_PLACEHOLDER,
-                            html2plaintext(message_body),
-                        )
-                    )
+                        message_body = f"{message_body[:body_preview_length]}..."
+                    plain_body = f'<img class="rounded-circle" style="width:16px;max-height:16px;margin:2px;" title="{sanitize_name(message.author_id.name) if message.author_id else ""}" src="data:image/png;base64, {message.author_avatar.decode("utf-8") if message.author_avatar else IMAGE_PLACEHOLDER}"/> <span id="text-preview" style="color:#808080;vertical-align:middle;">{html2plaintext(message_body)}</p>'
                     break
 
             rec.subject_display = TREE_TEMPLATE % (
@@ -235,8 +195,10 @@ class Conversation(models.Model):
                 else IMAGE_PLACEHOLDER,
                 sanitize_name(rec.author_id.name) if rec.author_id else "",
                 rec.author_id.name if rec.author_id else "",
-                rec.name if rec.name else "",
-                str(message_date.replace(tzinfo=None)) if rec.last_message_post else "",
+                rec.name or "",
+                str(message_date.replace(tzinfo=None))
+                if rec.last_message_post
+                else "",
                 date_display,
                 message_count_text,
                 participant_text,
@@ -259,10 +221,7 @@ class Conversation(models.Model):
     def _compute_is_participant(self):
         my_id = self.env.user.partner_id.id
         for rec in self:
-            if my_id in rec.partner_ids.ids:
-                rec.is_participant = True
-            else:
-                rec.is_participant = False
+            rec.is_participant = my_id in rec.partner_ids.ids
 
     # -- Join conversation
     def join(self):
@@ -298,22 +257,18 @@ class Conversation(models.Model):
         # Check if participants changed
         for rec in self:
 
-            # New followers added?
-            followers_add = [
+            if followers_add := [
                 partner.id
                 for partner in rec.partner_ids
                 if partner not in rec.message_partner_ids
-            ]
-            if len(followers_add) > 0:
+            ]:
                 rec.message_subscribe(partner_ids=followers_add)
 
-            # Existing followers removed?
-            followers_remove = [
+            if followers_remove := [
                 partner.id
                 for partner in rec.message_partner_ids
                 if partner not in rec.partner_ids
-            ]
-            if len(followers_remove) > 0:
+            ]:
                 rec.message_unsubscribe(partner_ids=followers_remove)
 
         return res
@@ -330,24 +285,22 @@ class Conversation(models.Model):
         """
 
         if partner.user_ids:
-            for user in partner.user_ids:
-                if user.has_group("base.group_user"):
-                    if user.has_group("prt_mail_messages.group_conversation_own"):
-                        # Has access to Conversations
-                        return 1
-            # Does not have access to Conversations
-            return False
-
+            return next(
+                (
+                    1
+                    for user in partner.user_ids
+                    if user.has_group("base.group_user")
+                    and user.has_group("prt_mail_messages.group_conversation_own")
+                ),
+                False,
+            )
         # Not an internal user
         return 2
 
     # -- Archive/unarchive conversation
     def archive(self):
         for rec in self:
-            if rec.active:
-                rec.active = False
-            else:
-                rec.active = True
+            rec.active = not rec.active
 
     # -- Search for partners by email.
     def partner_by_email(self, email_addresses):
@@ -511,9 +464,7 @@ class Conversation(models.Model):
         return super(
             Conversation,
             self.with_context(
-                other_partner_ids=other_partner_ids
-                if len(other_partner_ids) > 0
-                else False,
+                other_partner_ids=other_partner_ids or False,
                 mail_create_nolog=True,
             ),
         ).message_new(msg_dict, custom_values)
@@ -558,10 +509,7 @@ class Conversation(models.Model):
         )
         if message_type not in ["comment", "email"]:  # Skip notifications
             return res
-        # Add other_partner_ids as followers.
-        # We do it here to avoid them being notified on initial message post
-        other_partner_ids = self._context.get("other_partner_ids", False)
-        if other_partner_ids:
+        if other_partner_ids := self._context.get("other_partner_ids", False):
             self.write({"partner_ids": [(4, p) for p in other_partner_ids]})
 
         return res

@@ -35,9 +35,7 @@ class SaleOrder(models.Model):
                 name = prod.product_id.name_get()[0][1]
                 if prod.product_id.description_sale:
                     name += "\n" + prod.product_id.description_sale
-                name = (
-                    "Item disassembled from " + pack_line.product_id.name + "\n" + name
-                )
+                name = f"Item disassembled from {pack_line.product_id.name}" + "\n" + name
 
                 # Order line values
                 values = {
@@ -55,27 +53,27 @@ class SaleOrder(models.Model):
                 try:
                     self.env["sale.order.line"].sudo().create(values)
                 except Exception as e:
-                    raise UserError(_("Error :" + str(e)))
+                    raise UserError(_(f"Error :{str(e)}"))
         return True
 
     def check_sol_contains_service_products_pack(self, order_line):
         product_obj = order_line.product_id
-        if product_obj.is_pack and len(
-            product_obj.wk_product_pack.filtered(
-                lambda rec: rec.product_id.type == "service"
+        return bool(
+            product_obj.is_pack
+            and len(
+                product_obj.wk_product_pack.filtered(
+                    lambda rec: rec.product_id.type == "service"
+                )
             )
-        ):
-            return True
-        else:
-            return False
+        )
 
 
     def action_disassemble_pack(self):
         for rec in self:
-            so_pack_line_ids = rec.order_line.filtered(
-                lambda line: self.check_sol_contains_service_products_pack(line) == True
-            )
-            if so_pack_line_ids:
+            if so_pack_line_ids := rec.order_line.filtered(
+                lambda line: self.check_sol_contains_service_products_pack(line)
+                == True
+            ):
                 for pack_line in so_pack_line_ids:
                     rec._create_product_lines_from_pack(pack_line)
                     pack_line.unlink()

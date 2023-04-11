@@ -24,7 +24,6 @@ class ProductPack(models.Model):
 	_inherit = 'product.pack'
 	def get_product_id(self,product_id):
 		if product_id:
-			product = self.sudo().browse(product_id)
-			return product
+			return self.sudo().browse(product_id)
 
 		

@@ -25,25 +25,23 @@ class SaleOrder(models.Model):
 
     def _compute_has_event_product(self):
         for order in self:
-            order.has_event_product = False
-            for line in order.order_line:
-                if (
+            order.has_event_product = any(
+                (
                     line.product_id.is_event_product
                     and line.product_id.event_template_id
                     and not line.linked_to_event
-                ):
-                    order.has_event_product = True
-                    break
+                )
+                for line in order.order_line
+            )
 
     def event_create_from_so_show_created_events(self):
-        action = {
+        return {
             "name": "Event",
             "type": "ir.actions.act_window",
             "res_model": "event.event",
             "views": [[False, "tree"], [False, "form"]],
             "domain": [["sale_order_origin", "=", self.id]],
         }
-        return action
 
 
 class SaleOrderLine(models.Model):
@@ -54,8 +52,8 @@ class SaleOrderLine(models.Model):
 
     def create_event_from_order_line(self):
         product_id = self.product_id
-        event_template = product_id.event_template_id
         if product_id.is_event_product:
+            event_template = product_id.event_template_id
             new_event = event_template.copy(default={"event_ticket_ids": False})
             template_ticket_id = self.env["event.event.ticket"]
             for ticket in event_template.event_ticket_ids:
@@ -98,8 +96,8 @@ class SaleOrderLine(models.Model):
                     "event_template_id": event_template.id,
                 }
             )
-            counter = 0
             if template_ticket_id:
+                counter = 0
                 while counter < self.product_uom_qty:
                     self.env["event.registration"].create(
                         {

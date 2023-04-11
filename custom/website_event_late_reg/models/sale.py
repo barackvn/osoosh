@@ -12,7 +12,7 @@ from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
 def random_token():
     # the token has an entropy of about 120 bits (6 bits/char * 20 chars)
     chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    return "".join(random.SystemRandom().choice(chars) for i in range(20))
+    return "".join(random.SystemRandom().choice(chars) for _ in range(20))
 
 
 def now(**kwargs):
@@ -43,7 +43,7 @@ class SaleOrder(models.Model):
             params = {"token": order.event_token, "id": order.id}
             order.event_token_url = urljoin(
                 base_url,
-                "/events/complete-registration?%s" % (werkzeug.url_encode(params)),
+                f"/events/complete-registration?{werkzeug.url_encode(params)}",
             )
 
     @api.depends("event_token")

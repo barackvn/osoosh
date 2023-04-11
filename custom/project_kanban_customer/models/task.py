@@ -10,7 +10,7 @@ class ProjectTask(models.Model):
         for record in self:
             name = record.name
             if record.partner_id:
-                name = "%s (%s)" % (name, record.partner_id.name)
+                name = f"{name} ({record.partner_id.name})"
             result.append((record.id, name))
         return result
 

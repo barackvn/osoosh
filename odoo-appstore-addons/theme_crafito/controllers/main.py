@@ -19,13 +19,9 @@ class CrafitoSliderSettings(http.Controller):
 
     @http.route(['/theme_crafito/blog_get_options'], type='json', auth="public", website=True)
     def crafito_get_slider_options(self):
-        slider_options = []
         option = request.env['blog.slider.config'].search(
             [('active', '=', True)], order="name asc")
-        for record in option:
-            slider_options.append({'id': record.id,
-                                   'name': record.name})
-        return slider_options
+        return [{'id': record.id, 'name': record.name} for record in option]
 
     @http.route(['/theme_crafito/blog_get_dynamic_slider'], type='http', auth='public', website=True)
     def crafito_get_dynamic_slider(self, **post):
@@ -42,13 +38,12 @@ class CrafitoSliderSettings(http.Controller):
     def crafito_product_image_dynamic_slider(self, **post):
         slider_data = request.env['blog.slider.config'].search(
             [('id', '=', int(post.get('slider_type')))])
-        values = {
-            's_id': str(slider_data.no_of_counts) + '-' + str(slider_data.id),
+        return {
+            's_id': f'{str(slider_data.no_of_counts)}-{str(slider_data.id)}',
             'counts': slider_data.no_of_counts,
             'auto_rotate': slider_data.auto_rotate,
             'auto_play_time': slider_data.sliding_speed,
         }
-        return values
 
     # For Client slider
     @http.route(['/theme_crafito/get_clients_dynamically_slider'], type='http', auth='public', website=True)
@@ -63,13 +58,9 @@ class CrafitoSliderSettings(http.Controller):
     # For multi product slider
     @http.route(['/theme_crafito/product_multi_get_options'], type='json', auth="public", website=True)
     def crafito_product_multi_get_slider_options(self):
-        slider_options = []
         option = request.env['multi.slider.config'].search(
             [('active', '=', True)], order="name asc")
-        for record in option:
-            slider_options.append({'id': record.id,
-                                   'name': record.name})
-        return slider_options
+        return [{'id': record.id, 'name': record.name} for record in option]
 
     @http.route(['/theme_crafito/product_multi_get_dynamic_slider'], type='http', auth='public', website=True)
     def crafito_product_multi_get_dynamic_slider(self, **post):
@@ -84,13 +75,14 @@ class CrafitoSliderSettings(http.Controller):
                 pricelist = pool.get('product.pricelist').browse(
                     context['pricelist'])
 
-            context.update({'pricelist': pricelist.id})
+            context['pricelist'] = pricelist.id
             from_currency = pool['res.users'].sudo().browse(
                 SUPERUSER_ID).company_id.currency_id
             to_currency = pricelist.currency_id
 
             def compute_currency(price): return pool[
                 'res.currency']._convert(price, from_currency, to_currency, fields.Date.today())
+
             values = {
                 'slider_details': slider_header,
                 'slider_header': slider_header,
@@ -102,13 +94,12 @@ class CrafitoSliderSettings(http.Controller):
     def crafito_product_multi_product_image_dynamic_slider(self, **post):
         slider_data = request.env['multi.slider.config'].search(
             [('id', '=', int(post.get('slider_type')))])
-        values = {
-            's_id': str(slider_data.no_of_collection) + '-' + str(slider_data.id),
+        return {
+            's_id': f'{str(slider_data.no_of_collection)}-{str(slider_data.id)}',
             'counts': slider_data.no_of_collection,
             'auto_rotate': slider_data.auto_rotate,
             'auto_play_time': slider_data.sliding_speed,
         }
-        return values
 
     @http.route(['/theme_crafito/newsone_get_dynamic_slider'], type='http', auth='public', website=True)
     def crafito_get_dynamic_newsone_slider(self, **post):
@@ -153,11 +144,9 @@ class CrafitoSliderSettings(http.Controller):
         return request.render("theme_crafito.theme_crafito_coming_soon_mode_two_view")
 
     def find_snippet_employee(self):
-        emp = {}
         employee = request.env['hr.employee'].sudo().search(
             [('include_inourteam', '=', 'True')])
-        emp['biztech_employees'] = employee
-        return emp
+        return {'biztech_employees': employee}
 
     # For team snippet
     @http.route(['/biztech_emp_data_one/employee_data'], type="http", auth="public", website=True)
@@ -178,13 +167,9 @@ class CrafitoSliderSettings(http.Controller):
     # For Category slider
     @http.route(['/theme_crafito/category_get_options'], type='json', auth="public", website=True)
     def category_get_slider_options(self):
-        slider_options = []
         option = request.env['category.slider.config'].search(
             [('active', '=', True)], order="name asc")
-        for record in option:
-            slider_options.append({'id': record.id,
-                                   'name': record.name})
-        return slider_options
+        return [{'id': record.id, 'name': record.name} for record in option]
 
     @http.route(['/theme_crafito/category_get_dynamic_slider'], type='http', auth='public', website=True)
     def category_get_dynamic_slider(self, **post):
@@ -198,22 +183,21 @@ class CrafitoSliderSettings(http.Controller):
                 domain = [('public_categ_ids', 'child_of', int(category))]
                 search_product = request.env['product.template'].search_count(domain)
                 category.linked_product_count = search_product
-            values.update({
-                'slider_details': slider_header.collections_category,
-            })
+            values['slider_details'] = slider_header.collections_category
             return request.render("theme_crafito.theme_crafito_cat_slider_view", values)
 
     @http.route(['/theme_crafito/category_image_effect_config'], type='json', auth='public', website=True)
     def category_image_dynamic_slider(self, **post):
         slider_data = request.env['category.slider.config'].search(
             [('id', '=', int(post.get('slider_id')))])
-        values = {
-            's_id': slider_data.name.lower().replace(' ', '-') + '-' + str(slider_data.id),
+        return {
+            's_id': slider_data.name.lower().replace(' ', '-')
+            + '-'
+            + str(slider_data.id),
             'counts': slider_data.no_of_counts,
             'auto_rotate': slider_data.auto_rotate,
             'auto_play_time': slider_data.sliding_speed,
         }
-        return values
 
     @http.route(['/biztech_fact_model_data/fact_data'], type="http", auth="public", website=True)
     def get_factsheet_data(self, **post):
@@ -228,7 +212,7 @@ class CrafitoSliderSettings(http.Controller):
     def get_multi_image_effect_config(self):
 
         cur_website = request.website
-        values = {
+        return {
             'no_extra_options': cur_website.no_extra_options,
             'theme_panel_position': cur_website.thumbnail_panel_position,
             'interval_play': cur_website.interval_play,
@@ -238,18 +222,13 @@ class CrafitoSliderSettings(http.Controller):
             'thumb_height': cur_website.thumb_height,
             'thumb_width': cur_website.thumb_width,
         }
-        return values
 
     # For Product slider
     @http.route(['/theme_crafito/product_get_options'], type='json', auth="public", website=True)
     def product_get_slider_options(self):
-        slider_options = []
         option = request.env['product.slider.config'].search(
             [('active', '=', True)], order="name asc")
-        for record in option:
-            slider_options.append({'id': record.id,
-                                   'name': record.name})
-        return slider_options
+        return [{'id': record.id, 'name': record.name} for record in option]
 
     @http.route(['/theme_crafito/product_get_dynamic_slider'], type='http', auth='public', website=True)
     def product_get_dynamic_slider(self, **post):
@@ -257,35 +236,28 @@ class CrafitoSliderSettings(http.Controller):
             slider_header = request.env['product.slider.config'].sudo().search(
                 [('id', '=', int(post.get('slider-id')))])
             values = {
-                'slider_header': slider_header
-            }
-            values.update({
+                'slider_header': slider_header,
                 'slider_details': slider_header.collections_products,
-            })
+            }
             return request.render("theme_crafito.theme_crafito_product_slider_view", values)
 
     @http.route(['/theme_crafito/product_image_effect_config'], type='json', auth='public', website=True)
     def product_image_dynamic_slider(self, **post):
         slider_data = request.env['product.slider.config'].search(
             [('id', '=', int(post.get('slider_id')))])
-        values = {
+        return {
             's_id': str(slider_data.id),
             'counts': slider_data.no_of_counts,
             'auto_rotate': slider_data.auto_rotate,
             'auto_play_time': slider_data.sliding_speed,
         }
-        return values
 
     # For Featured Product slider
     @http.route(['/theme_crafito/featured_product_get_options'], type='json', auth="public", website=True)
     def featured_product_get_slider_options(self):
-        slider_options = []
         option = request.env['feature.product.slider.config'].search(
             [('active', '=', True)], order="name asc")
-        for record in option:
-            slider_options.append({'id': record.id,
-                                   'name': record.name})
-        return slider_options
+        return [{'id': record.id, 'name': record.name} for record in option]
 
     @http.route(['/theme_crafito/featured_product_get_dynamic_slider'], type='http', auth='public', website=True)
     def featured_product_get_dynamic_slider(self, **post):
@@ -301,7 +273,7 @@ class CrafitoSliderSettings(http.Controller):
                 pricelist = pool.get('product.pricelist').browse(
                     context['pricelist'])
 
-            context.update({'pricelist': pricelist.id})
+            context['pricelist'] = pricelist.id
 
             from_currency = pool['res.users'].browse(
                 uid).company_id.currency_id
@@ -320,13 +292,14 @@ class CrafitoSliderSettings(http.Controller):
     def featured_product_image_dynamic_slider(self, **post):
         slider_data = request.env['feature.product.slider.config'].search(
             [('id', '=', int(post.get('slider_id')))])
-        values = {
-            's_id': slider_data.name.lower().replace(' ', '-') + '-' + str(slider_data.id),
+        return {
+            's_id': slider_data.name.lower().replace(' ', '-')
+            + '-'
+            + str(slider_data.id),
             'counts': slider_data.no_of_counts,
             'auto_rotate': slider_data.auto_rotate,
             'auto_play_time': slider_data.sliding_speed,
         }
-        return values
 
     @http.route(['/theme_crafito/event_slider/get_data'], type="http", auth="public", website=True)
     def get_event_data(self, **post):
@@ -356,16 +329,14 @@ class CrafitoEcommerceShop(WebsiteSale):
 
     def _get_crafito_products_recently_viewed(self):
         max_number_of_product_for_carousel = 12
-        visitor = request.env['website.visitor']._get_visitor_from_request()
-        if visitor:
+        if visitor := request.env['website.visitor']._get_visitor_from_request():
             excluded_products = request.website.sale_get_order().mapped(
                 'order_line.product_id.id')
             products = request.env['website.track'].sudo().read_group(
                 [('visitor_id', '=', visitor.id), ('product_id', '!=', False),
                  ('product_id', 'not in', excluded_products)],
                 ['product_id', 'visit_datetime:max'], ['product_id'], limit=max_number_of_product_for_carousel, orderby='visit_datetime DESC')
-            products_ids = [product['product_id'][0] for product in products]
-            if products_ids:
+            if products_ids := [product['product_id'][0] for product in products]:
                 viewed_products = request.env['product.product'].browse(
                     products_ids)
 

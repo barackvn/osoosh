@@ -123,7 +123,7 @@ def remove_duplicates(phone_number_ids, env):
                 # Add note
                 if note and len_note > 0:
                     new_note = (
-                        "{} {}".format(note, new_entry[2].get("note", False))
+                        f'{note} {new_entry[2].get("note", False)}'
                         if new_entry[2].get("note", False)
                         else note
                     )
@@ -272,7 +272,7 @@ class Phone(models.Model):
             i += 1
 
         _logger.info(
-            "Phone/mobile/email import completed! Total %s records imported" % str(i)
+            f"Phone/mobile/email import completed! Total {str(i)} records imported"
         )
 
     # -- Create
@@ -309,14 +309,11 @@ class Phone(models.Model):
             )
 
             if len(duplicates) > 0:
-                # Check if unformatted number differs
-                numbers_update_ids = []
-                for duplicate in duplicates:
-                    if not number == duplicate.number:
-                        numbers_update_ids.append(duplicate.id)
-
-                # Update duplicates with different unformatted numbers
-                if len(numbers_update_ids) > 0:
+                if numbers_update_ids := [
+                    duplicate.id
+                    for duplicate in duplicates
+                    if number != duplicate.number
+                ]:
                     self.browse(numbers_update_ids).sudo().write(
                         {"number": number, "type": num_type}
                     )
@@ -333,9 +330,7 @@ class Phone(models.Model):
                 tags = vals.get("tags", False)
 
                 if tags and len(tags) > 0:
-                    add_tags = []
-                    for tag in tags[0][2]:
-                        add_tags.append([4, tag, False])
+                    add_tags = [[4, tag, False] for tag in tags[0][2]]
                     duplicates.sudo().write({"tags": add_tags})
 
                 # We cannot return False. So we will fool ORM))
@@ -343,10 +338,9 @@ class Phone(models.Model):
 
         # If new number is 'Main' change other 'Main' numbers to 'Work'
         if partner_id and num_type == "0":
-            other_main = self.search(
+            if other_main := self.search(
                 ["&", ("partner_id", "=", partner_id), ("type", "=", "0")]
-            )
-            if other_main:
+            ):
                 other_main.sudo().write({"type": "2"})
 
         # If created from legacy form fields change sequence
@@ -354,10 +348,9 @@ class Phone(models.Model):
         #     so newly created record will be set as default.
         if sequence == -100500:
             vals["sequence"] = 0
-            other_same = self.search(
+            if other_same := self.search(
                 ["&", ("partner_id", "=", partner_id), ("type", "=", num_type)]
-            )
-            if other_same:
+            ):
                 other_same.sudo().write({"sequence": 1})
 
         # Create finally)
@@ -393,8 +386,7 @@ class Partner(models.Model):
     # -- Default email address from context
     @api.model
     def _default_email(self):
-        email = self._context.get("default_email", False)
-        if email:
+        if email := self._context.get("default_email", False):
             return [(0, False, {"type": "7", "number": email})]
 
     phone_number_ids = fields.One2many(
@@ -478,61 +470,63 @@ class Partner(models.Model):
 
     # -- Search
     def search(self, args, offset=0, limit=None, order=None, count=False):
-        res = super(Partner, self).search(
+        return super(Partner, self).search(
             args=self._tweak_args(args),
             offset=offset,
             limit=limit,
             order=order,
             count=count,
         )
-        return res
 
     # -- Name search
     @api.model
     def name_search(self, name, args=None, operator="ilike", limit=100):
 
-        if name and operator in ("=", "ilike", "=ilike", "like", "=like"):
-            self.check_access_rights("read")
-
-            # Cetmix force search by email
-            email = False
-            if args:
-                for arg in args:
-                    if arg[0] == "email":
-                        email = arg
-                        args.remove(arg)
-                        break
-            if email:
-                email_args = self._tweak_args([("email", operator, email)])
-            else:
-                email_args = self._tweak_args([("email", operator, name)])
-
-            where_query = self._where_calc(args)
-            self._apply_ir_rules(where_query, "read")
-            from_clause, where_clause, where_clause_params = where_query.get_sql()
-            from_str = from_clause if from_clause else "res_partner"
-            where_str = where_clause and (" WHERE %s AND " % where_clause) or " WHERE "
-
-            # Compose email query args
-            where_query_email = self.with_context(active_test=False)._where_calc(
-                email_args
+        if not name or operator not in ("=", "ilike", "=ilike", "like", "=like"):
+            return super(Partner, self).name_search(
+                name=name, args=args, operator=operator, limit=limit
             )
-            (
-                from_clause_email,
-                where_clause_email,
-                where_clause_params_email,
-            ) = where_query_email.get_sql()
+        self.check_access_rights("read")
 
-            # search on the name of the contacts and of its company
-            search_name = name
-            if operator in ("ilike", "like"):
-                search_name = "%%%s%%" % name
-            if operator in ("=ilike", "=like"):
-                operator = operator[1:]
+        # Cetmix force search by email
+        email = False
+        if args:
+            for arg in args:
+                if arg[0] == "email":
+                    email = arg
+                    args.remove(email)
+                    break
+        if email:
+            email_args = self._tweak_args([("email", operator, email)])
+        else:
+            email_args = self._tweak_args([("email", operator, name)])
 
-            unaccent = get_unaccent_wrapper(self.env.cr)
+        where_query = self._where_calc(args)
+        self._apply_ir_rules(where_query, "read")
+        from_clause, where_clause, where_clause_params = where_query.get_sql()
+        from_str = from_clause or "res_partner"
+        where_str = where_clause and f" WHERE {where_clause} AND " or " WHERE "
 
-            query = """SELECT res_partner.id
+        # Compose email query args
+        where_query_email = self.with_context(active_test=False)._where_calc(
+            email_args
+        )
+        (
+            from_clause_email,
+            where_clause_email,
+            where_clause_params_email,
+        ) = where_query_email.get_sql()
+
+        # search on the name of the contacts and of its company
+        search_name = name
+        if operator in ("ilike", "like"):
+            search_name = "%%%s%%" % name
+        if operator in ("=ilike", "=like"):
+            operator = operator[1:]
+
+        unaccent = get_unaccent_wrapper(self.env.cr)
+
+        query = """SELECT res_partner.id
                                      FROM {from_str}
                                   {where} ({display_name} {operator} {percent}
                                        OR {reference} {operator} {percent}
@@ -542,32 +536,27 @@ class Partner(models.Model):
                                  ORDER BY {display_name} {operator} {percent} desc,
                                           {display_name}
                                 """.format(
-                from_str=from_str,
-                where=where_str,
-                operator=operator,
-                email_addresses=where_clause_email,
-                display_name=unaccent("res_partner.display_name"),
-                reference=unaccent("res_partner.ref"),
-                percent=unaccent("%s"),
-                vat=unaccent("res_partner.vat"),
-            )
+            from_str=from_str,
+            where=where_str,
+            operator=operator,
+            email_addresses=where_clause_email,
+            display_name=unaccent("res_partner.display_name"),
+            reference=unaccent("res_partner.ref"),
+            percent=unaccent("%s"),
+            vat=unaccent("res_partner.vat"),
+        )
 
-            where_clause_params += [search_name] * 3
-            where_clause_params += where_clause_params_email  # partner ids
-            where_clause_params.append(search_name)  # The last one for sort
-            if limit:
-                query += " limit %s"
-                where_clause_params.append(limit)
-            self.env.cr.execute(query, where_clause_params)
-            partner_ids = [row[0] for row in self.env.cr.fetchall()]
-
-            if partner_ids:
-                return self.browse(partner_ids).name_get()
-            else:
-                return []
-
-        return super(Partner, self).name_search(
-            name=name, args=args, operator=operator, limit=limit
+        where_clause_params += [search_name] * 3
+        where_clause_params += where_clause_params_email  # partner ids
+        where_clause_params.append(search_name)  # The last one for sort
+        if limit:
+            query += " limit %s"
+            where_clause_params.append(limit)
+        self.env.cr.execute(query, where_clause_params)
+        return (
+            self.browse(partner_ids).name_get()
+            if (partner_ids := [row[0] for row in self.env.cr.fetchall()])
+            else []
         )
 
     # -- Dummy function
@@ -655,8 +644,7 @@ class Partner(models.Model):
         Set sequence=-100500 so we can detect that number is created
          from original field (legacy method)
         """
-        new_rec = super(Partner, self).create(self._sanitize_vals(vals))
-        return new_rec
+        return super(Partner, self).create(self._sanitize_vals(vals))
 
     # -- Write
     def write(self, vals):
@@ -683,12 +671,11 @@ class Partner(models.Model):
         # Get vals if any and store them as needed
         phone_number_ids = vals.pop("phone_number_ids", [])
 
-        # Get ids of modified numbers so we do not delete them occasionally
-        modify_ids = []
-        for phone_number in phone_number_ids:
-            if phone_number[0] == 1:
-                modify_ids.append(phone_number[1])
-
+        modify_ids = [
+            phone_number[1]
+            for phone_number in phone_number_ids
+            if phone_number[0] == 1
+        ]
         # Add/remove phone
         if "phone" in vals:
             number = vals.pop("phone", False)
@@ -699,15 +686,14 @@ class Partner(models.Model):
             else:
                 # Get numbers to delete and add them to list to delete them on write
                 for rec in self:
-                    numbers2del = self.env["prt.phone"].search(
+                    if numbers2del := self.env["prt.phone"].search(
                         [
                             ("partner_id", "=", rec.id),
                             ("type", "=", "0"),
                             ("id", "not in", modify_ids),
                             ("number", "=", rec.phone),
                         ]
-                    )
-                    if numbers2del:
+                    ):
                         for number2del in numbers2del:
                             phone_number_ids.append((2, number2del.id, False))
 
@@ -721,15 +707,14 @@ class Partner(models.Model):
             else:
                 # Get numbers to delete and add them to list to delete them on write
                 for rec in self:
-                    numbers2del = self.env["prt.phone"].search(
+                    if numbers2del := self.env["prt.phone"].search(
                         [
                             ("partner_id", "=", rec.id),
                             ("type", "=", "1"),
                             ("id", "not in", modify_ids),
                             ("number", "=", rec.mobile),
                         ]
-                    )
-                    if numbers2del:
+                    ):
                         for number2del in numbers2del:
                             phone_number_ids.append((2, number2del.id, False))
 
@@ -743,16 +728,14 @@ class Partner(models.Model):
             else:
                 # Get numbers to delete and add them to list to delete them on write
                 for rec in self:
-                    numbers2del = self.env["prt.phone"].search(
+                    if numbers2del := self.env["prt.phone"].search(
                         [
                             ("partner_id", "=", rec.id),
                             ("type", "=", "7"),
                             ("id", "not in", modify_ids),
                             ("number", "=", rec.email),
                         ]
-                    )
-
-                    if numbers2del:
+                    ):
                         for number2del in numbers2del:
                             phone_number_ids.append((2, number2del.id, False))
 
@@ -799,7 +782,6 @@ class Users(models.Model):
 
     # -- Write
     def write(self, vals):
-        login = vals.get("login", False)
-        if login:
+        if login := vals.get("login", False):
             vals["email"] = login
         return super(Users, self).write(vals)

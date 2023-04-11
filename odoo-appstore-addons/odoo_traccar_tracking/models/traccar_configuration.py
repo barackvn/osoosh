@@ -51,10 +51,14 @@ class TraccarConfigure(models.Model):
     create_date = fields.Datetime(string='Created Date')
 
     def current_map_provider(self):
-        map_provider_id = self.env['ir.config_parameter'].sudo().get_param('base_geolocalize.geo_provider')
-        if map_provider_id:
-            map_provider = self.env['base.geo_provider'].browse(int(map_provider_id))
-            if map_provider:
+        if (
+            map_provider_id := self.env['ir.config_parameter']
+            .sudo()
+            .get_param('base_geolocalize.geo_provider')
+        ):
+            if map_provider := self.env['base.geo_provider'].browse(
+                int(map_provider_id)
+            ):
                 return map_provider.tech_name
         return ''
 
@@ -69,8 +73,7 @@ class TraccarConfigure(models.Model):
                 _('Warning!\nSorry, Only one active connection is allowed.'))
         vals['instance_name'] = self.env[
             'ir.sequence'].next_by_code('traccar.configure')
-        res = super(TraccarConfigure, self).create(vals)
-        return res
+        return super(TraccarConfigure, self).create(vals)
 
     def write(self, vals):
         if 'name' in vals:
@@ -92,7 +95,7 @@ class TraccarConfigure(models.Model):
         connection_status = False
         status = 'Traccar Connection Un-successful'
         text = 'Test connection Un-successful please check the traccar login credentials !!!'
-        url = self.name + "/api/session"
+        url = f"{self.name}/api/session"
         user, pwd = self.user, self.pwd
         try:
             data = {'email': user, 'password': pwd}
@@ -102,9 +105,9 @@ class TraccarConfigure(models.Model):
                 text = 'Test Connection with Traccar is successful, now you can proceed with synchronization.'
                 status = "Congratulation, It's Successfully Connected with Traccar."
             elif response.status_code == 401:
-                text = ('Traccar Unauthorized Access: Check traccar credentials %s') % response.text
-            else :
-                text = ('Traccar Connection Error: %s') % response.text
+                text = f'Traccar Unauthorized Access: Check traccar credentials {response.text}'
+            else:
+                text = f'Traccar Connection Error: {response.text}'
         except Exception as e:
             text = ('Error!\Traccar Connection Error: %s') % e
         self.status = status

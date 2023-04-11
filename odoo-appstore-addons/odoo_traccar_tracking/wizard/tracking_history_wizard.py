@@ -75,9 +75,9 @@ class TrackingHistoryWizard(models.TransientModel):
         for end in ends:
             if end.driver_id and end.driver_id.name not in driver_locations:
                 if driver_locations:
-                    driver_locations = "{};{}:{},{}".format(driver_locations, end.driver_id.name, end.destination_long, end.destination_lat)
+                    driver_locations = f"{driver_locations};{end.driver_id.name}:{end.destination_long},{end.destination_lat}"
                 else:
-                    driver_locations = "{}:{},{}".format(end.driver_id.name, end.destination_long, end.destination_lat)
+                    driver_locations = f"{end.driver_id.name}:{end.destination_long},{end.destination_lat}"
         partial = self.env['tracking.history.wizard'].create({
             'name': 'Drivers Location',
             'date_to':self.date_to,

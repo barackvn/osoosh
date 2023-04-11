@@ -11,7 +11,7 @@ from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
 def random_token():
     # the token has an entropy of about 120 bits (6 bits/char * 20 chars)
     chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    return "".join(random.SystemRandom().choice(chars) for i in range(20))
+    return "".join(random.SystemRandom().choice(chars) for _ in range(20))
 
 
 def now(**kwargs):
@@ -24,27 +24,18 @@ class SaleOrder(models.Model):
 
 
     def action_confirm(self):
-        res = super(SaleOrder, self).action_confirm()
-        # for so in self:
-        #     if any(so.order_line.filtered(lambda line: line.event_id)):
-        #         return (
-        #             self.env["ir.actions.act_window"]
-        #             .with_context(default_sale_order_id=so.id)
-        #             .for_xml_id("event_sale", "action_sale_order_event_registration")
-        #         )
-        return res
+        return super(SaleOrder, self).action_confirm()
 
 
     def _compute_has_event_product(self):
         for order in self:
-            order.has_event_product = False
-            for line in order.order_line:
-                if (
+            order.has_event_product = any(
+                (
                     line.product_id.product_tmpl_id.is_event_product
                     and line.product_id.event_template_id
-                ):
-                    order.has_event_product = True
-                    break
+                )
+                for line in order.order_line
+            )
 
 
     def _cart_update(
@@ -58,7 +49,7 @@ class SaleOrder(models.Model):
             line = OrderLine.browse(line_id)
             if line and line.product_id.product_tmpl_id.is_learning_product:
                 old_qty = int(line.product_uom_qty)
-                new_qty = set_qty if set_qty else (add_qty or 0 + old_qty)
+                new_qty = set_qty or (add_qty or 0 + old_qty)
                 if line.product_id.event_template_id:
                     event_template_id = line.product_id.event_template_id
                     if not line.event_id:
@@ -107,14 +98,15 @@ class SaleOrder(models.Model):
 
 
     def action_send_late_reg_event_notification(self):
-        attendee_ids = self.env["event.registration"].search(
-            [("sale_order_id", "=", self.id), ("can_send_reminder", "=", True),]
-        )
-        if attendee_ids:
+        if attendee_ids := self.env["event.registration"].search(
+            [
+                ("sale_order_id", "=", self.id),
+                ("can_send_reminder", "=", True),
+            ]
+        ):
             self.send_late_reg_event_notification()
             message = _(
-                "A reminder containing the following link has been sent to this partner: %s"
-                % self.event_token_url
+                f"A reminder containing the following link has been sent to this partner: {self.event_token_url}"
             )
             self.message_post(body=message)
         else:
@@ -144,8 +136,7 @@ class SaleOrder(models.Model):
         )
         for att_id in att_ids:
             message = _(
-                "A reminder containing the following link has been sent to the attendee's related partner: %s"
-                % self.event_token_url
+                f"A reminder containing the following link has been sent to the attendee's related partner: {self.event_token_url}"
             )
             att_id.message_post(body=message)
 
@@ -156,8 +147,8 @@ class SaleOrderLine(models.Model):
 
     def create_event_from_order_line(self):
         product_id = self.product_id
-        event_template = product_id.event_template_id
         if product_id.product_tmpl_id.is_event_product:
+            event_template = product_id.event_template_id
             new_event = event_template.copy(default={"event_ticket_ids": False})
             template_ticket_id = self.env["event.event.ticket"]
             for ticket in event_template.event_ticket_ids:
@@ -240,14 +231,12 @@ class SaleOrderLine(models.Model):
 
             for att_id in template_attendee_ids:
                 vals["template_id"] = att_id.id
-                
+
                 att_id.copy(vals)
 
 
     def join_event_from_order_line(self, event_id, ticket_id):
         product_id = self.product_id
-        event_template = product_id.event_template_id
-
         # Only write on the event_id field for the first event that will be linked to the sales order line
         if not self.event_id:
             self.write(
@@ -270,6 +259,8 @@ class SaleOrderLine(models.Model):
 
         if not template_attendee_ids:
             counter = 0
+            event_template = product_id.event_template_id
+
             while counter < self.product_uom_qty:
                 vals = {
                     "event_id": event_template.id,
@@ -311,11 +302,10 @@ class SaleOrderLine(models.Model):
         registrations linked to this line. This method update existing registrations
         and create new one for missing one. """
         for order_line in self:
-            event_template_id = (
+            if event_template_id := (
                 order_line.event_id
                 or order_line.product_id.product_tmpl_id.event_template_id
-            )
-            if event_template_id:
+            ):
                 Registration = self.env["event.registration"].sudo()
                 registrations = Registration.search(
                     [("sale_order_line_id", "in", self.ids)]
@@ -327,7 +317,7 @@ class SaleOrderLine(models.Model):
                 #     if cancel_to_draft:
                 #         existing_registrations.filtered(lambda r: r.state == 'cancel').do_draft()
 
-                for count in range(int(order_line.product_uom_qty)):
+                for _ in range(int(order_line.product_uom_qty)):
                     registration = {}
                     if registration_data:
                         registration = registration_data.pop()

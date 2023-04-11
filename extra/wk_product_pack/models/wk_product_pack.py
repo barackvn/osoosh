@@ -53,10 +53,9 @@ class ProductTemplate(models.Model):
 
 	@api.model
 	def create(self, vals):
-		if vals.get('is_pack'):
-			if not vals.get('wk_product_pack'):
-				raise ValidationError(
-					'No products in this pack. Select atleast one product.')
+		if vals.get('is_pack') and not vals.get('wk_product_pack'):
+			raise ValidationError(
+				'No products in this pack. Select atleast one product.')
 		return super(ProductTemplate, self).create(vals)
 			
 class ProductProduct(models.Model):
@@ -68,7 +67,7 @@ class ProductProduct(models.Model):
 			prd_type = self.type
 			if prd_type == 'consu':
 				self.pack_stock_management = 'decrmnt_pack'
-			elif prd_type == 'product' or prd_type == 'service':
+			elif prd_type in ['product', 'service']:
 				self.pack_stock_management = 'decrmnt_products'
 
 
@@ -111,7 +110,7 @@ class SaleOrderLine(models.Model):
 				qty = line._get_qty_procurement()
 				if float_compare(qty, line.product_uom_qty, precision_digits=precision) >= 0:
 					continue
-				
+
 				group_id = line.order_id.procurement_group_id
 				if not group_id:
 					group_id = self.env['procurement.group'].create(line._prepare_procurement_group_vals())
@@ -121,9 +120,9 @@ class SaleOrderLine(models.Model):
 					# cancelled, we need to update certain values of the group.
 					updated_vals = {}
 					if group_id.partner_id != line.order_id.partner_shipping_id:
-						updated_vals.update({'partner_id': line.order_id.partner_shipping_id.id})
+						updated_vals['partner_id'] = line.order_id.partner_shipping_id.id
 					if group_id.move_type != line.order_id.picking_policy:
-						updated_vals.update({'move_type': line.order_id.picking_policy})
+						updated_vals['move_type'] = line.order_id.picking_policy
 					if updated_vals:
 						group_id.write(updated_vals)
 
@@ -144,7 +143,7 @@ class SaleOrderLine(models.Model):
 
 					except UserError as error:
 						errors.append(error.name)
-					
+
 				if line.product_id.pack_stock_management != 'decrmnt_pack':
 					for pack_obj in line.product_id.wk_product_pack:
 						procurements=[]
@@ -158,7 +157,7 @@ class SaleOrderLine(models.Model):
 							line.name, line.order_id.name, line.order_id.company_id, values))
 							if procurements:
 								self.env['procurement.group'].run(procurements)
-			
+
 						except UserError as error:
 							errors.append(error.name)
 				if line.product_id.pack_stock_management == 'decrmnt_products':
@@ -174,17 +173,16 @@ class SaleOrderLine(models.Model):
 		res = super(SaleOrderLine,self)._compute_is_mto()
 		for product in self:
 			product_obj = product.product_id
-			if product.product_id.type == 'product':
-				if product_obj.is_pack:
-					warning_mess = {}
-					for pack_product in product_obj.wk_product_pack:
-						qty = product.product_uom_qty
-						if qty * pack_product.product_quantity > pack_product.product_id.virtual_available:
-							warning_mess = {
-								'title': _('Not enough inventory!'),
-								'message': ('You plan to sell %s quantities of the pack %s but you have only  %s quantities of the product %s available, and the total quantity to sell is  %s !!' % (qty, pack_product.product_id.name, pack_product.product_id.virtual_available, pack_product.product_id.name, qty * pack_product.product_quantity))
-							}
-							return {'warning': warning_mess}
+			if product.product_id.type == 'product' and product_obj.is_pack:
+				warning_mess = {}
+				for pack_product in product_obj.wk_product_pack:
+					qty = product.product_uom_qty
+					if qty * pack_product.product_quantity > pack_product.product_id.virtual_available:
+						warning_mess = {
+							'title': _('Not enough inventory!'),
+							'message': f'You plan to sell {qty} quantities of the pack {pack_product.product_id.name} but you have only  {pack_product.product_id.virtual_available} quantities of the product {pack_product.product_id.name} available, and the total quantity to sell is  {qty * pack_product.product_quantity} !!',
+						}
+						return {'warning': warning_mess}
 		return res
 
 

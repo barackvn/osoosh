@@ -59,29 +59,25 @@ class SaleOrder(models.Model):
                         'active': True
                     }
                     if line.product_id.recurring_invoice:
-                        warranty_vals.update({
-                            'subscription_id': line.subscription_id.id
-                        })
+                        warranty_vals['subscription_id'] = line.subscription_id.id
                     warranty_product = self.env['product.warranty.registration'].create(warranty_vals)
         return res
 
     # @api.multi
     def unlink(self):
         for order in self:
-            warranty_id = self.env['product.warranty.registration'].search([
-                ('sale_order_id', '=', order.id)
-            ])
-            if warranty_id:
+            if warranty_id := self.env['product.warranty.registration'].search(
+                [('sale_order_id', '=', order.id)]
+            ):
                 warranty_id.write({'active': False})
         return super(SaleOrder, self).unlink()
 
     # @api.multi
     def action_cancel(self):
         for order in self:
-            warranty_id = self.env['product.warranty.registration'].search([
-                ('sale_order_id', '=', order.id)
-            ])
-            if warranty_id:
+            if warranty_id := self.env['product.warranty.registration'].search(
+                [('sale_order_id', '=', order.id)]
+            ):
                 warranty_id.write({'active': False})
         return super(SaleOrder, self).action_cancel()
 
