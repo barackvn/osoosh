@@ -7,9 +7,13 @@ db_v_14 = 'boxed'
 username_v_14 = 'admin@boxed.cz'
 password_v_14 = '1Juzepe1'
 port_v_14 = '8069'
-common_v_14 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/common'.format(url_v_14, port_v_14))
+common_v_14 = xmlrpc.client.ServerProxy(
+    f'{url_v_14}:{port_v_14}/xmlrpc/2/common'
+)
 uid_v_14 = common_v_14.authenticate(db_v_14, username_v_14, password_v_14, {})
-models_v_14 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_14, port_v_14))
+models_v_14 = xmlrpc.client.ServerProxy(
+    f'{url_v_14}:{port_v_14}/xmlrpc/2/object'
+)
 print(uid_v_14)
 
 #v9
@@ -18,9 +22,9 @@ db_v_9 = 'boxed'
 username_v_9 = 'admin@boxed.cz'
 password_v_9 = '1Juzepe1'
 port_v_9 = '443'
-common_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/common'.format(url_v_9, port_v_9))
+common_v_9 = xmlrpc.client.ServerProxy(f'{url_v_9}:{port_v_9}/xmlrpc/2/common')
 uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
-models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
+models_v_9 = xmlrpc.client.ServerProxy(f'{url_v_9}:{port_v_9}/xmlrpc/2/object')
 print(uid_v_9)
 
 done = 0
@@ -37,10 +41,16 @@ for i, partner in enumerate(partners):
     'res.partner', 'search_read',[[('database_id_v9', '=', partner['id'])]],{'limit': 1})
     if v14_partner:
         v14_partner = v14_partner[0]
-        print("Processing [%s] %s of %s [%s] %s"%(v14_partner['id'], i, size, 100 * i/size, '%'))
-        parent_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-            'res.partner', 'search_read',[[('database_id_v9', '=', partner['parent_id'][0])]],{'limit': 1})
-        if parent_id:
+        print(f"Processing [{v14_partner['id']}] {i} of {size} [{100 * i / size}] %")
+        if parent_id := models_v_14.execute_kw(
+            db_v_14,
+            uid_v_14,
+            password_v_14,
+            'res.partner',
+            'search_read',
+            [[('database_id_v9', '=', partner['parent_id'][0])]],
+            {'limit': 1},
+        ):
             models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'res.partner', 'write', [[v14_partner['id']], {
                 'parent_id': parent_id[0]['id']
             }])
@@ -68,7 +78,7 @@ for i, partner in enumerate(partners):
     # # 'res.partner.title', 'search_read',[[('name', '=', partner['title'][1])]],{'limit': 1})[0]
 
 
-    
+
 
     # # del partner['image_1920']
     # # del partner['image_medium']
@@ -89,7 +99,7 @@ for i, partner in enumerate(partners):
     # del partner['bank_ids']
     # del partner['last_website_so_id']
     # del partner['grade_id']
-    
+
     # # del partner['property_account_receivable_id']
     # # del partner['property_account_payable_id']
     # # del partner['property_product_pricelist']
@@ -106,7 +116,7 @@ for i, partner in enumerate(partners):
     # del partner['meeting_ids']
     # del partner['message_partner_ids']
     # # 'message_is_follower': True, 
-    
+
     # # del partner['id']
     # del partner['parent_id']
     # del partner['ref_company_ids']
@@ -148,10 +158,12 @@ for i, partner in enumerate(partners):
 
     # print(partner)
     # continue
-    
+
     # id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'res.partner', 'create', [partner])
-    
-    print("Processed partner id [%s] %s of %s [%s] %s"%(v14_partner['id'], i, size, 100 * i/size, '%'))
+
+    print(
+        f"Processed partner id [{v14_partner['id']}] {i} of {size} [{100 * i / size}] %"
+    )
 
 
 

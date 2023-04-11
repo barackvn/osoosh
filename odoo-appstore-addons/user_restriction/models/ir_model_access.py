@@ -16,7 +16,7 @@ class IrModelAccess(models.Model):
         if self.env.su:
             # User root have all accesses
             return True
-        assert isinstance(model, str), 'Not a model name: %s' % (model,)
+        assert isinstance(model, str), f'Not a model name: {model}'
         assert mode in ('read', 'write', 'create', 'unlink'), 'Invalid access mode'
         user = self.env['res.users'].sudo().browse(self._uid)
         # TransientModel records have no access rights, only an implicit access rule
@@ -56,9 +56,9 @@ class IrModelAccess(models.Model):
                 msg_params['groups_list'] = groups
             else:
                 msg_tail = _("No group currently allows this operation.")
-            msg_tail += u' - ({} {}, {} {})'.format(_('Operation:'), mode, _('User:'), self._uid)
+            msg_tail += f" - ({_('Operation:')} {mode}, {_('User:')} {self._uid})"
             _logger.info('Access Denied by ACLs for operation: %s, uid: %s, model: %s', mode, self._uid, model)
-            msg = '%s %s' % (msg_heads[mode], msg_tail)
+            msg = f'{msg_heads[mode]} {msg_tail}'
             if model in ['product.product', 'product.template', 'res.partner'] and mode == 'create' and restrict:
                 raise AccessError(_('You Have Insufficient Access'))
             raise AccessError(msg % msg_params)

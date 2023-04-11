@@ -28,7 +28,7 @@ class EventsRSS(http.Controller):
             user_tz = timezone(tz or "utc")
             return sd.strftime("%a, %d %b %Y %H:%M:%S %z")
 
-        today = datetime.today()
+        today = datetime.now()
         if dates:
             if dates == "today":
                 domain += [
@@ -100,7 +100,7 @@ class EventsRSS(http.Controller):
         base_url = param_obj.sudo().get_param("web.base.url") or ""
         feed = {
             "title": param_obj.sudo().get_param("rss_title"),
-            "link": base_url + "/events",
+            "link": f"{base_url}/events",
             "description": param_obj.sudo().get_param("rss_description"),
             "language": request.env.context["lang"],
             "email": param_obj.sudo().get_param("rss_email"),
@@ -115,9 +115,8 @@ class EventsRSS(http.Controller):
                 {
                     "title": e.name,
                     "description": e.description,
-                    "link": "%s%s" % (base_url, e.website_url),
-                    "image_url": "%s/web/image/event.event/%s/event_cover_poster"
-                    % (base_url, e.id),
+                    "link": f"{base_url}{e.website_url}",
+                    "image_url": f"{base_url}/web/image/event.event/{e.id}/event_cover_poster",
                     "category": e.event_type_id.name,
                     "pub_date": rfc(e.date_begin),
                 }

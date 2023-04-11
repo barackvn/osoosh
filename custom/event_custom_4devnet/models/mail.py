@@ -11,7 +11,6 @@ class MailComposeMessage(models.TransientModel):
         )
         if model == "account.move":
             invoice_id = self.env["account.move"].browse([res_id])
-            cert_attachment_ids = invoice_id.generate_event_certificates()
-            if cert_attachment_ids:
+            if cert_attachment_ids := invoice_id.generate_event_certificates():
                 values["value"]["attachment_ids"].extend(cert_attachment_ids.ids)
         return values

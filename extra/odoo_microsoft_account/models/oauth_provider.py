@@ -32,14 +32,12 @@ class auth_oauth_provider(models.Model):
             code="",
         )
         if code:
-            data.update({"code": code})
+            data["code"] = code
         elif refresh_token:
-            data.update({"refresh_token": refresh_token})
+            data["refresh_token"] = refresh_token
         # data = urlencode(data).encode('utf-8')
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         get_res = req.post(
             oauth_provider_rec.validation_endpoint, data=data, headers=headers
         )
-        # res =  simplejson.loads(urlopen(Request(oauth_provider_rec.validation_endpoint, data)).read())
-        res = simplejson.loads(get_res.text)
-        return res
+        return simplejson.loads(get_res.text)

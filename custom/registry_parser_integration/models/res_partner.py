@@ -172,7 +172,7 @@ class Partner(models.Model):
                     else ""
                 )
                 if cityPart:
-                    city = city + " - " + cityPart
+                    city = f"{city} - {cityPart}"
                 values["city"] = city
 
             if category_id:
@@ -194,7 +194,7 @@ class Partner(models.Model):
                     else ""
                 )
                 if cityPart:
-                    city = city + " - " + cityPart
+                    city = f"{city} - {cityPart}"
                 founder_values = {
                     "name": "Founder - " + str(founder["name"])
                     if "name" in founder and founder["name"]
@@ -212,10 +212,9 @@ class Partner(models.Model):
                     "type": "founder",
                     "parent_id": self.id,
                 }
-                existing_founder_address_id = self.search(
+                if existing_founder_address_id := self.search(
                     [("parent_id", "=", self.id), ("type", "=", "founder")]
-                )
-                if existing_founder_address_id:
+                ):
                     existing_founder_address_id.write(founder_values)
                 else:
                     self.create(founder_values)
@@ -231,7 +230,7 @@ class Partner(models.Model):
                         else ""
                     )
                     if cityPart:
-                        city = city + " - " + cityPart
+                        city = f"{city} - {cityPart}"
 
                     street2 = (
                         str(eq["numberOfDescriptive"])
@@ -244,7 +243,7 @@ class Partner(models.Model):
                         else ""
                     )
                     if orientation_number:
-                        street2 = street2 + "/" + orientation_number
+                        street2 = f"{street2}/{orientation_number}"
 
                     category_id = []
                     eq_type = str(eq["type"]) if "street" in eq and eq["type"] else ""
@@ -296,14 +295,13 @@ class Partner(models.Model):
                         "parent_id": self.id,
                     }
 
-                    existing_equipment_id = self.search(
+                    if existing_equipment_id := self.search(
                         [
                             ("parent_id", "=", self.id),
                             ("izo", "=", izo),
                             ("type", "=", "equipment"),
                         ]
-                    )
-                    if existing_equipment_id:
+                    ):
                         existing_equipment_id.write(eq_values)
                     else:
                         self.create(eq_values)

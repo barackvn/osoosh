@@ -10,7 +10,7 @@ class Partner(models.Model):
         references = message.parent_id.message_id if message.parent_id else False
 
         # custom values
-        custom_values = dict()
+        custom_values = {}
         if (
             message.res_id
             and message.model in self.env
@@ -28,5 +28,5 @@ class Partner(models.Model):
             "auto_delete": self._context.get("mail_auto_delete", True),
             "references": references or message.message_id,
         }
-        mail_values.update(custom_values)
+        mail_values |= custom_values
         return mail_values

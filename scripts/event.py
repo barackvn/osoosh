@@ -7,9 +7,13 @@ db_v_14 = 'boxed'
 username_v_14 = 'admin@boxed.cz'
 password_v_14 = '1Juzepe1'
 port_v_14 = '8069'
-common_v_14 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/common'.format(url_v_14, port_v_14))
+common_v_14 = xmlrpc.client.ServerProxy(
+    f'{url_v_14}:{port_v_14}/xmlrpc/2/common'
+)
 uid_v_14 = common_v_14.authenticate(db_v_14, username_v_14, password_v_14, {})
-models_v_14 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_14, port_v_14))
+models_v_14 = xmlrpc.client.ServerProxy(
+    f'{url_v_14}:{port_v_14}/xmlrpc/2/object'
+)
 print(uid_v_14)
 
 #v9
@@ -18,9 +22,9 @@ db_v_9 = 'boxed'
 username_v_9 = 'admin@boxed.cz'
 password_v_9 = '1Juzepe1'
 port_v_9 = '443'
-common_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/common'.format(url_v_9, port_v_9))
+common_v_9 = xmlrpc.client.ServerProxy(f'{url_v_9}:{port_v_9}/xmlrpc/2/common')
 uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
-models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
+models_v_9 = xmlrpc.client.ServerProxy(f'{url_v_9}:{port_v_9}/xmlrpc/2/object')
 print(uid_v_9)
 
 done = 0
@@ -33,7 +37,7 @@ events = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
 
 for i, event in enumerate(events):
     i = i+1
-    print("Processing [%s] %s of %s [%s] %s"%(event['id'], i, size, 100 * i/size, '%'))
+    print(f"Processing [{event['id']}] {i} of {size} [{100 * i / size}] %")
     event['database_id_v9'] = event['id']
     event['country_id'] = 56
 
@@ -45,23 +49,35 @@ for i, event in enumerate(events):
             'res.users', 'search',[[('login','=',user['login'])]],{'limit': size})[0]
         except:
             event['user_id'] = uid_v_14
-    
+
     if event['organizer_id']:
-        partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-            'res.partner', 'search_read',[[('database_id_v9','=',event['organizer_id'][0])]],{'limit': size})
-        if partner_id:
+        if partner_id := models_v_14.execute_kw(
+            db_v_14,
+            uid_v_14,
+            password_v_14,
+            'res.partner',
+            'search_read',
+            [[('database_id_v9', '=', event['organizer_id'][0])]],
+            {'limit': size},
+        ):
             event['organizer_id'] = partner_id[0]['id']
         else:
             event['organizer_id'] = False
-    
+
     if event['address_id']:
-        partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-            'res.partner', 'search_read',[[('database_id_v9','=',event['address_id'][0])]],{'limit': size})
-        if partner_id:
+        if partner_id := models_v_14.execute_kw(
+            db_v_14,
+            uid_v_14,
+            password_v_14,
+            'res.partner',
+            'search_read',
+            [[('database_id_v9', '=', event['address_id'][0])]],
+            {'limit': size},
+        ):
             event['address_id'] = partner_id[0]['id']
         else:
             event['address_id'] = False
-    
+
     if event['company_id']:
         company_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
             'res.company', 'search',[[('name','=',event['company_id'][1])]],{'limit': size})
@@ -83,7 +99,7 @@ for i, event in enumerate(events):
     #sale_order_line_origin
 
 
-    
+
     del event['message_last_post']
     del event['count_sponsor']
     del event['twitter_hashtag']
@@ -116,9 +132,9 @@ for i, event in enumerate(events):
     # del event['blog_id']
     # del event['blog_id']
     # del event['blog_id']
-    
-    
+
+
     print(event)
     id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'event.event', 'create', [event])
 
-    print("Processed [%s] %s of %s [%s] %s"%(event['id'], i, size, 100 * i/size, '%'))
+    print(f"Processed [{event['id']}] {i} of {size} [{100 * i / size}] %")

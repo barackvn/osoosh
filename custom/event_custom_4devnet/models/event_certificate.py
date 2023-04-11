@@ -40,8 +40,7 @@ class EventCertificate(models.Model):
                 self.env["ir.sequence"].sudo().next_by_code("event.certificate")
                 or "New"
             )
-        result = super(EventCertificate, self).create(vals)
-        return result
+        return super(EventCertificate, self).create(vals)
 
     @api.model
     def get_report_values(self, docids, data=None):

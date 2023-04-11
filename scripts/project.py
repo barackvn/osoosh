@@ -7,9 +7,13 @@ db_v_14 = 'boxed'
 username_v_14 = 'admin@boxed.cz'
 password_v_14 = '1Juzepe1'
 port_v_14 = '8069'
-common_v_14 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/common'.format(url_v_14, port_v_14))
+common_v_14 = xmlrpc.client.ServerProxy(
+    f'{url_v_14}:{port_v_14}/xmlrpc/2/common'
+)
 uid_v_14 = common_v_14.authenticate(db_v_14, username_v_14, password_v_14, {})
-models_v_14 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_14, port_v_14))
+models_v_14 = xmlrpc.client.ServerProxy(
+    f'{url_v_14}:{port_v_14}/xmlrpc/2/object'
+)
 print(uid_v_14)
 
 #v9
@@ -18,9 +22,9 @@ db_v_9 = 'boxed'
 username_v_9 = 'admin@boxed.cz'
 password_v_9 = '1Juzepe1'
 port_v_9 = '443'
-common_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/common'.format(url_v_9, port_v_9))
+common_v_9 = xmlrpc.client.ServerProxy(f'{url_v_9}:{port_v_9}/xmlrpc/2/common')
 uid_v_9 = common_v_9.authenticate(db_v_9, username_v_9, password_v_9, {})
-models_v_9 = xmlrpc.client.ServerProxy('{}:{}/xmlrpc/2/object'.format(url_v_9, port_v_9))
+models_v_9 = xmlrpc.client.ServerProxy(f'{url_v_9}:{port_v_9}/xmlrpc/2/object')
 print(uid_v_9)
 
 # done = 5+29+52+20+157
@@ -47,7 +51,7 @@ print('Offset:', offset)
 #     # del p_type['rating_template_id']
 #     # del p_type['survey_id']
 
-    
+
 #     print("Processing [%s] %s of %s [%s] %s"%(tag['id'], i, size, 100 * i/size, '%'))
 #     tag['database_id_v9'] = tag['id']
 #     print(tag)
@@ -75,7 +79,7 @@ print('Offset:', offset)
 #     del p_type['rating_template_id']
 #     del p_type['survey_id']
 
-    
+
 #     print("Processing [%s] %s of %s [%s] %s"%(p_type['id'], i, size, 100 * i/size, '%'))
 #     p_type['database_id_v9'] = p_type['id']
 #     print(p_type)
@@ -145,7 +149,7 @@ print('Offset:', offset)
 #     del project['write_uid']
 #     del project['user_id']
 #     del project['resource_calendar_id']
-    
+
 #     print(project)
 #     id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'project.project', 'create', [project])
 
@@ -156,7 +160,7 @@ tasks = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
 
 for i, task in enumerate(tasks):
     i = i+1
-    print("Processing [%s] %s of %s [%s] %s"%(task['id'], i, size, 100 * i/size, '%'))
+    print(f"Processing [{task['id']}] {i} of {size} [{100 * i / size}] %")
     task['database_id_v9'] = task['id']
     # project['currency_id'] = 9
 
@@ -166,51 +170,69 @@ for i, task in enumerate(tasks):
         print(project_id)
         task['project_id'] = project_id[0]
 
-    
+
     if task['stage_id']:
         stage_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
     'project.task.type', 'search',[[('database_id_v9','=',task['stage_id'][0])]],{'limit': size})
         task['stage_id'] = stage_id[0]
-    
+
     if task['partner_id']:
         print(task['partner_id'])
-        partner_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-    'res.partner', 'search_read',[[('database_id_v9','=',task['partner_id'][0])]],{'limit': size})
-        if partner_id:
+        if partner_id := models_v_14.execute_kw(
+            db_v_14,
+            uid_v_14,
+            password_v_14,
+            'res.partner',
+            'search_read',
+            [[('database_id_v9', '=', task['partner_id'][0])]],
+            {'limit': size},
+        ):
             task['partner_id'] = partner_id[0]['id']
         else:
             task['partner_id'] = False
-    
+
     if task['product_id']:
-        product_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-    'product.product', 'search_read',[[('name','=',task['product_id'][1])]],{'limit': size})
-        if product_id:
+        if product_id := models_v_14.execute_kw(
+            db_v_14,
+            uid_v_14,
+            password_v_14,
+            'product.product',
+            'search_read',
+            [[('name', '=', task['product_id'][1])]],
+            {'limit': size},
+        ):
             task['product_id'] = product_id[0]['id']
         else:
             task['product_id'] = False
-    
+
     if task['company_id']:
         company_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
     'res.company', 'search_read',[[('name','=',task['company_id'][1])]],{'limit': size})
         task['company_id'] = company_id[0]['id']
-    
+
     if task['users_id']:
         users = models_v_9.execute_kw(db_v_9, uid_v_9, password_v_9,
             'res.users', 'search_read',[[('id','in',task['users_id'])]],{'limit': size})
-        task['users_ids'] = list()
+        task['users_ids'] = []
         for user in users:
             user_id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
         'res.users', 'search',[[('login','=',user['login'])]],{'limit': size})
             task['users_ids'].extend(user_id)
-    
+
     if task['tag_ids']:
-        tag_ids = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14,
-        'project.tags', 'search',[[('database_id_v9','in',task['tag_ids'])]],{'limit': size})
-        if tag_ids:
+        if tag_ids := models_v_14.execute_kw(
+            db_v_14,
+            uid_v_14,
+            password_v_14,
+            'project.tags',
+            'search',
+            [[('database_id_v9', 'in', task['tag_ids'])]],
+            {'limit': size},
+        ):
             task['tag_ids'] = tag_ids
         else:
             task['tag_ids'] = False
-    
+
     del task['users_id']
     del task['reminder_event_id']
     del task['survey_result_ids']
@@ -256,12 +278,12 @@ for i, task in enumerate(tasks):
 #     del project['write_uid']
 #     del project['user_id']
 #     del project['resource_calendar_id']
-    
+
     # print(task)
     try:
         id = models_v_14.execute_kw(db_v_14, uid_v_14, password_v_14, 'project.task', 'create', [task])
 
-        print("Processed [%s] %s of %s [%s] %s"%(task['id'], i, size, 100 * i/size, '%'))
+        print(f"Processed [{task['id']}] {i} of {size} [{100 * i / size}] %")
     except Exception as e:
         print(e)
 

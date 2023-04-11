@@ -17,15 +17,13 @@ class PersonCase(TransactionCase):
     def setUp(self):
         super(PersonCase, self).setUp()
         self.values = {"firstname": "Núñez", "lastname": "Fernán"}
-        self.values["name"] = "{} {}".format(
-            self.values["firstname"], self.values["lastname"]
-        )
+        self.values["name"] = f'{self.values["firstname"]} {self.values["lastname"]}'
         if "default_is_company" in self.context:
             self.values["is_company"] = self.context["default_is_company"]
 
     def tearDown(self):
         for key, value in self.values.items():
-            self.assertEqual(self.defaults.get(key), value, "Checking key %s" % key)
+            self.assertEqual(self.defaults.get(key), value, f"Checking key {key}")
 
         return super(PersonCase, self).tearDown()
 

@@ -9,8 +9,7 @@ class CertificateTemplateSetting(models.TransientModel):
         cr = self.env.cr
         uid = self.env.user.id
         cr.execute("select max(id) from certificate_template_setting")
-        abts = cr.fetchone()
-        if abts:
+        if abts := cr.fetchone():
             req_id = abts[0]
             return self.browse(cr, uid, req_id, context=context).template
         else:

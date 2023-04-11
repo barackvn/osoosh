@@ -39,7 +39,7 @@ class ProductTemplate(models.Model):
         p = self.env["product.product"].search(
             [("product_tmpl_id", "=", self.id), ("is_learning_product", "=", True)]
         )
-        return any([prod.is_learning_product for prod in p])
+        return any(prod.is_learning_product for prod in p)
 
 
 # class ProductVariant(models.Model):

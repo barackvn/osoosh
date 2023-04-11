@@ -43,7 +43,5 @@ class ResUser(models.Model):
             and ("lastname" not in default)
             and ("name" in default)
         ):
-            default.update(
-                self.env["res.partner"]._get_inverse_name(default["name"], False)
-            )
+            default |= self.env["res.partner"]._get_inverse_name(default["name"], False)
         return super(ResUser, self).copy(default)

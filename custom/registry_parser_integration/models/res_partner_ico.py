@@ -20,10 +20,9 @@ class PartnerICO(models.Model):
             [("partner_id", "=", False), ("invalid", "=", False)], limit=500
         )
         for ico_id in ico_ids:
-            partner_id = self.env["res.partner"].search(
+            if partner_id := self.env["res.partner"].search(
                 [("company_registry", "=", ico_id.name)]
-            )
-            if partner_id:
+            ):
                 partner_id.fetch_registry_data(raise_exception=False)
                 ico_id.write({"partner_id": partner_id.id})
             else:
@@ -35,12 +34,11 @@ class PartnerICO(models.Model):
                         "customer": True,
                     }
                 )
-                valid = partner_id.fetch_registry_data(raise_exception=False)
-                if not valid:
+                if valid := partner_id.fetch_registry_data(raise_exception=False):
+                    ico_id.write({"partner_id": partner_id.id})
+                    _logger.info(f"Company registry {partner_id.id} updated.")
+                else:
                     partner_id.unlink()
                     ico_id.write({"invalid": True})
-                    _logger.info("Company registry %s not found." % ico_id.name)
-                else:
-                    ico_id.write({"partner_id": partner_id.id})
-                    _logger.info("Company registry %s updated." % partner_id.id)
+                    _logger.info(f"Company registry {ico_id.name} not found.")
             self.env.cr.commit()

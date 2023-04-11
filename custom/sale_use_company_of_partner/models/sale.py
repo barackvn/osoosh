@@ -45,7 +45,7 @@ class SaleOrder(models.Model):
                 ("partner_id.parent_id", "!=", False),
             ]
         )
-        _logger.info("Updating sale orders %s" % sale_orders)
+        _logger.info(f"Updating sale orders {sale_orders}")
         for sale_order in sale_orders:
             sale_order.write({"partner_id": sale_order.partner_id.parent_id.id})
             self.env.cr.commit()
@@ -56,7 +56,7 @@ class SaleOrder(models.Model):
                 ("partner_id.parent_id", "!=", False),
             ]
         )
-        _logger.info("Updating attendees %s" % attendees)
+        _logger.info(f"Updating attendees {attendees}")
         for att in attendees:
             att.write({"partner_id": att.partner_id.parent_id.id})
             self.env.cr.commit()
@@ -67,7 +67,7 @@ class SaleOrder(models.Model):
                 ("partner_id.parent_id", "!=", False),
             ]
         )
-        _logger.info("Updating tasks %s" % tasks)
+        _logger.info(f"Updating tasks {tasks}")
         for task in tasks:
             task.write({"partner_id": task.partner_id.parent_id.id})
             self.env.cr.commit()

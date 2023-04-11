@@ -16,62 +16,61 @@ class HelpdeskSupportEnterprice(http.Controller):
             Partner = request.env['res.partner'].sudo().search([('email', '=', post['email'])], limit=1)
         else:
             Partner = request.env.user.partner_id
-       
-        if Partner:
+
+        if not Partner:
+            return request.render('odoo_product_warranty_claim_enterprice.support_ticket_invalid_custom_claim_enterprice',{})
 #             team_obj = http.request.env['support.team']
 #             team_match = team_obj.sudo().search([('is_team','=', True)], limit=1)
-            if post['warranty_number']:
-                warranty_id = request.env['product.warranty.registration'].sudo().search([
-                   ('name', 'ilike', str(post['warranty_number']))
-                ])
-            support = request.env['helpdesk.ticket'].sudo().create({
-                                                            # 'subject': post['subject'], #odoo13
-                                                            'name': post['subject'],
+        if post['warranty_number']:
+            warranty_id = request.env['product.warranty.registration'].sudo().search([
+               ('name', 'ilike', str(post['warranty_number']))
+            ])
+        support = request.env['helpdesk.ticket'].sudo().create({
+                                                        # 'subject': post['subject'], #odoo13
+                                                        'name': post['subject'],
 #                                                             'team_id' :team_match.id,
-                                                            #'partner_id' :team_match.leader_id.id,
+                                                        #'partner_id' :team_match.leader_id.id,
 #                                                             'user_id' :team_match.leader_id.id,
 #                                                             'team_leader_id': team_match.leader_id.id,
-                                                            'email': post['email'],
-                                                            'custom_phone': post['phone'],
-                                                            'custom_category': post['category'],
-                                                            'description': post['description'],
-                                                            'priority': post['priority'],
-                                                            'partner_id': Partner.id,
-                                                            'custom_serial_number': post['serial_number'],
-                                                            'custom_contract_reference': post['contract_reference'],
-                                                            'custom_warranty_number': post['warranty_number'],
-                                                            'custom_warranty_start_date': post['warranty_start_date'],
-                                                            'custom_warranty_end_date': post['warranty_end_date'],
-                                                            'custom_warranty_id': warranty_id.id or False,
-                                                            'custom_is_claim' : True,
-                                                             })
-            values = {
-                'support':support,
-            }
-            attachment_list = request.httprequest.files.getlist('attachment')
-            for image in attachment_list:
-                if post.get('attachment'):
-                    attachments = {
-                               'res_name': image.filename,
-                               'res_model': 'helpdesk.ticket',
-                               'res_id': support,
-                               'datas': base64.encodestring(image.read()),
-                               'type': 'binary',
-                               # 'datas_fname': image.filename,
-                               'name': image.filename,
-                           }
-                    attachment_obj = http.request.env['ir.attachment']
-                    attach = attachment_obj.sudo().create(attachments)
-            if len(attachment_list) > 0:
-                group_msg = 'Customer has sent %s attachments to this helpdesk ticket. Name of attachments are: ' % (len(attachment_list))
-                for attach in attachment_list:
-                    group_msg = group_msg + '\n' + attach.filename
-                group_msg = group_msg + '\n'  +  '. You can see top attachment menu to download attachments.'
-                support.sudo().message_post(body=_(group_msg),message_type='comment')
-                    
-            return request.render('odoo_product_warranty_claim_enterprice.thanks_mail_send_custom_claim_enterprice', values)
-        else:
-            return request.render('odoo_product_warranty_claim_enterprice.support_ticket_invalid_custom_claim_enterprice',{})
+                                                        'email': post['email'],
+                                                        'custom_phone': post['phone'],
+                                                        'custom_category': post['category'],
+                                                        'description': post['description'],
+                                                        'priority': post['priority'],
+                                                        'partner_id': Partner.id,
+                                                        'custom_serial_number': post['serial_number'],
+                                                        'custom_contract_reference': post['contract_reference'],
+                                                        'custom_warranty_number': post['warranty_number'],
+                                                        'custom_warranty_start_date': post['warranty_start_date'],
+                                                        'custom_warranty_end_date': post['warranty_end_date'],
+                                                        'custom_warranty_id': warranty_id.id or False,
+                                                        'custom_is_claim' : True,
+                                                         })
+        values = {
+            'support':support,
+        }
+        attachment_list = request.httprequest.files.getlist('attachment')
+        for image in attachment_list:
+            if post.get('attachment'):
+                attachments = {
+                           'res_name': image.filename,
+                           'res_model': 'helpdesk.ticket',
+                           'res_id': support,
+                           'datas': base64.encodestring(image.read()),
+                           'type': 'binary',
+                           # 'datas_fname': image.filename,
+                           'name': image.filename,
+                       }
+                attachment_obj = http.request.env['ir.attachment']
+                attach = attachment_obj.sudo().create(attachments)
+        if len(attachment_list) > 0:
+            group_msg = f'Customer has sent {len(attachment_list)} attachments to this helpdesk ticket. Name of attachments are: '
+            for attach in attachment_list:
+                group_msg = group_msg + '\n' + attach.filename
+            group_msg = group_msg + '\n'  +  '. You can see top attachment menu to download attachments.'
+            support.sudo().message_post(body=_(group_msg),message_type='comment')
+
+        return request.render('odoo_product_warranty_claim_enterprice.thanks_mail_send_custom_claim_enterprice', values)
 
 class CustomerPortal(CustomerPortal):
     

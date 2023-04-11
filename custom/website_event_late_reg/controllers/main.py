@@ -76,7 +76,7 @@ class WebsiteEvents(http.Controller):
         post.pop("sale_order_id")
         for key, value in post.items():
             att_id, field_name = key.split("-", 1)
-            registrations.setdefault(att_id, dict())[field_name] = value
+            registrations.setdefault(att_id, {})[field_name] = value
         for att_id in registrations:
             temp_values = registrations[att_id].copy()
             answer_ids = []

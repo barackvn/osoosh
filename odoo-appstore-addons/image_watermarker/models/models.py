@@ -70,8 +70,7 @@ class BaseWatermarker(models.Model):
     @api.constrains('text_fill')
     def _check_python_text_fill(self):
         for action in self.filtered('text_fill'):
-            msg = test_python_expr(expr=action.text_fill.strip(), mode="exec")
-            if msg:
+            if msg := test_python_expr(expr=action.text_fill.strip(), mode="exec"):
                 raise ValidationError(msg)
     @api.constrains('scale')
     def check_fraction_scale(self):

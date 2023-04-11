@@ -86,7 +86,7 @@ class MailMail(models.Model):
         # Save messages to be deleted.
         # Mark them as NOT auto delete because we want to delete them via messages
         mail_to_delete_ids = [mail.id for mail in self if mail.auto_delete]
-        if len(mail_to_delete_ids) > 0:
+        if mail_to_delete_ids:
             mark_to_delete = self.sudo().browse(mail_to_delete_ids)
             mark_to_delete.write({"auto_delete": False})
 
@@ -96,7 +96,7 @@ class MailMail(models.Model):
 
         # Delete related messages so they will trigger
         # cascade mail.mail deletion
-        if len(mail_to_delete_ids) > 0:
+        if mail_to_delete_ids:
             mark_to_delete.write({"is_mail_mail": True})
             mark_to_delete.unlink()
 
@@ -132,7 +132,10 @@ class MailThread(models.AbstractModel):
         """
 
         # Cetmix. Sent from Messages Easy composer?
-        if not self._context.get("default_wizard_mode", False) in ["quote", "forward"]:
+        if self._context.get("default_wizard_mode", False) not in [
+            "quote",
+            "forward",
+        ]:
             return super(MailThread, self)._notify_record_by_email(
                 message,
                 recipients_data,
@@ -193,11 +196,7 @@ class MailThread(models.AbstractModel):
             if msg_vals
             else message.email_layout_xmlid
         )
-        template_xmlid = (
-            email_layout_xmlid
-            if email_layout_xmlid
-            else "mail.message_notification_email"
-        )
+        template_xmlid = email_layout_xmlid or "mail.message_notification_email"
         try:
             base_template = self.env.ref(
                 template_xmlid, raise_if_not_found=True
@@ -211,9 +210,9 @@ class MailThread(models.AbstractModel):
             )
             base_template = False
 
-        mail_subject = message.subject or (
-            message.record_name and "Re: %s" % message.record_name
-        )  # in cache, no queries
+        mail_subject = (
+            message.subject or message.record_name and f"Re: {message.record_name}"
+        )
         # prepare notification mail values
         base_mail_values = {
             "mail_message_id": message.id,
@@ -420,13 +419,7 @@ class MailMessage(models.Model):
     # -- Compute text shown as last edit message
     @api.depends("cx_edit_uid")
     def _compute_cx_edit_message(self):
-        # Get current timezone
-        tz = self.env.user.tz
-        if tz:
-            local_tz = pytz.timezone(tz)
-        else:
-            local_tz = pytz.utc
-
+        local_tz = pytz.timezone(tz) if (tz := self.env.user.tz) else pytz.utc
         # Get current time
         now = datetime.now(local_tz)
 
@@ -487,9 +480,7 @@ class MailMessage(models.Model):
             .sudo()
             .search([("model", "in", list(set(self.mapped("model"))))])
         )
-        model_dict = {}
-        for model in ir_models:
-            model_dict.update({model.model: model.name})
+        model_dict = {model.model: model.name for model in ir_models}
         for rec in self:
             rec.model_name = model_dict[rec.model] if rec.model else _("Lost Message")
 
@@ -537,7 +528,7 @@ class MailMessage(models.Model):
                 conversations_2_delete.append(conversation)
 
         # Delete conversations with no messages
-        if len(conversations_2_delete) > 0:
+        if conversations_2_delete:
             self.env["cetmix.conversation"].browse(conversations_2_delete).unlink()
 
     # -- Check delete rights
@@ -567,18 +558,18 @@ class MailMessage(models.Model):
             # - Is the only 'recipient' for 'email' message
 
             # Sent
-            if rec.message_type == "comment":
-
-                # Is Author?
-                if not rec.author_allowed_id.id == partner_id:
-                    raise AccessError(
-                        _(
-                            "You cannot delete the following message"
-                            "\n\n Subject: %s \n\n"
-                            " Reason: %s"
-                            % (rec.subject, _("You are not the message author"))
-                        )
+            if (
+                rec.message_type == "comment"
+                and rec.author_allowed_id.id != partner_id
+            ):
+                raise AccessError(
+                    _(
+                        "You cannot delete the following message"
+                        "\n\n Subject: %s \n\n"
+                        " Reason: %s"
+                        % (rec.subject, _("You are not the message author"))
                     )
+                )
 
             # Received
             if rec.message_type == "email":
@@ -606,7 +597,7 @@ class MailMessage(models.Model):
                     )
 
                 # Partner is not that one recipient
-                if not rec.partner_ids[0].id == partner_id:
+                if rec.partner_ids[0].id != partner_id:
                     raise AccessError(
                         _(
                             "You cannot delete the following message"
@@ -623,12 +614,9 @@ class MailMessage(models.Model):
         if self._name != "mail.message":
             return super(MailMessage, self).unlink()
 
-        # Store Conversation ids
-        conversation_ids = []
-        for rec in self.sudo():
-            if rec.model == "cetmix.conversation":
-                conversation_ids.append(rec.res_id)
-
+        conversation_ids = [
+            rec.res_id for rec in self.sudo() if rec.model == "cetmix.conversation"
+        ]
         # Deleted from parent record?
         if self._context.get("force_delete", False):
             return super(MailMessage, self).unlink()
@@ -646,7 +634,7 @@ class MailMessage(models.Model):
 
         # Unlink
         res = super(MailMessage, self).unlink()
-        if len(conversation_ids) > 0:
+        if conversation_ids:
             self._delete_conversations(conversation_ids)
         return res
 
@@ -766,13 +754,7 @@ class MailMessage(models.Model):
         )
         mt_note = self.env.ref("mail.mt_note").id
 
-        # Get current timezone
-        tz = self.env.user.tz
-        if tz:
-            local_tz = pytz.timezone(tz)
-        else:
-            local_tz = pytz.utc
-
+        local_tz = pytz.timezone(tz) if (tz := self.env.user.tz) else pytz.utc
         # Get current time
         now = datetime.now(local_tz)
         # Compose subject
@@ -797,35 +779,19 @@ class MailMessage(models.Model):
             # Compose notification icons
             notification_icons = ""
             if rec.needaction:
-                notification_icons = '<i class="fa fa-envelope" title="%s"></i>' % _(
-                    "New message"
+                notification_icons = (
+                    f'<i class="fa fa-envelope" title="{_("New message")}"></i>'
                 )
             if rec.starred:
-                notification_icons = (
-                    '%s &nbsp;<i class="fa fa-star" title="%s"></i>'
-                    % (notification_icons, _("Starred"))
-                )
+                notification_icons = f'{notification_icons} &nbsp;<i class="fa fa-star" title="{_("Starred")}"></i>'
             if rec.has_error > 0:
-                notification_icons = (
-                    '%s &nbsp;<i class="fa fa-exclamation" title="%s"></i>'
-                    % (notification_icons, _("Sending Error"))
-                )
+                notification_icons = f'{notification_icons} &nbsp;<i class="fa fa-exclamation" title="{_("Sending Error")}"></i>'
             # .. edited
             if rec.cx_edit_uid:
-                notification_icons = (
-                    '%s &nbsp;<i class="fa fa-edit"'
-                    ' style="color:#1D8348;"'
-                    ' title="%s"></i>' % (notification_icons, rec.cx_edit_message)
-                )
+                notification_icons = f'{notification_icons} &nbsp;<i class="fa fa-edit" style="color:#1D8348;" title="{rec.cx_edit_message}"></i>'
             # .. attachments
             if rec.attachment_count > 0:
-                notification_icons = (
-                    '%s &nbsp;<i class="fa fa-paperclip" title="%s"></i>'
-                    % (
-                        notification_icons,
-                        "&#013;".join([a.name for a in rec.attachment_ids]),
-                    )
-                )
+                notification_icons = f'{notification_icons} &nbsp;<i class="fa fa-paperclip" title="{"&#013;".join([a.name for a in rec.attachment_ids])}"></i>'
 
             # Compose preview body
             plain_body = html2plaintext(rec.body) if len(rec.body) > 10 else ""
@@ -833,19 +799,21 @@ class MailMessage(models.Model):
                 plain_body = "".join((plain_body[:body_preview_length], "..."))
 
             rec.subject_display = TREE_TEMPLATE % (
-                ("background-color:%s;" % messages_easy_color_note)
+                f"background-color:{messages_easy_color_note};"
                 if messages_easy_color_note and rec.subtype_id.id == mt_note
                 else "",
-                _("Internal Note") if rec.subtype_id.id == mt_note else _("Message"),
+                _("Internal Note")
+                if rec.subtype_id.id == mt_note
+                else _("Message"),
                 rec.author_avatar.decode("utf-8")
                 if rec.author_avatar
                 else IMAGE_PLACEHOLDER,
                 rec.author_display,
                 rec.author_display,
-                rec.subject if rec.subject else "",
+                rec.subject or "",
                 str(message_date.replace(tzinfo=None)),
                 date_display,
-                "{}: {}".format(rec.model_name, rec.record_ref.display_name)
+                f"{rec.model_name}: {rec.record_ref.display_name}"
                 if rec.record_ref
                 else "",
                 notification_icons,
@@ -899,8 +867,7 @@ class MailMessage(models.Model):
     def _compute_record_ref(self):
         for rec in self:
             if rec.model and rec.res_id:
-                res = self.env[rec.model].sudo().browse(rec.res_id)
-                if res:
+                if res := self.env[rec.model].sudo().browse(rec.res_id):
                     rec.record_ref = res
                 else:
                     rec.record_ref = False
@@ -992,21 +959,12 @@ class MailMessage(models.Model):
         order_by = self._generate_order_by(order, query)
         from_clause, where_clause, where_clause_params = query.get_sql()
 
-        where_str = where_clause and (" WHERE %s" % where_clause) or ""
+        where_str = where_clause and f" WHERE {where_clause}" or ""
 
         limit_str = limit and " limit %d" % limit or ""
-        query_str = (
-            'SELECT "mail_message".id,'
-            ' "mail_message".model,'
-            ' "mail_message".res_id FROM '
-            + from_clause
-            + where_str
-            + order_by
-            + limit_str
-        )  # noqa E8103
+        query_str = f'SELECT "mail_message".id, "mail_message".model, "mail_message".res_id FROM {from_clause}{where_str}{order_by}{limit_str}'
         self._cr.execute(query_str, where_clause_params)
-        res = self._cr.fetchall()
-        return res
+        return self._cr.fetchall()
 
     # -- Override _search
     @api.model
@@ -1082,42 +1040,8 @@ class MailMessage(models.Model):
         # Fetch messages
         while limit_remaining if limit else True:
 
-            # Check which records are we trying to fetch
-            # Skip for count
             if not count:
-
-                # For initial query only
-                if not last_id:
-
-                    # If fetching not the first page or performing search_count
-                    if offset != 0:
-                        last_offset = self._context["last_offset"]
-
-                        # Scrolling back
-                        if offset < last_offset:
-                            scroll_back = True
-                            search_args = ("id", ">", self._context["first_id"])
-                            order = "id asc"
-
-                        # Scrolling reverse from first to last page
-                        elif last_offset == 0 and offset / limit > 1:
-                            scroll_back = True
-                            order = "id asc"
-
-                        # Scrolling forward
-                        elif offset > last_offset:
-                            search_args = ("id", "<", self._context["last_id"])
-                            order = "id desc"
-
-                        # Returning from form view
-                        else:
-                            search_args = ("id", "<=", self._context["first_id"])
-                            order = "id desc"
-                    else:
-                        search_args = False
-
-                # Post fetching records
-                else:
+                if last_id:
                     if scroll_back:
                         search_args = ("id", ">", last_id)
                         order = "id asc"
@@ -1125,6 +1049,32 @@ class MailMessage(models.Model):
                         search_args = ("id", "<", last_id)
                         order = "id desc"
 
+                elif offset == 0:
+                    search_args = False
+
+                else:
+                    last_offset = self._context["last_offset"]
+
+                    # Scrolling back
+                    if offset < last_offset:
+                        scroll_back = True
+                        search_args = ("id", ">", self._context["first_id"])
+                        order = "id asc"
+
+                    # Scrolling reverse from first to last page
+                    elif last_offset == 0 and offset / limit > 1:
+                        scroll_back = True
+                        order = "id asc"
+
+                    # Scrolling forward
+                    elif offset > last_offset:
+                        search_args = ("id", "<", self._context["last_id"])
+                        order = "id desc"
+
+                    # Returning from form view
+                    else:
+                        search_args = ("id", "<=", self._context["first_id"])
+                        order = "id desc"
             # Check for forbidden models and compose final args
             if search_args and len(forbidden_models) > 0:
                 query_args = [
@@ -1157,12 +1107,7 @@ class MailMessage(models.Model):
 
             allowed_ids, failed_models = self._find_allowed_doc_ids_plus(model_ids)
 
-            # Append to list of allowed ids,
-            # re-construct a list based on ids,
-            # because set did not keep the original order
-            sorted_ids = [msg[0] for msg in res if msg[0] in allowed_ids]
-
-            if len(sorted_ids) > 0:
+            if sorted_ids := [msg[0] for msg in res if msg[0] in allowed_ids]:
                 id_list += sorted_ids
 
             # Break if search was initially limitless
@@ -1191,12 +1136,7 @@ class MailMessage(models.Model):
         wizard_mode = self._context.get("wizard_mode", False)
 
         if wizard_mode in ["quote", "forward"]:
-            # Get current timezone
-            tz = self.env.user.tz
-            if tz:
-                local_tz = pytz.timezone(tz)
-            else:
-                local_tz = pytz.utc
+            local_tz = pytz.timezone(tz) if (tz := self.env.user.tz) else pytz.utc
             # Get date and time format
             language = (
                 self.env["res.lang"]
@@ -1210,15 +1150,10 @@ class MailMessage(models.Model):
                 .strftime(" ".join([language.date_format, language.time_format]))
             )
             body = _(
-                "<div font-style=normal;>"
-                "<br/></div>"
-                "<blockquote>----- Original message ----- <br/> Date: {} <br/>"
-                " From: {} <br/> Subject: {} <br/><br/>{}</blockquote>".format(
-                    message_date, self.author_display, self.subject, self.body
-                )
+                f"<div font-style=normal;><br/></div><blockquote>----- Original message ----- <br/> Date: {message_date} <br/> From: {self.author_display} <br/> Subject: {self.subject} <br/><br/>{self.body}</blockquote>"
             )
 
-        ctx = {
+        return {
             "default_res_id": self.res_id,
             "default_parent_id": False if wizard_mode == "forward" else self.id,
             "default_model": self.model,
@@ -1232,7 +1167,6 @@ class MailMessage(models.Model):
             "default_body": body,
             "default_wizard_mode": wizard_mode,
         }
-        return ctx
 
     # -- Reply or quote message
     def reply(self):

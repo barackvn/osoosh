@@ -61,9 +61,9 @@ class MailMove(models.TransientModel):
 
         thread_message_id = self._context.get("thread_message_id", False)
         message_ids = (
-            self._context.get("active_ids", False)
-            if not thread_message_id
-            else [thread_message_id]
+            [thread_message_id]
+            if thread_message_id
+            else self._context.get("active_ids", False)
         )
         if not message_ids:
             self.is_lead = False
@@ -71,18 +71,14 @@ class MailMove(models.TransientModel):
         messages = self.env["mail.message"].search(
             [("id", "in", message_ids), ("model", "=", "crm.lead")]
         )
-        if len(messages) > 0:
-            self.is_lead = True
-        else:
-            self.is_lead = False
+        self.is_lead = len(messages) > 0
 
     # -- Is Conversation?
     @api.depends("notify")
     def _compute_is_conversation(self):
-        if self._context.get("active_model", False) == "cetmix.conversation":
-            self.is_conversation = True
-        else:
-            self.is_conversation = False
+        self.is_conversation = (
+            self._context.get("active_model", False) == "cetmix.conversation"
+        )
 
     # -- Ref models
     @api.model

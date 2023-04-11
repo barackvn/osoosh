@@ -17,9 +17,9 @@ class PersonCase(TransactionCase):
     def setUp(self):
         super(PersonCase, self).setUp()
         self.good_values = {"firstname": "Núñez", "lastname": "Fernán"}
-        self.good_values["name"] = "{} {}".format(
-            self.good_values["firstname"], self.good_values["lastname"]
-        )
+        self.good_values[
+            "name"
+        ] = f'{self.good_values["firstname"]} {self.good_values["lastname"]}'
         if "default_is_company" in self.context:
             self.good_values["is_company"] = self.context["default_is_company"]
         self.values = self.good_values.copy()
@@ -29,7 +29,7 @@ class PersonCase(TransactionCase):
             self.env[self.model].with_context(self.context).create(self.values)
         )
         for key, value in self.good_values.items():
-            self.assertEqual(self.record[key], value, "Checking key %s" % key)
+            self.assertEqual(self.record[key], value, f"Checking key {key}")
 
         super(PersonCase, self).tearDown()
 

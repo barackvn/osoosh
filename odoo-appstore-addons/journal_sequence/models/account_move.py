@@ -16,7 +16,7 @@ class AccountMove(models.Model):
                 raise UserError('Please define a sequence on your journal.')
             if not move.sequence_generated and move.state == 'draft':
                 move.name = '/'
-            elif not move.sequence_generated and move.state != 'draft':
+            elif not move.sequence_generated:
                 move.name = sequence_id.next_by_id()
                 move.sequence_generated = True
 

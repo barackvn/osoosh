@@ -19,10 +19,7 @@ class ResPartner(models.Model):
                         partner.type
                     ]
                 if not partner.is_company:
-                    name = "%s, %s" % (
-                        partner.commercial_company_name or partner.parent_id.name,
-                        name,
-                    )
+                    name = f"{partner.commercial_company_name or partner.parent_id.name}, {name}"
             if self._context.get("show_address_only"):
                 name = partner._display_address(without_company=True)
             if self._context.get("show_address"):
@@ -30,11 +27,11 @@ class ResPartner(models.Model):
             name = name.replace("\n\n", "\n")
             name = name.replace("\n\n", "\n")
             if self._context.get("show_email") and partner.email:
-                name = "%s <%s>" % (name, partner.email)
+                name = f"{name} <{partner.email}>"
             if self._context.get("html_format"):
                 name = name.replace("\n", "<br/>")
             if partner.company_registry:
-                name = "[%s] %s" % (partner.company_registry, name)
+                name = f"[{partner.company_registry}] {name}"
             res.append((partner.id, name))
         return res
 
@@ -47,7 +44,7 @@ class ResPartner(models.Model):
             where_query = self._where_calc(args)
             self._apply_ir_rules(where_query, "read")
             from_clause, where_clause, where_clause_params = where_query.get_sql()
-            where_str = where_clause and (" WHERE %s AND " % where_clause) or " WHERE "
+            where_str = where_clause and f" WHERE {where_clause} AND " or " WHERE "
 
             # search on the name of the contacts and of its company
             search_name = name
@@ -84,9 +81,7 @@ class ResPartner(models.Model):
                 query += " limit %s"
                 where_clause_params.append(limit)
             self.env.cr.execute(query, where_clause_params)
-            partner_ids = map(lambda x: x[0], self.env.cr.fetchall())
-
-            if partner_ids:
+            if partner_ids := map(lambda x: x[0], self.env.cr.fetchall()):
                 return self.browse(partner_ids).name_get()
             else:
                 return []

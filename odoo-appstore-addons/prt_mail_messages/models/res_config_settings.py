@@ -45,14 +45,14 @@ class ResConfigSettings(models.TransientModel):
         res = super(ResConfigSettings, self).get_values()
         ICPSudo = self.env['ir.config_parameter'].sudo()
 
-        # Text preview length
-        messages_easy_text_preview = ICPSudo.get_param('cetmix.messages_easy_text_preview', default=False)
-        if messages_easy_text_preview:
+        if messages_easy_text_preview := ICPSudo.get_param(
+            'cetmix.messages_easy_text_preview', default=False
+        ):
             res.update(messages_easy_text_preview=int(messages_easy_text_preview))
 
-        # Internal note background color
-        messages_easy_color_note = ICPSudo.get_param('cetmix.messages_easy_color_note', default=False)
-        if messages_easy_color_note:
+        if messages_easy_color_note := ICPSudo.get_param(
+            'cetmix.messages_easy_color_note', default=False
+        ):
             res.update(messages_easy_color_note=messages_easy_color_note)
 
         return res

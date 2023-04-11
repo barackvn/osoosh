@@ -33,17 +33,13 @@ class MessageEdit(models.TransientModel):
     def _get_message(self):
         if "message_edit_id" in self._context:
             message_id = self._context["message_edit_id"]
+        elif active_ids := self._context.get("active_ids", False):
+            message_id = active_ids[0]
         else:
-            active_ids = self._context.get("active_ids", False)
-            if active_ids:
-                message_id = active_ids[0]
-            else:
-                return False
+            return False
 
         # To check direct context value
-        if not message_id:
-            return False
-        return self.env["mail.message"].browse(message_id)
+        return self.env["mail.message"].browse(message_id) if message_id else False
 
     message_id = fields.Many2one(
         string="Message", comodel_name="mail.message", default=_get_message

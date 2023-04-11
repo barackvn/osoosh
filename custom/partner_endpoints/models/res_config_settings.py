@@ -35,7 +35,7 @@ class BaseConfigSettings(models.TransientModel):
 
     def generate_new_endpoint_token(self):
         chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-        token = "".join(random.SystemRandom().choice(chars) for i in xrange(20))
+        token = "".join(random.SystemRandom().choice(chars) for _ in xrange(20))
         self.env["ir.config_parameter"].sudo().set_param(
             "partner_endpoint_auth_token", token
         )

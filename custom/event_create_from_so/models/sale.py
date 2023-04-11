@@ -21,22 +21,21 @@ class SaleOrder(models.Model):
 
     def _compute_has_event_product(self):
         for order in self:
-            order.has_event_product = False
-            for line in order.order_line:
-                if (
+            order.has_event_product = any(
+                (
                     line.product_id.is_event_product
                     and line.product_id.event_template_id
-                ):
-                    order.has_event_product = True
-                    break
+                )
+                for line in order.order_line
+            )
 
 
     def button_create_event(self):
         self.ensure_one()
         for line in self.order_line:
             product_id = line.product_id
-            event_template = product_id.event_template_id
             if product_id.is_event_product:
+                event_template = product_id.event_template_id
                 new_event = event_template.copy(default={"event_ticket_ids": False})
                 template_ticket_id = self.env["event.event.ticket"]
                 for ticket in event_template.event_ticket_ids:
@@ -71,8 +70,8 @@ class SaleOrder(models.Model):
                 new_event.write(
                     {"sale_order_origin": self.id, "sale_order_line_origin": line.id}
                 )
-                counter = 0
                 if template_ticket_id:
+                    counter = 0
                     while counter < line.product_uom_qty:
                         self.env["event.registration"].create(
                             {

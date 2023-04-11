@@ -22,7 +22,7 @@ class Invoice(models.Model):
         action = self.env.ref("event_custom_4devnet.action_event_certificate")
         result = action.read()[0]
         result["context"] = {}
-        certificate_ids = sum([r.certificate_ids.ids for r in self], [])
+        certificate_ids = sum((r.certificate_ids.ids for r in self), [])
         if len(certificate_ids) > 1:
             result["domain"] = (
                 "[('id','in',[" + ",".join(map(str, certificate_ids)) + "])]"
